@@ -118,7 +118,6 @@ exclude:
   - Rakefile
   - README
   - tmp
-  - *.bak
 keep_files:
   - .git
   - .svn
