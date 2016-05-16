@@ -66,7 +66,7 @@
   <meta property="og:type" content="article">
   <meta property="article:published_time" content="2012-08-09T11:03:00+01:00">
   
-    <link rel="next" href="http://blog.simpletask.se/improving-cloudwatch-appender" title="Improving the CloudWatch Appender">
+    <link rel="next" href="http://blog.simpletask.se/AWSCloudWatch-log4net-appender" title="A CloudWatch Appender for log4net">
   
   
 
@@ -313,7 +313,7 @@ namespace RandomTicks
 
 <p><img src="https://dl.dropbox.com/u/1551997/cloudwatchappender_screenshot2.jpg" alt="" /></p>
 
-<p>#The appender</p>
+<h1 id="the-appender">The appender</h1>
 
 <p>Writing your own appender is real easy, as stated by <a href="http://www.alteridem.net/2008/01/10/writing-an-appender-for-log4net/" title="Robert Prouse's blog">Robert Prouse</a>. I mostly followed his example. I still got it wrong at first but that’s because I get ahead of myself and don’t follow instructions. Follow instructions.</p>
 
@@ -361,7 +361,7 @@ namespace RandomTicks
 
 <p>My story is that I added a timestamp to the request. I spent the next hour trying to figuring our why I wasn’t seeing any data, then the hour after that, trying to figure out why I was seeing data, even though my app was disabled. One of those times when debugging didn’t help. Taking a break, stepping outside, did. CloudWatch is set to UTC and refuses to display anything that it thinks hasn’t happened yet. Use UCT or just don’t bother sending a timestamp at all. The client will put one in there all on its own. The lessons learnt is for another post, maybe.</p>
 
-<p>Anyway, get your endpoint from <a href="http://docs.amazonwebservices.com/general/latest/gr/rande.html#cw_region">here</a>. Log in to AWS and get your credentials from <a href="https://portal.aws.amazon.com/gp/aws/securityCredentials">here</a>. That’s your access key id and your secret access key. Preferably you won’t use your main credentials but rather set up user with the <a href="http://aws.amazon.com/iam/">IAM</a> feature and give it access just to post CloudWatch requests.</p>
+<p>Anyway, get your endpoint from <a href="http://docs.amazonwebservices.com/general/latest/gr/rande.html# cw_region">here</a>. Log in to AWS and get your credentials from <a href="https://portal.aws.amazon.com/gp/aws/securityCredentials">here</a>. That’s your access key id and your secret access key. Preferably you won’t use your main credentials but rather set up user with the <a href="http://aws.amazon.com/iam/">IAM</a> feature and give it access just to post CloudWatch requests.</p>
 
 <p>Put this in your Append-method and add the appropriate includes.</p>
 
@@ -467,39 +467,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     
       
       
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#aws" class="page__taxonomy-item" rel="tag">AWS</a><span class="sep">, </span>
-    
-      
-      
       <a href="http://blog.simpletask.se/tags/#amazon" class="page__taxonomy-item" rel="tag">amazon</a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#cloudwatch" class="page__taxonomy-item" rel="tag">cloudwatch</a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#log4net" class="page__taxonomy-item" rel="tag">log4net</a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
     
       
       
@@ -507,15 +475,15 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     
       
       
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#aws" class="page__taxonomy-item" rel="tag">AWS</a><span class="sep">, </span>
     
       
       
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#cloudwatch" class="page__taxonomy-item" rel="tag">cloudwatch</a><span class="sep">, </span>
     
       
       
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a>
+      <a href="http://blog.simpletask.se/tags/#log4net" class="page__taxonomy-item" rel="tag">log4net</a>
     
     </span>
   </p>
@@ -550,7 +518,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
       <a href="#" class="pagination--pager disabled"></a>
     
     
-      <a href="http://blog.simpletask.se/improving-cloudwatch-appender" class="pagination--pager" title="Improving the CloudWatch Appender
+      <a href="http://blog.simpletask.se/AWSCloudWatch-log4net-appender" class="pagination--pager" title="A CloudWatch Appender for log4net
 "></a>
     
   </nav>
@@ -574,6 +542,30 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     <div class="page__related">
       
       <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/EC2SpotStop2SNS">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">EC2 Spot Instance Termination Notification to SNS
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  2 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the...</p>
+    </article>
+  </a>
+</div>
         
           
 
@@ -629,11 +621,11 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 
 <div class="grid__item">
   
-    <a href="http://blog.simpletask.se/welcome to russia dear crimeans">
+    <a href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">
   
     <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
       
-      <h2 class="archive__item-title" itemprop="headline">Welcome to Russia, dear Crimeans!
+      <h2 class="archive__item-title" itemprop="headline">Introducing the Buffering and Aggregeting CloudWatch Appender
 </h2>
       
         <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
@@ -642,35 +634,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
   6 
 </p>
       
-      <p class="archive__item-excerpt" itemprop="description">by Arkady Babtjenko
-
-</p>
-    </article>
-  </a>
-</div>
-        
-          
-
-
-
-<div class="grid__item">
-  
-    <a href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament">
-  
-    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
-      
-      <h2 class="archive__item-title" itemprop="headline">Jason Diakité’s speach to the Swedish parliament
-</h2>
-      
-        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
-
-
-  1 
-</p>
-      
-      <p class="archive__item-excerpt" itemprop="description">Translated from Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation.
-
-</p>
+      <p class="archive__item-excerpt" itemprop="description">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward...</p>
     </article>
   </a>
 </div>

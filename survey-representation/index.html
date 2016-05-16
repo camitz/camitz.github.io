@@ -66,7 +66,7 @@
   <meta property="og:type" content="article">
   <meta property="article:published_time" content="2013-04-29T09:34:00+01:00">
   
-    <link rel="next" href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament" title="Jason Diakit&amp;eacute;&#39;s speach to the Swedish parliament">
+    <link rel="next" href="http://blog.simpletask.se/survey-representation.md/" title="On representing a survey with XML">
   
   
     <link rel="prev" href="http://blog.simpletask.se/help" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot">
@@ -249,7 +249,7 @@ o Other: []
 
 <p>It’s the representation at the core of this that I want to talk about today. I propose a new representation of a survey. I’m calling it <strong>Flamingo</strong>.</p>
 
-<p>##Background</p>
+<h2 id="background">Background</h2>
 
 <p>I sometimes dabble with surveys in particular <a href="https://www.researchgate.net/publication/233419485_Implementation_of_Web-Based_Respondent-Driven_Sampling_among_Men_Who_Have_Sex_with_Men_in_Vietnam">RDS</a> surveys. I made my own survey engine many years back. It was replaced by the research team with a modified version of LimeSurvey.</p>
 
@@ -277,7 +277,7 @@ o Other: []
   <li>Dynamically generated survey elements</li>
 </ul>
 
-<p>##Start</p>
+<h2 id="start">Start</h2>
 
 <p>Let’s give it a go then. Let’s go way back. What’s the atomic building block of a survey? The option. I propose this is a survey.</p>
 
@@ -317,7 +317,7 @@ o Other: []
 
 <p>I’ve come up with a set of principles that seem to work rather well for me. Partial compliance with HTML is the second. Hence I’m calling groups <em>div</em> and options <em>input</em>. Ignore the fact that inputs, if they really were in HTML, would have no content. Ignore also the fact input elements without any other attributes produce textboxes.</p>
 
-<p>##Basic principles</p>
+<h2 id="basic-principles">Basic principles</h2>
 
 <p>The complete set of basic principles for Flamingo is as follows.</p>
 
@@ -333,7 +333,7 @@ o Other: []
 
 <p>We’ve covered two of these principles, although their merit may be unclear for the moment. Let’s move on to the third.</p>
 
-<p>##Assume multiple choice</p>
+<h2 id="assume-multiple-choice">Assume multiple choice</h2>
 
 <p>The default input is a checkbox. Heh? Bear with me, I just want to change the default.</p>
 
@@ -378,7 +378,7 @@ o Other: []
 
 <p>Apparently time to show you what a response might look like.</p>
 
-<p>##Responses and the XPATH</p>
+<h2 id="responses-and-the-xpath">Responses and the XPATH</h2>
 
 <p>The response database table might look like this. It’s a recommendation and not really part of the specification I propose.</p>
 
@@ -411,7 +411,7 @@ o Other: []
 
 <p>One final thing to note, the engine may reorder everything as you wish. Maybe the author has requested randomized questions. This should not affect the XPATH of the options. The XPATH references the survey XML template, not the rendered display. That includes dynamically generated elements which we’ll get to later.</p>
 
-<p>###Another example</p>
+<h3 id="another-example">Another example</h3>
 
 <p>To further the discussion with another example, consider the following. I’ve introduced that label short hand here, but that’s not the point.</p>
 
@@ -435,7 +435,7 @@ o Other: []
 
 <p>However, if the presentation engine does not have support for this particular layout, that’s fine too. Just display as is (formatting the inputs, obviously). The survey is entirely legible in either case.</p>
 
-<p>##Single choice and multiple choice</p>
+<h2 id="single-choice-and-multiple-choice">Single choice and multiple choice</h2>
 
 <p>As I’ve said, I consider all input elements checkboxes by default, because that’s what I consider a survey, options. If you’re in Europe, both steak and lobster may not be acceptable at the same time. I consider it validation and validation can be specified in my XML schema but the basic assumption is that it is not required. It’s meta data, same as questions and part of a context which may be given in XML or verbally or be implicit.</p>
 
@@ -493,7 +493,7 @@ o Other: []
 
 <p>Technically though, there are many ways to infer abstention and ignorance. I may wish to have one “I don’t know” and one “I don’t want to answer”. Or I may combine them. They may be placed before or after the “Other” option. I think this should always be up to the author.</p>
 
-<p>###Textboxes</p>
+<h3 id="textboxes">Textboxes</h3>
 
 <p>What about textual data, keyboard entered data in textboxes? Again, I consider keyboard entered data just another option. Consider:</p>
 
@@ -558,9 +558,9 @@ o Other: []
 
 <p>Finally, control logic is about what questions are executed when and possibly in what order, depending on responses and other circumstances. It should be clear by now that I’m not about to introduce a goto statement. I think control concerns should be mapped to display logic as far as possible. Having said that, I haven’t ruled out control logic completely though I can think of no circumstances off hand where it might come in handy.</p>
 
-<p>##Other features</p>
+<h2 id="other-features">Other features</h2>
 
-<p>###Cross references</p>
+<h3 id="cross-references">Cross references</h3>
 
 <p>To repeat a group or option anywhere (even before the definition), just reference.</p>
 
@@ -586,7 +586,7 @@ o Other: []
 
 <p>The concern for the presentation is to decide on a multiple choice dropdown, a full page of checkboxes with an arbitrary number of columns or perhaps an object store backed combo box widget.</p>
 
-<p>###Dynamically generated survey elements</p>
+<h3 id="dynamically-generated-survey-elements">Dynamically generated survey elements</h3>
 
 <p>Cross references together with the severing of the dependency between responses and survey implies the following rather significant bonus. The questionnaire may be dynamically constructed. Arbitrarily repeated questions are a breeze. In fact there is little need for a representation at all for simple ad hoc questionnaires. Just hard code a form and send it off to your response engine. (That’s rather stating the obvious. What I mean is, do try on my recommendation for a response table.)</p>
 
@@ -606,7 +606,7 @@ o Other: []
 
 <p>The engine should generate the last input as many times as the user requires. To be honest I think this is an annoying loop hole, one of many to be found. I’d sooner let the author opt in via the repetition feature described later. But I’d like you to give me a chance to find a way that would not break my list of principles or to patch it up.</p>
 
-<p>##Presentation hints</p>
+<h2 id="presentation-hints">Presentation hints</h2>
 
 <p>I want to have dependencies between the representation and the presentation as weak as possible. But hints to the presentation has obvious benefits, for example, indicating preference for radio buttons over dropdown, page breaks and instructions.</p>
 
@@ -624,7 +624,7 @@ o Other: []
 
 <p>I intend to specify a recommended list of such hints. Presentation engines are free to specify additions to that list as long as they commit to displaying surveys that don’t conform to them.</p>
 
-<p>##Resource keys</p>
+<h2 id="resource-keys">Resource keys</h2>
 
 <p>That last one deserves an extra look. We never got around to the last principle, the one about resource keys, did we? That’s what this is.</p>
 
@@ -632,7 +632,7 @@ o Other: []
 
 <p>If you write a FAQ, then the above indexes into that. The label may be just a question mark icon. Up to you.</p>
 
-<p>##Repetition</p>
+<h2 id="repetition">Repetition</h2>
 
 <p>Repeating the country dropdown based on the answer given to a previous question, try:</p>
 
@@ -665,7 +665,7 @@ o Other: []
 </code></pre>
 </div>
 
-<p>##Closing</p>
+<h2 id="closing">Closing</h2>
 
 <p>Thank you for reading. Tell me what you think. Consider the spec open source, work in progress and feel free to contribute. I’m going to put up a wiki.</p>
 
@@ -712,19 +712,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     
       
       
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#flamingo" class="page__taxonomy-item" rel="tag">flamingo</a><span class="sep">, </span>
     
       
       
@@ -740,27 +728,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     
       
       
-      <a href="http://blog.simpletask.se/tags/#xml" class="page__taxonomy-item" rel="tag">xml</a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#flamingo" class="page__taxonomy-item" rel="tag">flamingo</a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
-    
-      
-      
-      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a>
+      <a href="http://blog.simpletask.se/tags/#xml" class="page__taxonomy-item" rel="tag">xml</a>
     
     </span>
   </p>
@@ -796,7 +764,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 "></a>
     
     
-      <a href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament" class="pagination--pager" title="Jason Diakité’s speach to the Swedish parliament
+      <a href="http://blog.simpletask.se/survey-representation.md/" class="pagination--pager" title="On representing a survey with XML
 "></a>
     
   </nav>
@@ -820,6 +788,30 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     <div class="page__related">
       
       <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/EC2SpotStop2SNS">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">EC2 Spot Instance Termination Notification to SNS
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  2 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the...</p>
+    </article>
+  </a>
+</div>
         
           
 
@@ -875,11 +867,11 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 
 <div class="grid__item">
   
-    <a href="http://blog.simpletask.se/welcome to russia dear crimeans">
+    <a href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">
   
     <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
       
-      <h2 class="archive__item-title" itemprop="headline">Welcome to Russia, dear Crimeans!
+      <h2 class="archive__item-title" itemprop="headline">Introducing the Buffering and Aggregeting CloudWatch Appender
 </h2>
       
         <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
@@ -888,35 +880,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
   6 
 </p>
       
-      <p class="archive__item-excerpt" itemprop="description">by Arkady Babtjenko
-
-</p>
-    </article>
-  </a>
-</div>
-        
-          
-
-
-
-<div class="grid__item">
-  
-    <a href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament">
-  
-    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
-      
-      <h2 class="archive__item-title" itemprop="headline">Jason Diakité’s speach to the Swedish parliament
-</h2>
-      
-        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
-
-
-  1 
-</p>
-      
-      <p class="archive__item-excerpt" itemprop="description">Translated from Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation.
-
-</p>
+      <p class="archive__item-excerpt" itemprop="description">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward...</p>
     </article>
   </a>
 </div>

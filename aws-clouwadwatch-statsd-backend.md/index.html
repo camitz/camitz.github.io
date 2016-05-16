@@ -1,0 +1,867 @@
+
+
+<!doctype html>
+<html lang="sv" class="no-js">
+  <head>
+    
+
+<meta charset="utf-8">
+
+
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>Aggregating monitoring statistics for AWS Cloudwatch - Cozmiq Debris</title>
+
+
+
+
+
+
+
+<meta property="og:locale" content="sv-SE">
+<meta property="og:site_name" content="Cozmiq Debris">
+<meta property="og:title" content="Aggregating monitoring statistics for AWS Cloudwatch">
+
+
+  <link rel="canonical" href="http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/">
+  <meta property="og:url" content="http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/">
+
+
+
+  <meta property="og:description" content="I started out this blog connecting log4net to CloudWatch, a monitoring service in Amazon’s AWS cloud. The idea was to turn all those log4net log events that you might have in your code into graphs on CloudWatch, while modifying only the config.">
+
+
+
+  <meta name="twitter:site" content="@martincamitz">
+  <meta name="twitter:title" content="Aggregating monitoring statistics for AWS Cloudwatch">
+  <meta name="twitter:description" content="I started out this blog connecting log4net to CloudWatch, a monitoring service in Amazon’s AWS cloud. The idea was to turn all those log4net log events that you might have in your code into graphs on CloudWatch, while modifying only the config.">
+  <meta name="twitter:url" content="http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2012-09-18T14:02:00+01:00">
+  
+    <link rel="next" href="http://blog.simpletask.se/updated-cloudwatch-backend/" title="Updated Cloudwatch backend for StatsD">
+  
+  
+    <link rel="prev" href="http://blog.simpletask.se/aws-clouwadwatch-statsd-backend/" title="Aggregating monitoring statistics for AWS Cloudwatch">
+  
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "person",
+      "name" : "Martin Camitz",
+      "url" : "http://blog.simpletask.se",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+<link href="http://blog.simpletask.se/feed.xml" type="application/atom+xml" rel="alternate" title="Cozmiq Debris Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://blog.simpletask.se/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="http://blog.simpletask.se/">Cozmiq Debris</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+
+
+<div id="main" role="main">
+  
+
+
+  <div class="sidebar sticky">
+  
+
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  <div class="author__avatar">
+    
+    	<img src="http://blog.simpletask.se/images/bio-photo.jpg" class="author__avatar" alt="Martin Camitz">
+    
+  </div>
+
+  <div class="author__content">
+    <h3 class="author__name">Martin Camitz</h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li><i class="fa fa-fw fa-map-marker" aria-hidden="true"></i> Stockholm</li>
+      
+      
+      
+        <li><a href="mailto:martin.camitz@simpletask.se"><i class="fa fa-fw fa-envelope-square" aria-hidden="true"></i> </a></li>
+      
+      
+      
+        <li><a href="https://twitter.com/martin.camitz"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        <li><a href="https://www.stackoverflow.com/users/http://stackoverflow.com/users/168390/martin"><i class="fa fa-fw fa-stack-overflow" aria-hidden="true"></i> Stackoverflow</a></li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Aggregating monitoring statistics for AWS Cloudwatch">
+    <meta itemprop="description" content="I started out this blog connecting log4net to CloudWatch, a monitoring service in Amazon’s AWS cloud. The idea was to turn all those log4net log events that you might have in your code into graphs on CloudWatch, while modifying only the config.">
+    <meta itemprop="datePublished" content="September 18, 2012">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">Aggregating monitoring statistics for AWS Cloudwatch
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  9 
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        I started out this blog connecting [log4net](http://logging.apache.org/log4net/) to [CloudWatch](http://aws.amazon.com/cloudwatch/), a monitoring service in Amazon's AWS cloud. The idea was to turn all those log4net log events that you might have in your code into graphs on CloudWatch, while modifying only the config.
+
+The result was [CloudWatchAppender](https://github.com/camitz/CloudWatchAppender) which was my first ever project on GitHub (and NuGet) and which I've developed in a few crucial steps since. It has matured to a feature rich little lib and can do alot more than count events. It has seen a humble 66 downloads from NuGet. Totally worth the effort, if you ask me, not least since I use it in production extensively.
+
+One caveat that was immediately realized that you had to be very selective with the events you send off. One, it'll quickly clog up your bandwidth. How does ten, twenty, a hundred or even one http-requests to CloudWatch per incoming page request sound? Secondly, CloudWatch imposes it's own limit as well.
+
+This only diminished it's usefulness but we would like a way to aggregate the data and perhaps leverage CloudWatch support for sending statistics. This is something that you'd rather not do within a web application, typically with a lifetime in the order of a single request. The alternative is a more permanent service hanging around in the sidelines, acting as a middleman between your app and CloudWatch, sending statistics maybe a few times every minute.
+
+Taking a look at whats out there, there is a fairly standard solution, or so it seems to me... for Unix environments. It's called [Statsd](https://github.com/etsy/statsd) + [Graphite](http://graphite.wikidot.com/). Statsd is an excellent and very lightweight aggregator written in <code>node.js</code>. 
+
+Statsd comes ready for use with Graphite out of the box, which is an open source viewer for all kinds of statistics. It look's great from what I can tell. I wasn't able to install Graphite on my system.
+
+As for Statsd, well it's node.js. Node.js = javascript so I was not intimidated, especially since node.js now fully supports Windows. The installer is downloadable off the official site.
+
+This holds some promise if we can also find something node.js + AWS. Google turned up Awssum and in particular [node-awssum](https://github.com/appsattic/node-awssum) which is exactly what we're looking for.
+
+So that's what we're going to do for this post: Connect log4net to Statsd to CloudWatch.
+
+## How easy is this?
+
+I think very. It's all install, configure and test save for a *backend* for Statsd. I've never done anything in node.js before although I regularly code in javascript and dojo.
+
+First, if you haven't already, download and install <code>node.js</code>. Test it in a console window. Issue <code>node</code>. If that brings you into the direct interpreter then you're good to go.
+
+Download and extract [Statsd](https://github.com/etsy/statsd) or clone it with [GitHub for Windows](http://windows.github.com/) if you're on a development system. Rename <code>exampleConfig.js</code> to <code>myConfig.js</code>.
+
+In the console window navigate to where Statsd is and issue 
+	
+	node stats.js ./myConfig.js
+
+You should now have 
+	
+	The server is up.
+
+and some other bits of info.
+
+Will it recieve data? Bring up that <code>config.js</code> again, replace the default backend with the one that outputs to console, set the flushinterval to 3 seconds. You've got something that looks like the following. I've removed some stuff that is of no consequence to us.
+
+	{
+	flushInterval: 3000
+	, port: 8125
+	, backends: [ "./backends/console" ]
+	}
+	
+That will aggregate everything incoming on UPD on port 8125 and pass it on to the backend every 3 seconds. The backend is a pluggable piece of code. it can be a npm module, if you're familiar with that sort of lingo. In this case it's going to dump stuff to the console. Understandably the input has to be formated to suit Statsd. "gorets:1|c" seems an adequate choice, taken from the Statsd readme. That's a counter with increment 1 and it's called "gorets". Terminology for Statsd is bucket for the counter name.
+
+## Test it
+
+In Visual Studio we're going set up a new console project to test our gear. Create the project from a console template. Then put the following in <code>program.cs</code> and hit F5. It's basically just Microsoft example code.
+
+	using System;
+	using System.Net;
+	using System.Net.Sockets;
+	using System.Text;
+	
+	class Program
+	{
+	    static void Main(string[] args)
+	    {
+	        Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram,
+	            ProtocolType.Udp);
+	
+	        IPAddress broadcast = IPAddress.Parse("127.0.0.1");
+	
+	        byte[] sendbuf = Encoding.ASCII.GetBytes("gorets:1|c");
+	        IPEndPoint ep = new IPEndPoint(broadcast, 8125);
+	
+	        s.SendTo(sendbuf, ep);
+	
+	        Console.WriteLine("Message sent to the broadcast address");
+	    }
+	}
+
+From Statsd you'll get something like
+
+	17 Sep 13:40:08 - reading config file: ./myConfig.js
+	17 Sep 13:40:08 - server is up
+	Flushing stats at Mon Sep 17 2012 13:40:18 GMT+0200 (W. Europe Daylight Time)
+	{ counter: { 'statsd.packets_received': 3, 'statsd.bad_lines_seen': 0 },
+	  timers: { 'statsd.packet_process_time': '0', gorets: '3' },
+	  gauges: {},
+	  sets: {},
+	  pctThreshold: [ 90 ] }
+	
+within 3 seconds.
+	
+I can't believe I contemplated coding up my on Windows service. This could not be any easier.
+
+## Making a backend
+
+How to roll a backend is outlined on the Statsd readme. You're listening to three events of which <code>flush</code> is relevant to us now. Starting with the config file let's start designing what we want. Add the following to config.js.
+
+      , backends: [ "./backends/aws-cloudwatch-statsd-backend" ]
+      , cloudwatch: {accessKeyId:'YOUR_ACCESS_KEY', secretAccessKey:'YOUR_SECRET_KEY', region:"EU_WEST_1"}
+
+It's clear what we expect here. The first step is to copy <code>console.js</code>, i.e. the backend we've already tested, and rename it to <code>aws-cloudwatch-statsd-backend.js</code>. It will still work of course.
+
+Using <code>console.js</code> we can just add the extra functionality while leaving the old code in place for tracing. Add lot's of debug outputs as well. To get <code>config.js</code> in, modify the constructor to look like
+
+	this.config = config.cloudwatch || {};
+
+in the appropriate place.
+
+## Awesome
+
+Node-awssum is an npm-module meaning it will install almost by itself. Issue <code>npm install -g awssum</code> and Node-awssum installs it to where everybody can find it. 
+
+Browse the source code. In the example directory we're given a wealth of coding examples. For CloudWatch we find <code>list-metrics.sj</code>. Close enough for starters. We see that we need this
+
+	var fmt = require('fmt');
+	var awssum = require('awssum');
+	var amazon = awssum.load('amazon/amazon');
+	var CloudWatch = awssum.load('amazon/cloudwatch').CloudWatch;
+	
+at the top. The first of these includes is a console formatter used extensively by Awssum, it appears. You don't have to use it but it turns out to be very useful. Let's install it, too. <code>npm install -g fmt</code>.
+
+The actual request should go in the <code>flush</code> event handler. The choice of variable names in <code>myConfig.js</code> at this point you'll realize was deliberately chosen to match with Awssum's. The passed object fits snuggly into the CloudWatch config with one exception that we'll get to in a moment.
+
+    var cloudwatch = new CloudWatch(this.config);
+
+    cloudwatch.ListMetrics(function(err, data) {
+        fmt.msg("listing metrics - expecting success");
+        fmt.dump(err, 'Error');
+        fmt.dump(data, 'Data');
+     });
+	
+Firing up now will produce and complaint about the region and that's because our region string is not what's expected. However, it does index into an array I found in the source code. The following line in the constructor will do the trick.
+
+    config.cloudwatch.region = amazon[config.cloudwatch.region];
+
+Now you'll have a backend that lists your metrics if you have them, plus what's left of the console backend, every time you get a <code>flush</code> event. It's not what we want but we're definitely getting somewhere. We've connected Statsd to CloudWatch which is more than half way. Before we get any further let's take a look at the log4net end of the chain.
+
+## The UDPAppender
+
+Someone meant for this to be done. log4net provides an appender targeting UPD services and it's all just configuration from here.
+
+Halt the console app and hop into *NuGet manager* in Visual Studio and add the latest log4net library. <code>Program.cs</code> will look like this.
+	
+	using System.Threading;
+	using log4net;
+	using log4net.Config;
+	
+	class Program
+	{
+	    private static readonly ILog log = LogManager.GetLogger(typeof(Program));
+	
+	    static void Main(string[] args)
+	    {
+	        XmlConfigurator.Configure();
+	
+	        while (true)
+	        {
+	            log.Info("Counting. The message will be ignored.");
+	 
+	            Thread.Sleep(10);
+	        }
+	    }
+	}
+	
+Notice, we've added some stress to the system. 100 calls a second.
+
+The config may look like this:
+
+	<?xml version="1.0" encoding="utf-8" ?>
+	<configuration>
+	  <configSections>
+	    <section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net"/>
+	  </configSections>
+	
+	  <log4net>
+	    <appender name="UdpAppender" type="log4net.Appender.UdpAppender">
+	      <remoteAddress value="127.0.0.1" />
+	      <remotePort value="8125" />
+	      <layout type="log4net.Layout.PatternLayout" value="gorets:1|c" />
+	    </appender>
+	
+	    <appender name="ConsoleAppender" type="log4net.Appender.ConsoleAppender">
+	      <layout type="log4net.Layout.PatternLayout">
+	        <conversionPattern value="%date [%thread] %-5level %logger [%ndc] - %message%newline"/>
+	      </layout>
+	    </appender>
+	
+	    <root>
+	      <level value="ALL"/>
+	      <appender-ref ref="ConsoleAppender"/>
+	      <appender-ref ref="UdpAppender"/>
+	    </root>
+	  </log4net>
+	</configuration>
+
+We've add a console appender here just for the trace. Notice the layout element. We're not going to care about the actual event message. We're formatting everything to just "gorets:1|c", same as before. We're not even bothering to consider what metric name might be used, that'll be a feature for later.
+
+Test it. You should have two console windows output lot's of text, one continuously, one every three seconds.
+
+## PutMetricData
+
+We'll skip ahead now. Unfortunately, there is no example code in Awssum for the AWS [PutMetricData](http://docs.amazonwebservices.com/AmazonCloudWatch/latest/APIReference/API_PutMetricData.html) call. But a file search turned up with header declaration with expected parameters and also some test code. Add some guessing, browsing some of the other examples and the online API reference for AWS and we may produces this.
+
+	var metricDatum = {
+	            MetricName : 'Gorets',
+	            Unit : 'Count',
+	            Value : metrics.counters.gorets
+	        };
+	
+	cloudwatch.PutMetricData({
+			MetricData : [metricDatum],
+			Namespace  : 'Gorets'
+		},
+		function(err, data) {
+			fmt.msg("Putting metrics");
+			fmt.dump(err, 'Error');
+			fmt.dump(data, 'Data');
+		});
+	};
+	
+We're not overreaching. This is no a finished product. The final result will put counter data on CloudWatch. The chain is finished and we did what we set out to do. The code below has added on line to the metricDatum object, for the sake of timestamp pickyness. Don't forget, AWS lives in UTC. 
+
+	Timestamp: new Date(timestamp*1000).toISOString()
+
+I've also removed the code from the original console backend we don't need.
+
+	var util = require('util');
+	
+	var awssum = require('awssum');
+	var amazon = awssum.load('amazon/amazon');
+	var CloudWatch = awssum.load('amazon/cloudwatch').CloudWatch;
+	var fmt = require('fmt');
+	
+	function CloudwatchBackend(startupTime, config, emitter){
+	  var self = this;
+	  
+	  config.cloudwatch.region = config.cloudwatch.region ? amazon[config.cloudwatch.region] : null;
+	  this.config = config.cloudwatch || {};
+	
+	  // attach
+	  emitter.on('flush', function(timestamp, metrics) { self.flush(timestamp, metrics); });
+	};
+	
+	CloudwatchBackend.prototype.flush = function(timestamp, metrics) {
+	
+	  var cloudwatch = new CloudWatch(this.config);
+	
+	var metricDatum = {
+	            MetricName : 'Gorets',
+	            Unit : 'Count',
+	            Value : metrics.counters.gorets,
+				Timestamp: new Date(timestamp*1000).toISOString()
+	        };
+	
+	cloudwatch.PutMetricData({
+			MetricData : [metricDatum],
+			Namespace  : 'Gorets'
+		},
+		function(err, data) {
+			fmt.msg("Putting metrics");
+			fmt.dump(err, 'Error');
+			fmt.dump(data, 'Data');
+		});
+	};
+	
+	exports.init = function(startupTime, config, events) {
+	  var instance = new CloudwatchBackend(startupTime, config, events);
+	  return true;
+	};
+	
+Take a look at CloudWatch now, maybe something like this will show up.
+
+![](https://dl.dropbox.com/u/1551997/statsd_backend.png)
+
+I'll continue working this into something useful. I have already included it in production on cocoin.com. You can find it already on [GitHub](https://github.com/camitz/aws-cloudwatch-statsd-backend). By all means fork it and contribute or just suggest additions. The GitHub version has a different layout copied from another backend project for [MongoDB](https://github.com/dynmeth/mongo-statsd-backend.git). In the future it's meant to an npm module that you can install just as we did Awssum and Fmt.
+
+A couple of branches I've been thinking is how we could integrate the system with CloudWatchAppender or even if this is desirable; and getting Graphite working on windows. I'd like to see a tutorial on that.
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i>  </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#amazon" class="page__taxonomy-item" rel="tag">amazon</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#aws" class="page__taxonomy-item" rel="tag">aws</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#cloudwatch" class="page__taxonomy-item" rel="tag">cloudwatch</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#cloudwatchappender" class="page__taxonomy-item" rel="tag">cloudwatchappender</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#log4net" class="page__taxonomy-item" rel="tag">log4net</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#monitoring" class="page__taxonomy-item" rel="tag">monitoring</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#node-js" class="page__taxonomy-item" rel="tag">node.js</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#awssum" class="page__taxonomy-item" rel="tag">awssum</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> </strong> <time datetime="2012-09-18T14:02:00+01:00">September 18, 2012</time></p>
+        
+      </footer>
+
+      
+
+<section class="page__share">
+  
+
+  <a href="https://twitter.com/intent/tweet?text=http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/" class="btn btn--twitter" title=" Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/" class="btn btn--facebook" title=" Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/" class="btn btn--google-plus" title=" Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://blog.simpletask.se/aws-clouwadwatch-statsd-backend.md/" class="btn btn--linkedin" title=" LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+      
+
+
+  <nav class="pagination">
+    
+      <a href="http://blog.simpletask.se/aws-clouwadwatch-statsd-backend/" class="pagination--pager" title="Aggregating monitoring statistics for AWS Cloudwatch
+"></a>
+    
+    
+      <a href="http://blog.simpletask.se/updated-cloudwatch-backend/" class="pagination--pager" title="Updated Cloudwatch backend for StatsD
+"></a>
+    
+  </nav>
+
+    </div>
+
+    
+      
+
+<div class="page__comments">
+  <h4 class="page__comments-title"></h4>
+  
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/EC2SpotStop2SNS">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">EC2 Spot Instance Termination Notification to SNS
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  2 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the...</p>
+    </article>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/EC2SpotStop2SNS">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">EC2 Spot Instance Termination Notification to SNS
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  2 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the...</p>
+    </article>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">Introducing the Buffering and Aggregeting CloudWatch Appender
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  6 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward...</p>
+    </article>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">Introducing the Buffering and Aggregeting CloudWatch Appender
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  6 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward...</p>
+    </article>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+    
+      <li><a href="https://twitter.com/martincamitz"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+    
+    <li><a href="http://blog.simpletask.se/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> </a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2016 Martin Camitz.  <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="http://blog.simpletask.se/assets/js/main.min.js"></script>
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34001047-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'camitz';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+    <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+
+  </body>
+</html>
+

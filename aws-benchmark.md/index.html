@@ -19,7 +19,7 @@
 
 
 
-<title>MiniProfiler for Model First EF and Unity - Cozmiq Debris</title>
+<title>EC2 region benchmark - Cozmiq Debris</title>
 
 
 
@@ -29,22 +29,22 @@
 
 <meta property="og:locale" content="sv-SE">
 <meta property="og:site_name" content="Cozmiq Debris">
-<meta property="og:title" content="MiniProfiler for Model First EF and Unity">
+<meta property="og:title" content="EC2 region benchmark">
 
 
-  <link rel="canonical" href="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity">
-  <meta property="og:url" content="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity">
+  <link rel="canonical" href="http://blog.simpletask.se/aws-benchmark.md/">
+  <meta property="og:url" content="http://blog.simpletask.se/aws-benchmark.md/">
 
 
 
-  <meta property="og:description" content="I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install MiniProfiler, in other words. Current version is 2.0.2.">
+  <meta property="og:description" content="Ever thought about what region to use for what audience? Lot’s of people must have but they keep their findings to themselves from what I can tell.">
 
 
 
   <meta name="twitter:site" content="@martincamitz">
-  <meta name="twitter:title" content="MiniProfiler for Model First EF and Unity">
-  <meta name="twitter:description" content="I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install MiniProfiler, in other words. Current version is 2.0.2.">
-  <meta name="twitter:url" content="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity">
+  <meta name="twitter:title" content="EC2 region benchmark">
+  <meta name="twitter:description" content="Ever thought about what region to use for what audience? Lot’s of people must have but they keep their findings to themselves from what I can tell.">
+  <meta name="twitter:url" content="http://blog.simpletask.se/aws-benchmark.md/">
 
   
     <meta name="twitter:card" content="summary">
@@ -64,12 +64,12 @@
 
 
   <meta property="og:type" content="article">
-  <meta property="article:published_time" content="2012-11-29T00:35:00+00:00">
+  <meta property="article:published_time" content="2012-09-14T15:50:00+01:00">
   
-    <link rel="next" href="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" title="MiniProfiler for Model First EF and Unity">
+    <link rel="next" href="http://blog.simpletask.se/statsd-graphite/" title="Statsd Graphite">
   
   
-    <link rel="prev" href="http://blog.simpletask.se/updated-cloudwatch-backend.md/" title="Updated Cloudwatch backend for StatsD">
+    <link rel="prev" href="http://blog.simpletask.se/aws-benchmark/" title="EC2 region benchmark">
   
 
 
@@ -210,15 +210,15 @@
 
 
   <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
-    <meta itemprop="headline" content="MiniProfiler for Model First EF and Unity">
-    <meta itemprop="description" content="I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install MiniProfiler, in other words. Current version is 2.0.2.">
-    <meta itemprop="datePublished" content="November 29, 2012">
+    <meta itemprop="headline" content="EC2 region benchmark">
+    <meta itemprop="description" content="Ever thought about what region to use for what audience? Lot’s of people must have but they keep their findings to themselves from what I can tell.">
+    <meta itemprop="datePublished" content="September 14, 2012">
     
 
     <div class="page__inner-wrap">
       
         <header>
-          <h1 class="page__title" itemprop="headline">MiniProfiler for Model First EF and Unity
+          <h1 class="page__title" itemprop="headline">EC2 region benchmark
 </h1>
           
             <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
@@ -231,48 +231,31 @@
       
 
       <section class="page__content" itemprop="text">
-        <p>I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install <a href="http://www.miniprofiler.com">MiniProfiler</a>, in other words. Current version is 2.0.2.</p>
+        Ever thought about what region to use for what audience? Lot's of people must have but they keep their findings to themselves from what I can tell. 
 
-<p>I don’t know how people can live without it. It’s love and kittens for Asp.NET MVC developers, as <a href="http://www.hanselman.com/blog/NuGetPackageOfTheWeek9ASPNETMiniProfilerFromStackExchangeRocksYourWorld.aspx">Scott H</a> says.</p>
+Obviously if you want to target Japan, put you site in the Tokyo region. But if you want to target Vietnam or Thailand, like the client who put me up to crude benchmark did, then you may be at a loss.
 
-<p>I’ve been using it for some time on several projects but I haven’t installed the Entity Framework till now. That took a bit of head scratching as most of the stuff out there, including MiniProfiler docs, is about Code First setups. Some of my code is getting a bit antiquated, not least my Model First EF 4.2 usage. I just don’t know what the stuff on miniprofiler.com means.</p>
+I have a PhD but this is so unscientific. Interesting perhaps, nonetheless. 
 
-<h2 id="ef-miniprofiler-for-model-first-projects">EF MiniProfiler for Model First projects</h2>
+I set up the same site on a number of different Regions in the AWS cloud. Then tested the first uncached page load using the very helpful [webpagetest.org](http://www.webpagetest.org/). Webpagetest.org let's you test your site as a browser client from a number of different sites accross the globe. Unfortunately not Vietnam and not Thailand. You can even script it if you want. 
 
-<p>Nevertheless, <a href="http://stackoverflow.com/a/6805478/168390">help</a> was available - as countless times before - signed Darin Dimitrov.</p>
+The resulting graph looks like what you would get from hitting F12 in Chrome and opening the network tab.
 
-<div class="highlighter-rouge"><pre class="highlight"><code>var connectionString = ConfigurationManager
-    .ConnectionStrings["MyConnectionString"]
-    .ConnectionString;
-var ecsb = new EntityConnectionStringBuilder(connectionString);
-var sqlConn = new SqlConnection(ecsb.ProviderConnectionString);
-var pConn = ProfiledDbConnection.Get(sqlConn, MiniProfiler.Current);
-var context = ObjectContextUtils.CreateObjectContext&lt;CYEntities&gt;(pConn);
-</code></pre>
-</div>
+Here are my results.
 
-<h2 id="what-about-unity-container">What about Unity Container?</h2>
+<table>
+<tr><td colspan=2></td><td colspan=3>Access point</td></tr>
+<tr><td colspan=2></td><td>Jiangsu</td><td>Tokyo</td><td>Amsterdam</td></tr>
+<tr><td rowspan=5>Region</td><td>Ireland (eu-west)</td><td>55 s</td><td>8 s</td><td>4 s</td></tr>
+<tr><td>Virginia (us-east)</td><td>10 s</td><td>6 s</td><td>5 s</td></tr>
+<tr><td>Oregon (us-west)</td><td>8 s</td><td>5 s</td><td>6 s</td></tr>
+<tr><td>Singapore (ap-southeast)</td><td>16 s</td><td>4 s</td><td>9 s</td></tr>
+<tr><td>Tokyo (ap-northeast)</td><td>11 s</td><td>29 s</td><td>5 s</td></tr>
+</table>
 
-<p>I’m also using Unity Container to inject my object context so if I’m going to put the above anywhere, it’s in my container. Previously my container was configured like this.</p>
+Disclaimer: Singapore is the original site and has some overhead, like SSL-encryption. I only did this once so that hardly qualifies as statistics. But it gives you an idea about what to expect when you launch a site intended for certain locality.
 
-<div class="highlighter-rouge"><pre class="highlight"><code>IUnityContainer container = new UnityContainer()
-	.RegisterType&lt;CYEntities&gt;(new PerHttpRequestLifetime(), new InjectionConstructor(connectionString));
-</code></pre>
-</div>
-
-<p>I need to use a customized piece of code to do the creating for me and I recall this is what is known as a factory. Unity supports this through InjectionFactory.</p>
-
-<p>Hence</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>IUnityContainer container = new UnityContainer()
-    .RegisterType&lt;CYEntities&gt;(GetLiftimeManager(lifeTimeManagerType), 
-         new InjectionFactory(c=&gt; {
-			var ecsb = new EntityConnectionStringBuilder(connectionString);                                                                                                                 var sqlConn = new SqlConnection(ecsb.ProviderConnectionString);                                                                                                                 var pConn = new EFProfiledDbConnection(sqlConn, MiniProfiler.Current);                                                                                                                 return pConn.CreateObjectContext&lt;CoinEntities&gt;(); 
-		 }));
-</code></pre>
-</div>
-
-<p>And it works, too.</p>
+Someone should do an extensive benchmark. Maybe I should. Btw, take at [Google Page Speed](https://developers.google.com/speed/pagespeed/) if you haven't already.
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -286,9 +269,8 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
 </script>
-
 <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<p><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></p>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
         
       </section>
@@ -313,23 +295,55 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
     
       
       
-      <a href="http://blog.simpletask.se/tags/#asp-net-mvc" class="page__taxonomy-item" rel="tag">asp.net mvc</a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
     
       
       
-      <a href="http://blog.simpletask.se/tags/#ef" class="page__taxonomy-item" rel="tag">ef</a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
     
       
       
-      <a href="http://blog.simpletask.se/tags/#entity-framework" class="page__taxonomy-item" rel="tag">entity framework</a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
     
       
       
-      <a href="http://blog.simpletask.se/tags/#miniprofiler" class="page__taxonomy-item" rel="tag">miniprofiler</a><span class="sep">, </span>
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
     
       
       
-      <a href="http://blog.simpletask.se/tags/#unity-container" class="page__taxonomy-item" rel="tag">unity container</a>
+      <a href="http://blog.simpletask.se/tags/#amazon" class="page__taxonomy-item" rel="tag">amazon</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#aws" class="page__taxonomy-item" rel="tag">aws</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#benchmark" class="page__taxonomy-item" rel="tag">benchmark</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#ec2" class="page__taxonomy-item" rel="tag">ec2</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#" class="page__taxonomy-item" rel="tag"></a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#webpagetest" class="page__taxonomy-item" rel="tag">webpagetest</a>
     
     </span>
   </p>
@@ -338,7 +352,7 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 
 
         
-          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> </strong> <time datetime="2012-11-29T00:35:00+00:00">November 29, 2012</time></p>
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> </strong> <time datetime="2012-09-14T15:50:00+01:00">September 14, 2012</time></p>
         
       </footer>
 
@@ -347,13 +361,13 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 <section class="page__share">
   
 
-  <a href="https://twitter.com/intent/tweet?text=http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" class="btn btn--twitter" title=" Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=http://blog.simpletask.se/aws-benchmark.md/" class="btn btn--twitter" title=" Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
-  <a href="https://www.facebook.com/sharer/sharer.php?u=http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" class="btn btn--facebook" title=" Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://blog.simpletask.se/aws-benchmark.md/" class="btn btn--facebook" title=" Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
-  <a href="https://plus.google.com/share?url=http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" class="btn btn--google-plus" title=" Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+  <a href="https://plus.google.com/share?url=http://blog.simpletask.se/aws-benchmark.md/" class="btn btn--google-plus" title=" Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
 
-  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" class="btn btn--linkedin" title=" LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://blog.simpletask.se/aws-benchmark.md/" class="btn btn--linkedin" title=" LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
 </section>
 
       
@@ -361,11 +375,11 @@ dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
 
   <nav class="pagination">
     
-      <a href="http://blog.simpletask.se/updated-cloudwatch-backend.md/" class="pagination--pager" title="Updated Cloudwatch backend for StatsD
+      <a href="http://blog.simpletask.se/aws-benchmark/" class="pagination--pager" title="EC2 region benchmark
 "></a>
     
     
-      <a href="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" class="pagination--pager" title="MiniProfiler for Model First EF and Unity
+      <a href="http://blog.simpletask.se/statsd-graphite/" class="pagination--pager" title="Statsd Graphite
 "></a>
     
   </nav>
