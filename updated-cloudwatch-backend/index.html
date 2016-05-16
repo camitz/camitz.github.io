@@ -1,0 +1,58 @@
+<p>A month ago I successfully chained together <a href="http://logging.apache.org/log4net/">log4net</a>, <a href="https://github.com/etsy/statsd">StatsD</a> and <a href="http://aws.amazon.com/cloudwatch/">CloudWatch</a>. I put together a backend for StatsD in node.js called <a href="https://github.com/camitz/aws-cloudwatch-statsd-backend">aws-cloudwatch-statsd-backend</a>.</p>
+
+<p>Yesterday I finally updated it into something I can actually use. I’m using it in production on <a href="https://www.cocoin.com">Cocoin</a>.</p>
+
+<p>StatsD’s capability of pushing metadata along with the request is limited. But you can parse the bucket name for information. I wanted to extract namespace and metric name.</p>
+
+<p>Currently I’m sending UDP packages of this style to count the requests on the site.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>App/Controller/Action/Request:1|c
+</code></pre>
+</div>
+
+<p>This get’s translated to a cloudwatch request with <em>App/Controller/Action</em> as a namespace and Request as the metric name.</p>
+
+<p>Using the bucket name for metadata tampers with generality but doesn’t blow it completely. You can still add on arbitrary backends.</p>
+
+<p>To install it, use npm.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install aws-cloudwatch-statsd-backend
+</code></pre>
+</div>
+
+<p>Here is an example configuration.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="err">backends:</span><span class="w"> </span><span class="err">[</span><span class="w"> </span><span class="nt">"aws-cloudwatch-statsd-backend"</span><span class="w"> </span><span class="err">],</span><span class="w">
+    </span><span class="err">cloudwatch</span><span class="p">:</span><span class="w"> 
+    </span><span class="p">{</span><span class="w">
+        </span><span class="err">accessKeyId:</span><span class="w"> </span><span class="err">'YOUR_ACCESS_KEY_ID',</span><span class="w"> 
+        </span><span class="err">secretAccessKey:</span><span class="w"> </span><span class="err">'YOUR_SECRET_ACCESS_KEY',</span><span class="w"> 
+        </span><span class="err">region:</span><span class="w"> </span><span class="err">'YOUR_REGION',</span><span class="w">
+        </span><span class="err">processKeyForNames:true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>You can also override both the <em>namespace</em> and metric name (<em>metricName</em>) in the config.</p>
+
+<p>Full documentation on the <a href="https://npmjs.org/package/aws-cloudwatch-statsd-backend">npm</a> and <a href="https://github.com/camitz/aws-cloudwatch-statsd-backend">GitHub</a> pages.</p>
+
+<p>My other monitoring project, <a href="https://github.com/camitz/CloudWatchAppender">CloudWatchAppender</a>, and appender for log4net wihout aggregation, has now been downloaded 236 times. Very pleased with that.</p>
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<p><a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a></p>

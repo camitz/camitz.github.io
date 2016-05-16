@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.0.5">Jekyll</generator><link href="localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="localhost:4000/" rel="alternate" type="text/html" /><updated>2016-05-16T19:24:50+02:00</updated><id>localhost:4000/</id><title>Cozmiq Debris</title><subtitle>I am the CTO of Cocoin, a Swedish internet payment service,, and SimpleTask. We use the AWSAppender suite extensively (formerly CloudWatchAppender) and this blog mostly deals with that.</subtitle><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><entry><title>EC2 Spot Instance Termination Notification to SNS</title><link href="localhost:4000/EC2SpotStop2SNS" rel="alternate" type="text/html" title="EC2 Spot Instance Termination Notification to SNS" /><published>2015-01-05T16:00:00+01:00</published><updated>2015-01-05T16:00:00+01:00</updated><id>localhost:4000/EC2SpotStop2SNS</id><content type="html" xml:base="localhost:4000/EC2SpotStop2SNS">&lt;p&gt;The AWS team yesterday &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;amp;sc_icountry=global&amp;amp;sc_icampaigntype=launch&amp;amp;sc_icampaign=em_130420040&amp;amp;sc_idetail=em_66267057&amp;amp;ref_=pe_395030_130420040_8&quot;&gt;announced&lt;/a&gt; that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS &lt;a href=&quot;http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&quot;&gt;instance metadata service&lt;/a&gt;, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.&lt;/p&gt;
+
+&lt;p&gt;So now the instance can find out that it is being terminated and can take approprate action and that’s really great. But I want to know aswell!&lt;/p&gt;
+
+&lt;p&gt;And Amazon has really great infrastructure for notifications called &lt;a href=&quot;http://aws.amazon.com/sns/&quot;&gt;SNS&lt;/a&gt;. Service can subsribe to topics and it can send emails and more. Connect the two and I can find out when my spots are terminated.&lt;/p&gt;
+
+&lt;p&gt;That’s just me, for my personal satisfaction of knowing. But what other people will find even more useful is of course other applications subscribing to these notices, other spot instances for example. Maybe they need to adjust their games in the event of fellow instances being dropped. That reduces the need for a central controller and instances can become more autonomical.&lt;/p&gt;
+
+&lt;p&gt;##Introducing &lt;a href=&quot;https://github.com/camitz/EC2SpotStop2SNS&quot;&gt;EC2SpotStop2SNS&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Nothing fancy. You can run it from the command line or install it as a service. It even has an installer.&lt;/p&gt;
+
+&lt;p&gt;As per the recommendations of Jeff Barr, it will poll the metadata service every 5 seconds. If the termination notice appears it immediately publishes a message to SNS.&lt;/p&gt;
+
+&lt;p&gt;If there isn’t a topic on SNS it will create one when you run it the first time. Goto AWS management console and configure the topic to throw you an email or text once something is published.&lt;/p&gt;
+
+&lt;p&gt;That would have been the end if there wasn’t a second need that I’ve come across before.&lt;/p&gt;
+
+&lt;p&gt;##Introducing &lt;a href=&quot;https://github.com/camitz/MockEC2InstanceMetaData&quot;&gt;MockEC2InstanceMetaData&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;How can I debug this locally? Already when I was working an the early versions of log4net &lt;a href=&quot;https://www.google.se/url?sa=t&amp;amp;rct=j&amp;amp;q=&amp;amp;esrc=s&amp;amp;source=web&amp;amp;cd=2&amp;amp;cad=rja&amp;amp;uact=8&amp;amp;ved=0CCwQFjAB&amp;amp;url=http%3A%2F%2Fblog.simpletask.se%2Fpost%2Fbuffering-aggregating-cloudwatch-appender&amp;amp;ei=gmqtVI_AMeSZygPXn4LwBA&amp;amp;usg=AFQjCNHtqHMn2vWFqauv_xnzxoRC8pyJDw&amp;amp;sig2=r_NhyK-8uIvHGe_yLVNX3w&amp;amp;bvm=bv.83134100,d.bGQ&quot;&gt;CloudWatchAppender&lt;/a&gt; I realized this need. I just winged it back then.&lt;/p&gt;
+
+&lt;p&gt;So this is a bit of ad hoc programming. It uses the an Owin stack to listen in on 127.0.0.1:9000 (the port is configurable). Not useful unless you redirect traffic from 169.254.169.254. I think I could figure out how to listen to 169.254.169.254 but decided to save the hassle on something &lt;a href=&quot;http://www.telerik.com/download/fiddler&quot;&gt;Fiddler&lt;/a&gt; does so well. It works like your windows hosts file except allows for ports as well.&lt;/p&gt;
+
+&lt;p&gt;Then the app will answer all your calls to it producing something hopefully similar to what you get from the real metadata service. It worked splendidly for debugging EC2SpotStop2SNS, at the very least.&lt;/p&gt;
+
+&lt;p&gt;The data is completely configurable via a json file and what’s more, it reads the file everytime you want a response, so you don’t have to restart the application when you make a change.&lt;/p&gt;
+
+&lt;p&gt;##What’s next?&lt;/p&gt;
+
+&lt;p&gt;Obviously I couldn’t be bothered to configure my json with all the data from a particular instance metadata service. Now all I need is an app the does that for me. Shouldn’t be that hard to do. You’re welcome to help me out on that one.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon," /><category term="AWS," /><category term="SNS," /><category term="spot" /><category term="instance," /><category term="termination," /><category term="windows," /><category term="instance" /><category term="meta" /><category term="data" /><summary>The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS instance metadata service, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.</summary></entry><entry><title>Cloudwatchlogsappender</title><link href="localhost:4000/cloudwatchlogsappender/" rel="alternate" type="text/html" title="Cloudwatchlogsappender" /><published>2015-01-05T00:00:00+01:00</published><updated>2015-01-05T00:00:00+01:00</updated><id>localhost:4000/cloudwatchlogsappender</id><content type="html" xml:base="localhost:4000/cloudwatchlogsappender/">&lt;hr /&gt;
+&lt;p&gt;date: 2015-01-05 16:00
+title: Introducing the Buffering and Aggregeting CloudWatch Appender
+Type: post
+permalink: buffering-aggregating-cloudwatch-appender
+tags: amazon, AWS, SNS, spot instance, termination, windows, instance meta data
+Status: draft&lt;/p&gt;
+
+&lt;p&gt;In addition to setting up the basics - credentials and end point region - AWS provides an easy way to conf&lt;/p&gt;
+
+&lt;p&gt;To debug an issue you know longer have to first find search through the log files locally on each of your instances running a certain application.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><summary>date: 2015-01-05 16:00
+title: Introducing the Buffering and Aggregeting CloudWatch Appender
+Type: post
+permalink: buffering-aggregating-cloudwatch-appender
+tags: amazon, AWS, SNS, spot instance, termination, windows, instance meta data
+Status: draft</summary></entry><entry><title>Introducing the Buffering and Aggregeting CloudWatch Appender</title><link href="localhost:4000/buffering-aggregating-cloudwatch-appender" rel="alternate" type="text/html" title="Introducing the Buffering and Aggregeting CloudWatch Appender" /><published>2014-04-23T16:00:00+02:00</published><updated>2014-04-23T16:00:00+02:00</updated><id>localhost:4000/cloudwatchappender3</id><content type="html" xml:base="localhost:4000/buffering-aggregating-cloudwatch-appender">&lt;p&gt;The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.&lt;/p&gt;
+
+&lt;p&gt;One of the limitations of the CloudWatch Appender has been that you definitely want to do some configuration and filtering. If you redirect &lt;em&gt;all&lt;/em&gt; your log messages to Cloudwatch then you would very quickly choke your service waiting for the API. In fact AWS limits your calls, but you’d still be making the requests trying.&lt;/p&gt;
+
+&lt;p&gt;An update some time ago made a slight improvement in that the requests were collected and performed asynchronously, but that only meant that the appender was able to handle bursts better. A stream was of continuous events were solved with the introduction of an event rate limiter - by dumping them into the bit bucket.&lt;/p&gt;
+
+&lt;p&gt;Why it took me so long to implement the promised buffering appender, I don’t know. It works very well and was not hard to do.&lt;/p&gt;
+
+&lt;p&gt;Instead of sending a single API request per log message, the BufferingAggregatingCloudWatchAppender collects event messages in the same way as the BufferingForwardingAppender that comes with the package does. When a condition is met, the level of the message or a maximum buffer size, the collected events are processed and aggregated data according to NameSpace, MetricName and Dimensions, then sent to CloudWatch as a statistic set.&lt;/p&gt;
+
+&lt;p&gt;The overhead is minimal.&lt;/p&gt;
+
+&lt;h1 id=&quot;dont-filter&quot;&gt;Don’t filter&lt;/h1&gt;
+
+&lt;p&gt;This means that installation has never been simpler.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;log4net&amp;gt;
+   &amp;lt;appender name=&quot;CloudWatchAppender&quot; type=&quot;CloudWatchAppender.BufferingAggregatingCloudWatchAppender, CloudWatchAppender&quot;&amp;gt;
+        &amp;lt;bufferSize value=&quot;1000&quot;/&amp;gt;
+        &amp;lt;accessKey value=&quot;YourAWSAccessKey&quot; /&amp;gt;
+        &amp;lt;secret value=&quot;YourAWSSecret&quot; /&amp;gt;
+        &amp;lt;endPoint value=&quot;eu-west-1&quot; /&amp;gt;
+    &amp;lt;/appender&amp;gt;
+
+    &amp;lt;root&amp;gt;
+      &amp;lt;appender-ref ref=&quot;CloudWatchAppender&quot; /&amp;gt;
+    &amp;lt;/root&amp;gt;
+&amp;lt;/log4net&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Say a single request to your web application on average generates 50 log messages and you have 100 requests a minute… well, then using the regular CloudWatchAppender you wouldn’t have a web application anymore, just 500 http requests a minute.&lt;/p&gt;
+
+&lt;p&gt;At a price of 1 cent per 1000 API request, Amazon seems pretty generous, more of a don’t get carried away limit. If you’re paying for it, you’re doing it wrong. And there’s a request limit on top of that. But if there was no limit, the above example would amount to 216,000,000 requests per month.&lt;/p&gt;
+
+&lt;p&gt;Uhm… $2159, ok? But, hey, first mill’ free!&lt;/p&gt;
+
+&lt;p&gt;Strong case for BufferingAggregatingCloudWatchAppender. Using BufferingAggregatingCloudWatchAppender, you’ll be making about one request every two minutes. Async. That’s nothing.&lt;/p&gt;
+
+&lt;p&gt;So, no rush. Just put the above in your config, it’ll work, it won’t cost you. It will be somewhat usefull. When you get round to it, you can start configuring NameSpaces, MetricNames, Dimensions and working with units, pushing info that somebody needs to know. You will incur a cost in dollars eventually but probably not in terms of bandwidth and waiting for http requests.&lt;/p&gt;
+
+&lt;p&gt;So use it and don’t look back.&lt;/p&gt;
+
+&lt;h1 id=&quot;evaluators&quot;&gt;Evaluators&lt;/h1&gt;
+
+&lt;p&gt;log4net supports 3 evaluators out of the box for flushing the buffer. The following example uses TimeEvaluator.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &amp;lt;lossy value=&quot;true&quot; /&amp;gt;
+  &amp;lt;evaluator type=&quot;log4net.Core.TimeEvaluator&quot;&amp;gt;
+    &amp;lt;interval value=&quot;60&quot;/&amp;gt;
+  &amp;lt;/evaluator&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Regardless of the saturation level of the buffer, the events will be processed and sent to CloudWatch once a minute. Using lossy mode, the buffer won’t be processed when filled. The oldest events are dropped until the evalutator is triggered.&lt;/p&gt;
+
+&lt;p&gt;I can think of several custom evaluators specifically for use with CloudWatch, but that’s for later.&lt;/p&gt;
+
+&lt;h1 id=&quot;lots-of-improvements&quot;&gt;Lot’s of improvements&lt;/h1&gt;
+
+&lt;p&gt;I’ve made some other improvements aswell. Some around the asynchronous requests - although it’s probably not perfectly comme-il-faut and it’s still very .NET 4.0 style. Some general refactorings have been made, mostly beneficial for me.&lt;/p&gt;
+
+&lt;p&gt;Debug outputs and error messages from CloudWatchAppender were previously passed to the TraceListener system. Now they are routed to log4net’s internal scheme.&lt;/p&gt;
+
+&lt;p&gt;One of the things already in place is acutally a bug fix. It was a breaking change and released as such but I decided to do it because I couldn’t fathom anyone using the feature in the wasy provided. It has to do with the augmented logger function and negative precision specifier. Read more &lt;a href=&quot;https://github.com/camitz/CloudWatchAppender/blob/master/README.md#augmented-logger-functionality&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Do stay tuned for upcoming releases. Here are some more things I have planned for the very near future.&lt;/p&gt;
+
+&lt;h2 id=&quot;unit-converter&quot;&gt;Unit converter&lt;/h2&gt;
+
+&lt;p&gt;Microseconds, milliseconds. Same, but different. Kilobytes, megabytes, even Gigabits, same thing there. Amazon supports these units but doesn’t seem to know how to convert them. If you’ve made but a single request for a particular MetricName for a certain NameSpace, then you unit is set in stone for the next two weeks. It doesn’t matter what you send, AWS will interpret thos values as representing the original unit. That means you need to keep track of your units and not log Kilobytes, Bytes and Megabytes for the same metric.&lt;/p&gt;
+
+&lt;p&gt;It’s not published yet, but soon, CloudWatchAppender will help you out.&lt;/p&gt;
+
+&lt;p&gt;Firstly it will convert between different prefix versions of the same unit, for example Kilobytes end Megabytes. The buffering appender, if it’s a freshly created appender, will find the unit with lowest prefix and convert all other values to that it.&lt;/p&gt;
+
+&lt;p&gt;Secondly, between requests, it’ll keep track of that unit for as long as it’s alive. So make one call with Kilobytes and later on one with Megebytes, you’re going to get Kilobytes in the plot.&lt;/p&gt;
+
+&lt;p&gt;If the web app is recycled, or it’s separate thread, or server then it’ll this feature is not 100 % correct. In most cases it’ll work out fine though since usually calls are made pretty much the same way and order and surprised only happen unless you make changes in your code.&lt;/p&gt;
+
+&lt;p&gt;But just to be on the safe side, if it doesn’t know, CloudWatchAppender will make a get request to the API and make sure. It will find our what unit is used for a certain metric and convert everything to that.&lt;/p&gt;
+
+&lt;p&gt;This last feature is further down the line but it will come eventually. And of course you can turn it off.&lt;/p&gt;
+
+&lt;h2 id=&quot;metric-data-per-request-limit&quot;&gt;Metric data per request limit&lt;/h2&gt;
+
+&lt;p&gt;When using the unbuffered appender, we were burdening our requests with 1-2 metric data, as the data carrying objects are known. With the buffering appender we make one request per NameSpace and add to those as any metric data as we need, usually one per combination of MetricName and Dimensions used. I wasn’t aware there was a limit imposed on how may MetricDatum objects can be added to a request, but there is. It’s 20. Sooner or later someone will hit it, so that needs to be taken care of.&lt;/p&gt;
+
+&lt;h2 id=&quot;auto-config&quot;&gt;Auto config&lt;/h2&gt;
+
+&lt;p&gt;Sample config will be added to the nuget package once I learn how.&lt;/p&gt;
+
+&lt;h2 id=&quot;support-for-standardunit&quot;&gt;Support for StandardUnit&lt;/h2&gt;
+
+&lt;p&gt;Say you could do something like this?&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &amp;lt;standardunit type=&quot;Amazon.CloudWatch.StandardUnit&quot;&amp;gt;
+       &amp;lt;value value=&quot;Kilobytes&quot;/&amp;gt;
+  &amp;lt;/standardunit&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Would you prefer it to the current?&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &amp;lt;unit value=&quot;Kilobytes&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Maybe. Maybe not. It’s just that I introduced the SDK’s StandardUnit in every other place throughout the code to exploit its built in validation of the string value, instead of maintaining my own list. So why not use StandardUnit in config as well? Seems like alot more typing, but the main issue is another. Log4net requires StandardUnit to have a parameterless constructor, which it doesn’t.&lt;/p&gt;
+
+&lt;p&gt;So to support this feature of questionable value you’d need to modify the source code and put in for a pull request with the people behind log4net.&lt;/p&gt;
+
+&lt;p&gt;…&lt;/p&gt;
+
+&lt;p&gt;You bet I did!!&lt;/p&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon," /><category term="AWS," /><category term="cloudwatch," /><category term="log4net," /><category term="appender," /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="localhost:4000/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>localhost:4000/dear-crimeans</id><content type="html" xml:base="localhost:4000/welcome to russia dear crimeans">&lt;p&gt;&lt;em&gt;by Arkady Babtjenko&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Translated from Swedish, in turn transated from Russian by Ola Wallin. The Swedish translation was published in DN and can be found &lt;a href=&quot;http://www.dn.se/kultur-noje/kulturdebatt/valkomna-till-ryssland-kara-krimbor/&quot;&gt;here&lt;/a&gt;. Published here with permission from the author.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Good to see you. And allow us to congratulate you on the last referendum in your lives. Further “declarations of intent” will not be permitted. You simply will not get to choose again - never, and nothing. Never and nothing. Not even the color of the borders of your own backyard. Commit it to memory right away.&lt;/p&gt;
+
+&lt;p&gt;Second, you can say goodbye to your television. Good bye live broadcasts, talk shows and debate shows. Hello smearings, dead bodies, freaks and jokes about pee and genitals. Propaganda instead of news, hardcore! Special broadcasts with Putin’s eternal monologues.&lt;/p&gt;
+
+&lt;p&gt;Thirdly: conscription army. A separate chapter. During the 23 years since the fall of the USSR, you have obviously forgotten what occupation means when your children are called up for military service. But it doesn’t matter. You will remember. Especially when your children in our - sorry, I mean your - army begin to die from diseases that young people elsewhere in the world have not died from in a hundred years. Pneumonia, for example. Accustomed to Crimea terrain, they may serve on the island of Kunasjir in the Pacific.&lt;/p&gt;
+
+&lt;p&gt;It might be a good idea to take a look at what the “Caucasus force” (translator note: I’ve not been able to find references to this. Swedish: Kaukasusstyrkan.) has tattooed on their shaved heads.&lt;/p&gt;
+
+&lt;p&gt;By the way, here is a link that you can write down right away: &lt;a href=&quot;http://mright.hro.org&quot;&gt;http://mright.hro.org&lt;/a&gt;. It links to the Mother’s Right Foundation who for twenty years have supported the families of killed servicemen. Only last year they helped 2,465 families. Speaking of dead servicemen, 20 percent were suicide, 20 were percent “forced suicide”, 25 percent diseases and 5 percent due to physical abuse.&lt;/p&gt;
+
+&lt;p&gt;But as the song goes, “Do not cry, my giiirl!”&lt;/p&gt;
+
+&lt;p&gt;And yes, in Russia, the pension for disabled soldier mothers amounts to 40 dollars a month when the breadwinner dies. You heard right. In a few years, it is you who will get it. Welcome to our justice system.&lt;/p&gt;
+
+&lt;p&gt;Speaking of justice: it is far too long a story, so I’ll just remind you of this: to incite hatred against religious people, offend believers’ feelings, publicly defend terrorism (i.e. comments on Facebook), extremist statements, slander, all of this falls under the Criminal Code. To deny history, prevent citizens from taking a stroll, gather more than five people without a permit, behaving immorally, for all this - and much, much more! - the police administers justice on the spot.&lt;/p&gt;
+
+&lt;p&gt;Well, apparently, you have already become acquainted with our Cossacks . Good looking guys, right? And yet it is nothing, nothing. You have not seen our priests yet. By the way, there is an on going federal program to increase spirituality in the population and strengthen the spiritual ties under the motto “A church on every plot.” Where you thought you would get a daycare or a road junction - you’ll get a church. Yes, it’s like that at my house - outside my window they are building one right now, instead of repairing the traffic lights. There are queues every morning, but never mind the junction! We need a church and nothing more. Well, just forget it, you will understand for yourselves in due time.&lt;/p&gt;
+
+&lt;p&gt;Ah, I almost forgot: you will of course pay the bill for the construction - as surely as amen in the church. The City Administration in Elektrostal, who came up with this spiritual innovation, will teach you how it works.&lt;/p&gt;
+
+&lt;p&gt;Well, now that we’re on the subject of bills. We have a large housing reform in the works. Ten years and counting. And the next lap is just coming up. So soon, the rent of your apartment will be increased to over 800 dollars a month.&lt;/p&gt;
+
+&lt;p&gt;And then, all the benefits! You have probably already received financial compensation for the withdrawal of your benefits? Have you not? I see… I’m actually jealous of you. So many interesting discoveries await you!&lt;/p&gt;
+
+&lt;p&gt;By the way, exercises on the theme “disperse gatherings of disgruntled pensioners”, our Dzerzjinskij division conducted those five years ago already. Rest assured that they will be happy to share their experiences with your Berkut unit.&lt;/p&gt;
+
+&lt;p&gt;But small matters like the confiscation of the best locations for palaces and mansions, the redistribution of business - all of them! - demolitions and arson against apartment buildings in order to build shopping centers and so on, and so on, and so on, well, I will not go into that. Nor tax offices, health centers, fire stations, prosecutors’ offices, police stations, security service’s local offices, municipal administrations and so on, and so on, and so on. You get most of you income from tourism down there, right? Oh, forget all about that that, just forget it. This is what we call “bad dreaming business”. Forget that too. You will get used to it.&lt;/p&gt;
+
+&lt;p&gt;Oh yes, speaking of tourism - you have hotels, right? Right on the coast? On the whole Crimea? Nevermind, nevermind. Soon there will no longer any hotels right on the coast in Crimea.&lt;/p&gt;
+
+&lt;p&gt;But there will be a wonderful dacha for Governor Aleksandr Tkatjov! A dacha for Defence, Sergei Sjojgu! Dachas for all senators! Dachas ate all the deputies! Dachas for all the generals! And after them the whole Central Committee and all the prosecutors! Just think of all the yachts that will anchor at all private piers! Just think of all the enclosures will be built on your sea front!&lt;/p&gt;
+
+&lt;p&gt;You will have to be content with the municipal beach in Sevastopol.&lt;/p&gt;
+
+&lt;p&gt;By the way, I recommend that you learn the advertising slogans “You have many, I have one!” and “A cash register for all!” of the Russian postal service, Sberbank, the pensioners insurance fund, social services - it’s all yours. Congrats.&lt;/p&gt;
+
+&lt;p&gt;Ah, that’s right, yes: Sberbank, the savings bank. Again, you are in incredible luck - they have just launched a new round of pension reforms. Before, no could figure out how to calculate the pensions, and now makes it even less sense - if at all there will be any.&lt;/p&gt;
+
+&lt;p&gt;You might as well learn two additional concepts: CTO, which stands for Counter Terror Operation, and hexogen. This is important. For real. And in future, try to avoid places with other people, train stations, airports - well, especially train stations and airports - bus stations, markets, concerts and crowds in general.&lt;/p&gt;
+
+&lt;p&gt;If you still have to fly, make sure to be at the airport three hours in advance. At each entrance, there will be check points. Better not joke with the guards. Shave off your beard. Lighten your hair. Turn your pockets inside out and let them frisk you when they tell you. Never - never! - leave home without identification documents.&lt;/p&gt;
+
+&lt;p&gt;Yes, don’t forget sanctions from our international friends, that is to say, our new enemies. You guys are in Russia now.&lt;/p&gt;
+
+&lt;p&gt;And then a few tiny matters. Well, a bunch of them, really:&lt;/p&gt;
+
+&lt;p&gt;It is prohibited to protest in Russia.&lt;/p&gt;
+
+&lt;p&gt;It is prohibited to resist the unlawful arrest and unlawful detention.&lt;/p&gt;
+
+&lt;p&gt;It is prohibited for regions to be autonomous. It is forbidden to leave the Russian federation. Separatism is prohibited.&lt;/p&gt;
+
+&lt;p&gt;It is prohibited for foreigners to adopt Russian children.&lt;/p&gt;
+
+&lt;p&gt;It is prohibited to propagate homosexuality.&lt;/p&gt;
+
+&lt;p&gt;It is prohibited for Madonna and Lady Gaga to perform.&lt;/p&gt;
+
+&lt;p&gt;It is prohibited to put up unauthorized posters.&lt;/p&gt;
+
+&lt;p&gt;The television network Dozjd is prohibited.&lt;/p&gt;
+
+&lt;p&gt;Any day now, online money will be prohibited.&lt;/p&gt;
+
+&lt;p&gt;Prices in Moscow is twice as high as in Kiev. On everything.&lt;/p&gt;
+
+&lt;p&gt;And, finally, for us (and now also for you), it is forbidden to sell alcohol from eleven at night till eight in the morning. The Sobriety Act, you see.&lt;/p&gt;
+
+&lt;p&gt;In short, welcome home.&lt;/p&gt;
+
+&lt;p&gt;Arkady Babtjenko&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Arkady Babtjenko is a journalist and the author of “One Soldier’s War” (Grove Press). He works today as a war reporter for the newspaper Novaya Gazeta.&lt;/em&gt;&lt;/p&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Arkady" /><category term="Babtjenko," /><category term="Arkadij" /><category term="Babtjenko," /><category term="crimea," /><category term="ukraine," /><category term="russia," /><category term="välkommen" /><category term="till" /><category term="ryssland," /><category term="kulturdebatt" /><summary>by Arkady Babtjenko</summary></entry><entry><title>Jason Diakité’s speach to the Swedish parliament</title><link href="localhost:4000/Jason Diakites speach to the Swedish parliament" rel="alternate" type="text/html" title="Jason Diakit&amp;eacute;&#39;s speach to the Swedish parliament" /><published>2013-12-03T15:57:00+01:00</published><updated>2013-12-03T15:57:00+01:00</updated><id>localhost:4000/timbuktu</id><content type="html" xml:base="localhost:4000/Jason Diakites speach to the Swedish parliament">&lt;p&gt;&lt;em&gt;Translated from &lt;a href=&quot;http://www.svenskatal.se/20131204-jason-diakite-timbuktu-tal-i-riksdagen-under-fem-i-tolv-rorelsens-manifestation&quot;&gt;Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Disclaimer: I haven’t yet had the chance to see the recorded speach. I’ve just translated this transcribed version. Also, I have asked but have not yet been granted permission from the author.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;In turn transcribed from &lt;a href=&quot;http://tv.aftonbladet.se/webbtv/nyheter/samhalle-och-politik/article27180.ab&quot;&gt;Tårfyllda talet på prisutdelningen&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;I brought with me something today that I normally only carry with me when I leave Sweden. And I haven’t [left Sweden] now - in fact, I came here in a very short taxi ride. I brought this [shows a passport], which I usually only carry with me, like I said, when I leave Sweden, to remind all the places I get to, where I come from.&lt;/p&gt;
+
+&lt;p&gt;This [item] means alot to me, this collection of papers. Not everyone who lives in Sweden has one.&lt;/p&gt;
+
+&lt;p&gt;I took it with me today anyway, to say that this is my proof that I am no stranger. So the animosity towards me because of my skin color can never really be xenophobia. It is and remains racism. And you do not need to be tolerant of me. I’m not asking to be tolerated, and your mercy is not something I require. However, I require, with all the strength I can muster, to be judged by my actions and by my personality.&lt;/p&gt;
+
+&lt;p&gt;And I demand that the doctrine which holds a person higher than another because of their skin color, religion, sex or sexual orientation, is immediately and forever, discredited, erased and abandoned. I demand to be able to feel safe in Sweden. I demand to have access to the work that my qualifications entitle me to, to have access to any residence as enabled by my income. I demand to be able to worship the god I want and to love any person I want. I demand the freedom to speak my mind, even by those who disagree with my opinions. And I demand to be seen as a part of this community.&lt;/p&gt;
+
+&lt;p&gt;But in exchange, I will give you my life, Sweden. For &lt;em&gt;you&lt;/em&gt;, I and my children always help you build. I give you my ingenuity. I give you my creativity and my energy. I will love in Sweden, I will live in Sweden, and I will die in Sweden .&lt;/p&gt;
+
+&lt;p&gt;Thank you.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Jason" /><category term="Diakite" /><summary>Translated from Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation.</summary></entry><entry><title>On representing a survey with XML</title><link href="localhost:4000/survey-representation/" rel="alternate" type="text/html" title="On representing a survey with XML" /><published>2013-04-29T09:34:00+02:00</published><updated>2013-04-29T09:34:00+02:00</updated><id>localhost:4000/survey-representation</id><content type="html" xml:base="localhost:4000/survey-representation/">&lt;p&gt;With my new survey software suite, a survey is as easy to enter as&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;What did you drink last night?
+o Gin/Tonic
+o Marguerita
+o Cosmopolitan
+o Other: []
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;My clients will be able to enter survey with ease and mostly without my involvment. They will be able to share survey by email for review.&lt;/p&gt;
+
+&lt;p&gt;Now all I have to do is get it out of my brain and into a compiler. But why not?&lt;/p&gt;
+
+&lt;p&gt;I’m picturing something like markdown which outputs an intermediary XML representation in an update-as-you-type-editor, maybe online. With some meta data in the header you’d be able to publish it in a dropbox folder just as I am this blog post.&lt;/p&gt;
+
+&lt;p&gt;It’s the representation at the core of this that I want to talk about today. I propose a new representation of a survey. I’m calling it &lt;strong&gt;Flamingo&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;##Background&lt;/p&gt;
+
+&lt;p&gt;I sometimes dabble with surveys in particular &lt;a href=&quot;https://www.researchgate.net/publication/233419485_Implementation_of_Web-Based_Respondent-Driven_Sampling_among_Men_Who_Have_Sex_with_Men_in_Vietnam&quot;&gt;RDS&lt;/a&gt; surveys. I made my own survey engine many years back. It was replaced by the research team with a modified version of LimeSurvey.&lt;/p&gt;
+
+&lt;p&gt;LimeSurvey is very nice but it’s stuck in an inflexible model. One it shares with many other engines and XML representations I’ve seen (&lt;a href=&quot;http://quexml.sourceforge.net/node/1&quot;&gt;1&lt;/a&gt;,&lt;a href=&quot;http://www.triple-s.org/sssxml1.htm&quot;&gt;2&lt;/a&gt;,&lt;a href=&quot;http://manual.limesurvey.org/wiki/Importing_a_survey_structure&quot;&gt;3&lt;/a&gt;,&lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2244339/&quot;&gt;4&lt;/a&gt;). Sorry for ranting about LimeSurvey, it just happens to be in the line of fire.&lt;/p&gt;
+
+&lt;p&gt;There are the database tables. Questions. Answers. Question attributes. Conditions.&lt;/p&gt;
+
+&lt;p&gt;There are the question types. Radio list. Dropdowns. Yes/no. Text. Numeric. LimeSurvey offers several different types of array questions. 20 or so different types altogether. LimeSurvey survey calls this “vast”. Nonetheless, I’ve had to add three question types and hack five.&lt;/p&gt;
+
+&lt;p&gt;So there’s one motivation for rethinking the whole thing. I do not propose a presentation enginge that we will never need recoding for different needs and purposes but I most certainly want to separate the presentation from survey content and logic.&lt;/p&gt;
+
+&lt;p&gt;This last week I’ve been dealing with some pretty complex stuff involving a country selector. We ultimately had to find LimeSurvey-conforming solutions to it. Hacking the model and presentation was too big an operation.&lt;/p&gt;
+
+&lt;p&gt;What I propose is not only a brand new representation of a survey but a whole new way of thinking about a survey from the bottom up, including presentation and interpretation of responses.&lt;/p&gt;
+
+&lt;p&gt;The key advantages are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;High flexibility&lt;/li&gt;
+  &lt;li&gt;Partial compliance with HTML&lt;/li&gt;
+  &lt;li&gt;Minimum dependence between survey, response, presentation and interpretation of responses&lt;/li&gt;
+  &lt;li&gt;Redundant referencing of survey elements&lt;/li&gt;
+  &lt;li&gt;Cross references of survey elements&lt;/li&gt;
+  &lt;li&gt;Repetition, validation and other survey logic included&lt;/li&gt;
+  &lt;li&gt;Dynamically generated survey elements&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;##Start&lt;/p&gt;
+
+&lt;p&gt;Let’s give it a go then. Let’s go way back. What’s the atomic building block of a survey? The option. I propose this is a survey.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;option&amp;gt;Gin/Tonic&amp;lt;/option&amp;gt;
+&amp;lt;option&amp;gt;Marguerita&amp;lt;/option&amp;gt;
+&amp;lt;option&amp;gt;Cosmopolitan&amp;lt;/option&amp;gt;
+&amp;lt;option&amp;gt;Steak&amp;lt;/option&amp;gt;
+&amp;lt;option&amp;gt;Lobster&amp;lt;/option&amp;gt;
+&amp;lt;option&amp;gt;All of the above&amp;lt;/option&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;That’s completely answerable. The questionnaire is interpretable and so are the responses, given the right context which may be given as a title or verbally for all I know. No assumptions are made, particularly about which or how many choices are possible together nor what question is actually being asked. The response recorded may be just a table with entries identifying the user and the options selected.&lt;/p&gt;
+
+&lt;p&gt;Just for the sake of it, let’s impose some implicit logic and provide the user with some context.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;group&amp;gt;
+    &amp;lt;label&amp;gt;What did you drink last night?&amp;lt;/label&amp;gt;
+    &amp;lt;option&amp;gt;Gin/Tonic&amp;lt;/option&amp;gt;
+    &amp;lt;option&amp;gt;Marguerita&amp;lt;/option&amp;gt;
+    &amp;lt;option&amp;gt;Cosmopolitan&amp;lt;/option&amp;gt;
+&amp;lt;/group&amp;gt;
+&amp;lt;group&amp;gt;
+    &amp;lt;label&amp;gt;What did you eat last night?&amp;lt;/label&amp;gt;
+    &amp;lt;option&amp;gt;Steak&amp;lt;/option&amp;gt;
+    &amp;lt;option&amp;gt;Lobster&amp;lt;/option&amp;gt;
+    &amp;lt;option&amp;gt;All of the above&amp;lt;/option&amp;gt;
+&amp;lt;/group&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This is a refreshing change of perspective for me. All these years I’ve been thinking of a survey as a list of questions. What I’ve come to realize it that it’s really a list of options. The question is just meta data and so is the grouping and any explicit or implicit logic.&lt;/p&gt;
+
+&lt;p&gt;This is my basic proposition for a new way of representing a survey - with XML, using two basic elements, options and groups.&lt;/p&gt;
+
+&lt;p&gt;Before we move on, though, let’s change the name of those two elements. The thing is, compliance with HTML, turns out to be a good idea. It makes building a presentation engine based on this scheme much easier. One, most of the stuff you can display straight off. Two, for those knowledgeable in HTML, the documentation is mostly implicit.&lt;/p&gt;
+
+&lt;p&gt;I’ve come up with a set of principles that seem to work rather well for me. Partial compliance with HTML is the second. Hence I’m calling groups &lt;em&gt;div&lt;/em&gt; and options &lt;em&gt;input&lt;/em&gt;. Ignore the fact that inputs, if they really were in HTML, would have no content. Ignore also the fact input elements without any other attributes produce textboxes.&lt;/p&gt;
+
+&lt;p&gt;##Basic principles&lt;/p&gt;
+
+&lt;p&gt;The complete set of basic principles for Flamingo is as follows.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Two atomic elements, input and div, that largely define a questionnaire&lt;/li&gt;
+  &lt;li&gt;Comply with HTML when possible&lt;/li&gt;
+  &lt;li&gt;Always assume multiple choice options&lt;/li&gt;
+  &lt;li&gt;All the elements are unquiquely identifiable by their XPATH&lt;/li&gt;
+  &lt;li&gt;All contents of label attributes and elements act as resource keys when&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Incidendtally, the second to last principle is implicit in XML.&lt;/p&gt;
+
+&lt;p&gt;We’ve covered two of these principles, although their merit may be unclear for the moment. Let’s move on to the third.&lt;/p&gt;
+
+&lt;p&gt;##Assume multiple choice&lt;/p&gt;
+
+&lt;p&gt;The default input is a checkbox. Heh? Bear with me, I just want to change the default.&lt;/p&gt;
+
+&lt;p&gt;Your presentation engine’s first point of order is hence to replace&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input&amp;gt;Gin/Tonic&amp;lt;/input&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;with&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input type=&quot;checkbox&quot;&amp;gt;&amp;lt;label&amp;gt;Gin/Tonic&amp;lt;/label&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Not so long ago form elements came in three flavors, text (including text area), single choice (radios and dropdowns), and multiple choice (checkboxes). This shaped our thinking of what a survey was and what it could do. &lt;strong&gt;In effect it is constraining research.&lt;/strong&gt; HTML5 specifies a wealth of new form elements and we’ve been introduced to many more in the form or custom widgets. Rather than expand the model significantly (infinitely) the proposition is to narrow it down to the basics.&lt;/p&gt;
+
+&lt;p&gt;In my version, the basic questionnaire is one built from one basic element, the option. And you can select anything! That means checkboxes. Constraints and validation come on top of this. It’s context. It could easily be provided by someone looking over your shoulder and correcting you. I’m not saying it should be that way, but that’s the basic starting point&lt;/p&gt;
+
+&lt;p&gt;Now let’s break the mold.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;label&amp;gt;What did you have for dinner last night?&amp;lt;/label&amp;gt;
+&amp;lt;div&amp;gt;
+    &amp;lt;label&amp;gt;Drink:&amp;lt;/label&amp;gt;
+	&amp;lt;input&amp;gt;Gin/Tonic&amp;lt;/input&amp;gt;
+	&amp;lt;input&amp;gt;Marguerita&amp;lt;/input&amp;gt;
+	&amp;lt;input&amp;gt;Cosmopolitan&amp;lt;/input&amp;gt;
+	&amp;lt;input&amp;gt;Tequila sunrise&amp;lt;/input&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;div&amp;gt;
+    &amp;lt;label&amp;gt;Eat:&amp;lt;/label&amp;gt;
+	&amp;lt;input&amp;gt;Steak&amp;lt;/input&amp;gt;
+	&amp;lt;input&amp;gt;Lobster&amp;lt;/input&amp;gt;
+	&amp;lt;input&amp;gt;I don&#39;t know&amp;lt;/input&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;What are those? Questions? Subquestions? Any survey model that relies on question as the basic atomic element will run into an “oops” here. I could probably hack this specific layout into LimeSurvey without altering the model, but for each variation I’d be doing more hacking. And for LimeSurvey that means php. Isch.&lt;/p&gt;
+
+&lt;p&gt;Easy for me to say, I’m specifying the representation. You’re coding the presentation engine and I’m saying you have to be super adaptive. But I’m going to make life as easy as I can for you. Be like your browser. It can present infinite variations of HTML, even faulty HTML. I’ll partially comply with HTML so you can display most of everything minimum of regular expression text manipulation. And since the input is the basic atomic element, what you send back as a response to the server will be just those. If your engine can’t display the survey exactly the way the author intended, resort to unformatted HTML straight off (just remember to replace the inputs appropriately) and post the responses as is.&lt;/p&gt;
+
+&lt;p&gt;Apparently time to show you what a response might look like.&lt;/p&gt;
+
+&lt;p&gt;##Responses and the XPATH&lt;/p&gt;
+
+&lt;p&gt;The response database table might look like this. It’s a recommendation and not really part of the specification I propose.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;respondent timestamp xpath NPATH   value    content
+1   123456  &quot;div[0]/input[3]&quot;    &quot;div[0]/input[3]&quot;    &quot;&quot;  &quot;Tequila sunrise&quot;
+1   123556  &quot;div[1]/input[0]&quot;    &quot;div[1]/input[0]&quot;    &quot;&quot;  &quot;Steak&quot;
+1   123756  &quot;div[1]/input[1]&quot;    &quot;div[1]/input[1]&quot;    &quot;&quot;  &quot;Lobster&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The complete XPATH is noted along with the value. The value may be a textbox value or something from a custom widjet. This means the interpretation of response is dependent on the order and layout of the survey. A concern for the results interpretation, in my opinion. However, if you need more control, add a &lt;em&gt;name&lt;/em&gt; attribute to the input element. The last entry above may now read:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1   123756  &quot;div[1]/input[1]&quot;    &quot;div[1]/input[@name=&#39;lobster&#39;]&quot;    &quot;&quot;    &quot;Lobster&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;That’s NPATH, with the n for name. Using either the XPATH or the NPATH you can reference the element in your survey XML and the rendered questionnaire. Also key. It helps in server side validation and cross referencing at the interpretation stage.&lt;/p&gt;
+
+&lt;p&gt;But wasn’t the objective to reduce dependency between response and representation? Yes. Firstly, the right most column is still there, with the content. It may be all you need. The additional columns are there to aid you in the interpretation.&lt;/p&gt;
+
+&lt;p&gt;Secondly, while the response and interpretation of the response is dependent on the survey layout, the thing to note, is that the response model is not. This is key.&lt;/p&gt;
+
+&lt;p&gt;This is one of the things I address with the XPATH/NPATH/value/content redundancy. When you alter the survey you will be able to compare the XPATH with the NPATH, back trace through the response table and be able to deduce what option is chosen. To aid you have the complete version history of the survey, don’t you?&lt;/p&gt;
+
+&lt;p&gt;Reorder, add or delete questions, divide or merge questions, duplicate the question… Have two versions of the survey running in parallell. You can design a response server that will be able to record data in a way you deem sufficient to interpret.&lt;/p&gt;
+
+&lt;p&gt;I don’t consider this more than a recommendation. Exactly what you choose to record is entirely up to you. You may even submit an xml representation of the response, if you wish.&lt;/p&gt;
+
+&lt;p&gt;Timestamp? Again a recommendation. This is just where we are today regarding what data is. The age when a response was a check in a box is over. Valuable information can be gleaned from the behavior of the respondent, including how long he/she takes to respond and how many times the answer is changed. The least information is a cross section of the data including only the latest answer.&lt;/p&gt;
+
+&lt;p&gt;One final thing to note, the engine may reorder everything as you wish. Maybe the author has requested randomized questions. This should not affect the XPATH of the options. The XPATH references the survey XML template, not the rendered display. That includes dynamically generated elements which we’ll get to later.&lt;/p&gt;
+
+&lt;p&gt;###Another example&lt;/p&gt;
+
+&lt;p&gt;To further the discussion with another example, consider the following. I’ve introduced that label short hand here, but that’s not the point.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div&amp;gt;
+    &amp;lt;label&amp;gt;Rate the following dishes&amp;lt;/label&amp;gt;
+    &amp;lt;div label=&quot;Steak&quot;&amp;gt;
+        &amp;lt;input&amp;gt;Hate it&amp;lt;/input&amp;gt;
+        &amp;lt;input&amp;gt;It&#39;s ok&amp;lt;/input&amp;gt;
+        &amp;lt;input&amp;gt;Love it&amp;lt;/input&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div label=&quot;Lobster&quot;&amp;gt;
+        &amp;lt;input&amp;gt;Hate it&amp;lt;/input&amp;gt;
+        &amp;lt;input&amp;gt;It&#39;s ok&amp;lt;/input&amp;gt;
+        &amp;lt;input&amp;gt;Love it&amp;lt;/input&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It should be apparent how this is intended to be displayed. LimeSurvey designates these &lt;em&gt;array questions&lt;/em&gt; and we’ve all seen them in customer surveys, rating product experience, for example. It’s very similar to the former example except that the content of the input elements repeat. The options’ content are to be displayed as column headers. Lobster and Steak are row headers.&lt;/p&gt;
+
+&lt;p&gt;However, if the presentation engine does not have support for this particular layout, that’s fine too. Just display as is (formatting the inputs, obviously). The survey is entirely legible in either case.&lt;/p&gt;
+
+&lt;p&gt;##Single choice and multiple choice&lt;/p&gt;
+
+&lt;p&gt;As I’ve said, I consider all input elements checkboxes by default, because that’s what I consider a survey, options. If you’re in Europe, both steak and lobster may not be acceptable at the same time. I consider it validation and validation can be specified in my XML schema but the basic assumption is that it is not required. It’s meta data, same as questions and part of a context which may be given in XML or verbally or be implicit.&lt;/p&gt;
+
+&lt;p&gt;So you may parse type=”checkbox” (your default as opposed to “text”), type=”text”, type=”radio”. I consider that validation also and so does apparently the HTML5 group since they provide additionally type=”email”, type=”date” etc.&lt;/p&gt;
+
+&lt;p&gt;Consider radio buttons. In order for them to work exclusively, they must have the same name. That implies that the following are alike from the presentation engine stand point.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input name=&quot;eat&quot;&amp;gt;Lobster&amp;lt;/input&amp;gt;
+&amp;lt;input name=&quot;eat&quot;&amp;gt;Steak&amp;lt;/input&amp;gt; and 
+
+&amp;lt;input type=&quot;radio&quot;&amp;gt;Lobster&amp;lt;/input&amp;gt;
+&amp;lt;input type=&quot;radio&quot;&amp;gt;Steak&amp;lt;/input&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We’ve indicated single choice. There are subtle differences, though. The first may produce a dropdown or any other single choice input method of your devising while the second definitely hints radio buttons. The response recorded may also be different.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1   123756  &quot;input[0]&quot;    &quot;input[@name=&#39;eat&#39;]&quot;    &quot;&quot;    &quot;Lobster&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;vs&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1   123756  &quot;input[0]&quot;    &quot;input[0]&quot;    &quot;&quot;    &quot;Lobster&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;See how beautifully that works? By column 3, they are equivalent.&lt;/p&gt;
+
+&lt;p&gt;I’ll also allow:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div type=&quot;radio&quot;&amp;gt;
+    &amp;lt;input&amp;gt;Lobster&amp;lt;/input&amp;gt;
+    &amp;lt;input&amp;gt;Steak&amp;lt;/input&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div max=&quot;1&quot;&amp;gt;
+    &amp;lt;input&amp;gt;Lobster&amp;lt;/input&amp;gt;
+    &amp;lt;input&amp;gt;Steak&amp;lt;/input&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;What about five-to-ten-tuple choice questions? Single choice is just a subset of multiple choice. The constrained mindset we’re used to stems from HTML 1.0, or even further back, an antique radio with preset stations. That’s why they’re called radio buttons, in case you’ve ever wondered.&lt;/p&gt;
+
+&lt;p&gt;Imagine a set of attributes for your steak. Bloody through charred. Salted. White pepper. Black pepper. T-bone or rib eye. Some are exclusive, some are not. With LimeSurvey you would be forced to design your survey in a restrictive way, dividing up into several questions. I’ll give you much more flexibility.&lt;/p&gt;
+
+&lt;p&gt;That’s why I prefer the last example to be honest, the one with max. But even multiple choice is just a subset of survey logic which I’ll get to in a moment.&lt;/p&gt;
+
+&lt;p&gt;In an above example there was a semantically different checkbox: “I don’t know”. It’s not clear whether this should  be a radio button or check box. At the basic level, if the presentation has no other hints, I consider a concern for response interpretation.&lt;/p&gt;
+
+&lt;p&gt;Technically though, there are many ways to infer abstention and ignorance. I may wish to have one “I don’t know” and one “I don’t want to answer”. Or I may combine them. They may be placed before or after the “Other” option. I think this should always be up to the author.&lt;/p&gt;
+
+&lt;p&gt;###Textboxes&lt;/p&gt;
+
+&lt;p&gt;What about textual data, keyboard entered data in textboxes? Again, I consider keyboard entered data just another option. Consider:&lt;/p&gt;
+
+&lt;p&gt;&lt;label&gt;What did you wear?&lt;/label&gt;
+&lt;input /&gt;&lt;/p&gt;
+
+&lt;p&gt;All browsers display that as a textbox.&lt;/p&gt;
+
+&lt;p&gt;The response may be recorded as:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1   123456  &quot;option[0]&quot;    &quot;option[0]&quot;    &quot;&quot;  &quot;My dad&#39;s pink tux&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Anyone who sees this out of context will not know whether this was a checkbox or a textbox or anything else. He or she may or may not be keen on knowing, but either way, it’s not a basic premise.&lt;/p&gt;
+
+&lt;p&gt;As mentioned, feel free to use type=”email” or anything else supported by HTML5 if you wish. It’s part of this spec too and it hints the engine of what we expect in terms of display and validation.&lt;/p&gt;
+
+&lt;h2 id=&quot;survey-logic&quot;&gt;Survey logic&lt;/h2&gt;
+
+&lt;p&gt;Survey logic encapsulates part of what we’ve discussed above. I consider three separate parts.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Constraints/Validation&lt;/li&gt;
+  &lt;li&gt;Control&lt;/li&gt;
+  &lt;li&gt;Display&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;constraintsvalidation&quot;&gt;Constraints/Validation&lt;/h3&gt;
+
+&lt;p&gt;Constraints usually come in to play for specifying how many checkboxes we can select in a group, what type of characters we may enter into a field. This is closely related to validation in my view. I may convey information of what I expect of the user experience. Or I may leave it to you just get me reponses in a way of your design just so long as they fit my validation. That could mean using radio buttons. Or it could mean a flashing red alert explaining to the user that one too many options has been selected.&lt;/p&gt;
+
+&lt;p&gt;The max attribute, and any other that HTML5 specifies, is a shorthand of the constraint attribute. The following is equivalent.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div constrain=&quot;.option.count(&#39;checked&#39;)&amp;lt;=1&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The following is just slightly more rigid. It implies that the constraint is to be executed at validation time though does not specify when the validation time might be. It may be on click.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div validate=&quot;.option.count(&#39;checked&#39;)&amp;lt;=1&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I may provide the following information if I’m in the mood, employing another HTML attribute. This is a more hands on constraint.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input onchange=&quot;if(this.checked){//div[@name=&#39;cook&#39;].unset(&#39;checked&#39;);this.set(&#39;checked&#39;)}&quot;&amp;gt;Medium rare&amp;lt;/input&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It’s supposed to uncheck all other cooking options. It is not javascript and makes no pretense to be either. You’ll have to parse the XPATH, for starters, loop through the resulting nodes and add appropriate identifiers. For security reasons, no presentation will want to execute javascript from an xml sheet, anyway.&lt;/p&gt;
+
+&lt;h3 id=&quot;display&quot;&gt;Display&lt;/h3&gt;
+
+&lt;p&gt;Similarly, the enabled attribute, used to control where an option is visible/enabled, already implies a condition, for example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input enabled=&quot;!(//option[@name=&#39;steak&#39;].checked)&quot;&amp;gt;Medium rare&amp;lt;/input&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;control&quot;&gt;Control&lt;/h3&gt;
+
+&lt;p&gt;Finally, control logic is about what questions are executed when and possibly in what order, depending on responses and other circumstances. It should be clear by now that I’m not about to introduce a goto statement. I think control concerns should be mapped to display logic as far as possible. Having said that, I haven’t ruled out control logic completely though I can think of no circumstances off hand where it might come in handy.&lt;/p&gt;
+
+&lt;p&gt;##Other features&lt;/p&gt;
+
+&lt;p&gt;###Cross references&lt;/p&gt;
+
+&lt;p&gt;To repeat a group or option anywhere (even before the definition), just reference.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input ref=&quot;input[3]&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;will suffice if it’s unique. Otherwise maybe our named lobster.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;input ref=&quot;@name=&#39;lobster&#39;&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We can repeat that as many times as we want. The XPATH makes sure we can interpret the response. This makes it easy to have several questions with long list of countries. In fact, one of the things that prompted these ideas was the use of long lists in LimeSurvey. If multiple options are permissible then LimeSurvey will dynamically create a response table with as many columns for that question as there are options. You can quickly run into the limit of number of columns allowed by MySQL and before that, php stalls.&lt;/p&gt;
+
+&lt;p&gt;My take on the issue.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div label=&quot;What countries did you visit in 2010?&quot; ref=&quot;@name=&#39;country&#39;&quot;/&amp;gt;
+&amp;lt;div label=&quot;What countries did you visit in 2011?&quot; ref=&quot;@name=&#39;country&#39;&quot;/&amp;gt;
+&amp;lt;div label=&quot;What countries did you visit in 2012?&quot; ref=&quot;@name=&#39;country&#39;&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The concern for the presentation is to decide on a multiple choice dropdown, a full page of checkboxes with an arbitrary number of columns or perhaps an object store backed combo box widget.&lt;/p&gt;
+
+&lt;p&gt;###Dynamically generated survey elements&lt;/p&gt;
+
+&lt;p&gt;Cross references together with the severing of the dependency between responses and survey implies the following rather significant bonus. The questionnaire may be dynamically constructed. Arbitrarily repeated questions are a breeze. In fact there is little need for a representation at all for simple ad hoc questionnaires. Just hard code a form and send it off to your response engine. (That’s rather stating the obvious. What I mean is, do try on my recommendation for a response table.)&lt;/p&gt;
+
+&lt;p&gt;Take the previous example with multiple choice countries. When the user selects a country, let the presentation generate a new dropdown. This is a real life example which I’ve had to solve with LimeSurvey in a backwards bending way the previous week.&lt;/p&gt;
+
+&lt;p&gt;Remember though, implicitly, you’re adding elements to the template, not to the rendered HTML. It may or may not have implications for the XPATH and hence the responses. That’s the rule anyway.&lt;/p&gt;
+
+&lt;p&gt;However, dynamically generated survey elements is more than just a bonus, it’s actually implied in many cases by the principle of always assuming multiple choice. Consider the following.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div label=&quot;Eat&quot;&amp;gt;
+    &amp;lt;input&amp;gt;Steak&amp;lt;/input&amp;gt;
+    &amp;lt;input&amp;gt;Lobster&amp;lt;/input&amp;gt;
+    &amp;lt;input repeat=&quot;true&quot; label=&quot;Other&quot;/&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The engine should generate the last input as many times as the user requires. To be honest I think this is an annoying loop hole, one of many to be found. I’d sooner let the author opt in via the repetition feature described later. But I’d like you to give me a chance to find a way that would not break my list of principles or to patch it up.&lt;/p&gt;
+
+&lt;p&gt;##Presentation hints&lt;/p&gt;
+
+&lt;p&gt;I want to have dependencies between the representation and the presentation as weak as possible. But hints to the presentation has obvious benefits, for example, indicating preference for radio buttons over dropdown, page breaks and instructions.&lt;/p&gt;
+
+&lt;p&gt;The class attribute seems the immediate choice for presentation. That way a tip can be italicized by CSS with minimum fuss.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;label class=&quot;tip&quot;&amp;gt;
+
+&amp;lt;div class=&quot;indent3&quot;&amp;gt;
+
+&amp;lt;div class=&quot;dropdown&quot;&amp;gt;
+
+&amp;lt;label class=&quot;faq&quot;&amp;gt;Why are we so interested in what you had for dinner?&amp;lt;/label&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I intend to specify a recommended list of such hints. Presentation engines are free to specify additions to that list as long as they commit to displaying surveys that don’t conform to them.&lt;/p&gt;
+
+&lt;p&gt;##Resource keys&lt;/p&gt;
+
+&lt;p&gt;That last one deserves an extra look. We never got around to the last principle, the one about resource keys, did we? That’s what this is.&lt;/p&gt;
+
+&lt;p&gt;All contents of label attributes and elements act as resource keys. That smacks primarily two flys, images and locale. I’m just mentioning it, I think most can see how this will work out. The basic idea for languages is that you design the survey in your prefered language. Then you simply extract the indexes and write a translation in any other language you require.&lt;/p&gt;
+
+&lt;p&gt;If you write a FAQ, then the above indexes into that. The label may be just a question mark icon. Up to you.&lt;/p&gt;
+
+&lt;p&gt;##Repetition&lt;/p&gt;
+
+&lt;p&gt;Repeating the country dropdown based on the answer given to a previous question, try:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div ref=&quot;@name=&#39;country&#39;&quot; repeat=&quot;//option[@name=&#39;nCountriesVisited&#39;][0].value&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Addressing the problem mentioned earlier, when selecting an option generates new option, you would write for instance, given they are single choice dropdowns:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div ref=&quot;@name=&#39;country&#39;&quot; repeat=&quot;..//option.count(&#39;checked&#39;)+1&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I’ll be the first to agree, that’s a challenge to implement, but I suppose, if the history of HTML compliance is any guide, I suppose I could allow for partial compatibility.&lt;/p&gt;
+
+&lt;p&gt;However, the above is bound to happen quite often so the spec will probably accept a special case.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div ref=&quot;@name=&#39;country&#39;&quot; repeat=&quot;true&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;That may clue to a way out of the dilemma mentioned earlier, with the “Other” option. If you really wanted a repeating textbox, then something like this would accomplish it.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div&amp;gt;
+    &amp;lt;label&amp;gt;Eat:&amp;lt;/label&amp;gt;
+    &amp;lt;input&amp;gt;Steak&amp;lt;/input&amp;gt;
+    &amp;lt;input&amp;gt;Lobster&amp;lt;/input&amp;gt;
+    &amp;lt;input repeat=&quot;true&quot; label=&quot;Other&quot;/&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;##Closing&lt;/p&gt;
+
+&lt;p&gt;Thank you for reading. Tell me what you think. Consider the spec open source, work in progress and feel free to contribute. I’m going to put up a wiki.&lt;/p&gt;
+
+&lt;p&gt;It’s a long way of to 1.0. The markdown type app, a presentation engine to work client side, a response server and a survey backend, should be developed in parallel. A little bit down the road, a UI.&lt;/p&gt;
+
+&lt;p&gt;Currently I don’t have the resources but I think it would be great. Consider funding me if you stand to benefit.&lt;/p&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey," /><category term="xml," /><category term="specification," /><category term="standard," /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>Hjälp oss träna vår robot</title><link href="localhost:4000/help" rel="alternate" type="text/html" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot" /><published>2013-02-11T15:57:00+01:00</published><updated>2013-02-11T15:57:00+01:00</updated><id>localhost:4000/help</id><content type="html" xml:base="localhost:4000/help">&lt;h6 id=&quot;for-a-post-in-english-about-the-zero-hate-initiative-read-rather-zero-hatehttpblogsimpletasksezerohate-this-post-is-intended-mainly-for-a-swedish-general-audience&quot;&gt;For a post in English about the Zero Hate initiative, read rather &lt;a href=&quot;http://blog.simpletask.se/zerohate&quot;&gt;Zero Hate&lt;/a&gt;. This post is intended mainly for a Swedish general audience.&lt;/h6&gt;
+
+&lt;h6 id=&quot;jag-har-tidigare-skrivit-om-zero-hate-haumlrhttpblogsimpletasksenollhat&quot;&gt;Jag har tidigare skrivit om Zero Hate &lt;a href=&quot;http://blog.simpletask.se/nollhat&quot;&gt;här&lt;/a&gt;.&lt;/h6&gt;
+
+&lt;h6 id=&quot;programmet-zero-hate-aumlr-fritt-att-anvaumlnda-haumlr-haumlrhttpzerohatesimpletaskse&quot;&gt;Programmet Zero Hate är fritt att använda här &lt;a href=&quot;http://zerohate.simpletask.se&quot;&gt;här&lt;/a&gt;.&lt;/h6&gt;
+
+&lt;p&gt;Zero Hate initiativet har fått ordentlig spridning tack vare &lt;a href=&quot;http://www.youtube.com/watch?v=eRk0Wtcd-xU&amp;amp;feature=youtu.be&quot;&gt;screencasten&lt;/a&gt;, Computer Swedens &lt;a href=&quot;http://computersweden.idg.se/2.2683/1.491370/smidigt-verktyg-for-hantering-av-nathat&quot;&gt;artikel&lt;/a&gt; och alla vänner på Twitter och Facebook.&lt;/p&gt;
+
+&lt;p&gt;Jag har fått mycket positiva kommentarer, för att inte säga översvallande, och det gör mig mycket glad och jag blir mer och mer övertygad vi kan få det här att göra stor skillnad.&lt;/p&gt;
+
+&lt;p&gt;Jag har också fått många erbjudanden om hjälp. Projektet är &lt;a href=&quot;https://github.com/camitz/zerohate&quot;&gt;open source&lt;/a&gt; och vem som helst kan dela och bidra med kod.&lt;/p&gt;
+
+&lt;p&gt;Framförallt har Måns Magnusson, @MansMeg, joinat mig för att bygga en statisktisk algoritm för att avgöra vilka kommentarer som ska flaggas för moderering. Det är alltså en robot med hjälp av en statistisk modell svarar på frågan, hur hotfull eller kränkande är denna kommentaren, och svara med en siffra mellan 0 och 1000.&lt;/p&gt;
+
+&lt;p&gt;Roboten behöver tränas. Det behövs ett tusental verkliga kommentarer som du fått eller skrivit, på väggposter på Facebook, tidningsforum eller liknande. Detta behandlas sedan av robothjärnan för att den ska lära sig avgöra vad som är ok och vad som är hot eller kränkande.&lt;/p&gt;
+
+&lt;h2 id=&quot;hjaumllp-oss-samla-in-kommentarer-till-robothjaumlrnan&quot;&gt;Hjälp oss samla in kommentarer till robothjärnan!&lt;/h2&gt;
+
+&lt;p&gt;På &lt;a href=&quot;http://zerohate.simpletask.se/help.html&quot;&gt;zerohate.simpletask.se/help.html&lt;/a&gt; finns ett enkelt formulär där du kan bidra med kommentarer.&lt;/p&gt;
+
+&lt;p&gt;Sprid ordet!&lt;/p&gt;
+
+&lt;p&gt;Även vanliga, neutrala och snälla kommentarer behövs för att roboten ska kunna känna igen skilladen. Därför kan även du delta som inte inte utsatts för näthat.&lt;/p&gt;
+
+&lt;p&gt;Ju fler kommentarer vi får in desto bättre fungerar algoritmen.&lt;/p&gt;
+
+&lt;h2 id=&quot;integritet&quot;&gt;Integritet&lt;/h2&gt;
+
+&lt;p&gt;Dina data behandlas anonymt och vi lovar att endast använda kommentarerna inom projektets ramar. Vi har bakgrund inom medicinsk forskning och vi vet vad personuppgiftslagen och forskningsetik innebär.&lt;/p&gt;
+
+&lt;p&gt;Men! Som de forskare vi är ser vi potentialen med en sån här datainsamling. Många forskare kommer vara intresserad av att få tillgång till denna data i en eller annan form till all möjlig slags forskning, till gagn mot näthatet.&lt;/p&gt;
+
+&lt;p&gt;Vill du så kan du ange din epost adress. Då kommer vi fråga dig om samtycke om det blir aktuellt att använda data i ett nytt projekt.&lt;/p&gt;
+
+&lt;p&gt;Eller så kan du ge samtycke redan nu för att data ska hållas tillgängliga för all forskningsverksamhet. Det är nätkärlek, det!&lt;/p&gt;
+
+&lt;h2 id=&quot;hjaumllp-oss-goumlra-naumltet-mer-demokratiskt-och-fritt-sprid-ordet&quot;&gt;Hjälp oss göra nätet mer demokratiskt och fritt! Sprid ordet!&lt;/h2&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t," /><category term="n&amp;auml;tk&amp;auml;rlek," /><category term="ug," /><category term="uppdrag" /><category term="granskning," /><category term="zero" /><category term="hate," /><category term="ehate" /><summary>For a post in English about the Zero Hate initiative, read rather Zero Hate. This post is intended mainly for a Swedish general audience.</summary></entry><entry><title>Noll Hat</title><link href="localhost:4000/nollhat" rel="alternate" type="text/html" title="Noll Hat" /><published>2013-02-08T01:31:00+01:00</published><updated>2013-02-08T01:31:00+01:00</updated><id>localhost:4000/noll-hat</id><content type="html" xml:base="localhost:4000/nollhat">&lt;h6 id=&quot;for-a-post-in-english-directed-at-a-coder-audience-read-rather-zero-hatehttpblogsimpletasksezerohate-this-post-is-intended-mainly-for-a-swedish-general-audience&quot;&gt;For a post in English directed at a coder audience, read rather &lt;a href=&quot;http://blog.simpletask.se/zerohate&quot;&gt;Zero Hate&lt;/a&gt;. This post is intended mainly for a Swedish general audience.&lt;/h6&gt;
+
+&lt;h6 id=&quot;hjaumllp-oss-samla-in-data-foumlr-att-traumlnahttpzerohatesimpletasksehelp-zero-hate&quot;&gt;Hjälp oss samla in data för att &lt;a href=&quot;http://zerohate.simpletask.se/help&quot;&gt;träna&lt;/a&gt; Zero Hate.&lt;/h6&gt;
+
+&lt;p&gt;Jag har inte så mycket mer att tillägga om #näthat. Jag spyr med er. Jag kan bara säga att jag inom samma vecka är ganska nöjd med att vara svensk och skamsen. Jag tänker på The Economists behandling av Norden i senaste numret.&lt;/p&gt;
+
+&lt;p&gt;Jag har utvecklat ett verktyg för att snabbt ta bort kommentarer en masse. Jag kallar det &lt;a href=&quot;http://zerohate.simpetask.se&quot;&gt;Zero Hate&lt;/a&gt;. Vem som helst med en sida på Facebook (page) kan använda det för moderering av kommentarer.&lt;/p&gt;
+
+&lt;p&gt;Jag gjorde en screencast för att nå ut. Nu kan se den här.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Om ni har förslag eller kommentarer, tweeta. Vill ni hjälpa mig koda? Tack, gärna, tweeta!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/intent/tweet?screen_name=MartinCamitz&quot; class=&quot;twitter-mention-button&quot; data-size=&quot;large&quot; data-related=&quot;MartinCamitz&quot;&gt;Tweet to @MartinCamitz&lt;/a&gt;
+&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=&quot;//platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Vad är motiveringen här?&lt;/p&gt;
+
+&lt;p&gt;H&amp;amp;M säger att dom tagit bort 3000 kommentarer. 2000 återstod. De får de de förtjänar pga policy och beredskap, men det är lätt att se att uppgiften inte är trivial. De hann inte begränsa skadan för sig själva eller de utsatta. Nästa gång klarar de det bättre, men de kommer inte vara nästa target heller.&lt;/p&gt;
+
+&lt;p&gt;Det är lätt att se hur kommentarstormar blir till. Sällan blir kommentarer fler än 10 i antal. Tar de sig över hamner de lätt på 100. Därefter tusentals. Mekanismen är att Facebook rankar populära poster högt på användarnas feeds, varpå de blir ännu populärare. Det kallas kritiskt fenomen och förekommer inte bara på Facebook och inte bara på nätet. H&amp;amp;M marknadsavdelning hoppas hitta nästa “tipping point”, fast en positiv sådan.&lt;/p&gt;
+
+&lt;p&gt;Vissa ämnen attraherar en viss sorts kommentarer och då blir det läskigt väldigt fort.&lt;/p&gt;
+
+&lt;p&gt;Det är utomordentligt viktigt att ligga steget för när det väl brakar loss. Det handlar inte bara om beredskap. Man måste ha verktyg för att hålla inflödet i schack. Om det kommer 100 kommentarer i minuten måste du kunna ta bort 100 kommentarer i minuten. Då kväver du de mörka krafterna i sin linda. Hat-Sven får aldrig upp ögonen för posten eftersom hat-Niklas och hat-Olles kommentarer försvann inom två minuter från att de postades. Då behöver du inte ta bort 5000 kommentarer, kanske bara 100.&lt;/p&gt;
+
+&lt;p&gt;Givet att du inte har den beredskapen - H&amp;amp;Ms katastrof inträffade på helgen - kan du begränsa tillväxten genom att ta bort 5000 kommentarer på måndagen. Men då vill du läsa dom i äcklighetsordning. Värst, fulast och hotfullast överst. Du kan ta bort det 2000 översta utan att läsa dem.&lt;/p&gt;
+
+&lt;p&gt;Det är vad mitt program är till för. För tillfället är sorteringen i datumordning. Inga sökord. Men jag jobbar på det.&lt;/p&gt;
+
+&lt;p&gt;Så här ser jag framtiden.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Valbara sidor&lt;/li&gt;
+  &lt;li&gt;Sökord, ranka, sortera och filtrera&lt;/li&gt;
+  &lt;li&gt;Egna sökord&lt;/li&gt;
+  &lt;li&gt;Realtidsuppdatering&lt;/li&gt;
+  &lt;li&gt;Notifikationer&lt;/li&gt;
+  &lt;li&gt;Språkbehandling/datorinlärning&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t," /><category term="n&amp;auml;tk&amp;auml;rlek," /><category term="ug," /><category term="uppdrag" /><category term="granskning," /><category term="zero" /><category term="hate," /><category term="eHate" /><summary>For a post in English directed at a coder audience, read rather Zero Hate. This post is intended mainly for a Swedish general audience.</summary></entry><entry><title>Zero Hate</title><link href="localhost:4000/zerohate" rel="alternate" type="text/html" title="Zero Hate" /><published>2013-02-08T01:30:00+01:00</published><updated>2013-02-08T01:30:00+01:00</updated><id>localhost:4000/zero-hate</id><content type="html" xml:base="localhost:4000/zerohate">&lt;p&gt;For a post in Swedish directed at a Swedish general audience, read rather &lt;a href=&quot;http://blog.simpletask.se/nollhat&quot;&gt;Noll Hat&lt;/a&gt;. This post is intended mainly for coders.&lt;/p&gt;
+
+&lt;p&gt;Dear people and in particular the parts of the audience stumbleing upon this site who happen to be from Sweden. None of you will have missed the awful display of hatred, bigotry and plain idiocy depicted in this weeks &lt;a href=&quot;http://www.svt.se/ug/&quot;&gt;Uppdrag Granskning&lt;/a&gt;. This comes the same week that our region in the Nordic is haled by The Economist as role models. The grass, perhaps plenty green over here, is twiny, sharp and nasty.&lt;/p&gt;
+
+&lt;p&gt;In short, women are subjected to insults and death threats and everything in between, when they express their views on Facebook.&lt;/p&gt;
+
+&lt;p&gt;Amid outcries and shame, the pragmatist within me caught foothold on something. H&amp;amp;M say they deleted 3000 comments. 2000 remained but that’s beside the point. It takes too long to read through, monitor and delete posts on your Facebook pages. I’m guessing max 10 per minute per person. Comments stream at many times that speed, at least when it counts the most i.e. most people are reading. It’s clear to me that on trendy topics the rate of commenting, fair or otherwise, is a critical phenomenon and the growth is exponential. Certain subject attract women haters and they spur each other to write ever more twisted comments.&lt;/p&gt;
+
+&lt;p&gt;We need better tools to curb the rate, early and effectively. I tweeted about it and at the same time realized it was within my capacaity to do it and fairly quickly.&lt;/p&gt;
+
+&lt;p&gt;The result is &lt;a href=&quot;http://zerohate.simpletask.se&quot;&gt;Zero Hate&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This rather ruddy proof of concept lets you select multiple tweets and deletes them in batch. It’s really fast and sure beats doing it one by one.&lt;/p&gt;
+
+&lt;p&gt;It’s of limited use unless you can sort the comments according to contents of certain words and that’s the primary target of the upcoming version.&lt;/p&gt;
+
+&lt;p&gt;The following this is the first screencast I’ve made and I know it shows. But it got the word out. It’s in Swedish.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;So this is a call for participation. Tweet me.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/intent/tweet?screen_name=MartinCamitz&quot; class=&quot;twitter-mention-button&quot; data-size=&quot;large&quot; data-related=&quot;MartinCamitz&quot;&gt;Tweet to @MartinCamitz&lt;/a&gt;
+&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=&quot;//platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Github: &lt;a href=&quot;https://github.com/camitz/zerohate&quot;&gt;camitz/zerohate&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Anyone who can take over the server coding would be most welcome. Any platform will do.&lt;/p&gt;
+
+&lt;p&gt;Anyone who has experience in natural language processing, let thyself be known. We need to process comments server side and score them while training the AI, only temporarily persisting them.&lt;/p&gt;
+
+&lt;p&gt;Feature request list:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Selectable pages&lt;/li&gt;
+  &lt;li&gt;Search for keywords, rank and order comments&lt;/li&gt;
+  &lt;li&gt;Add to and persist, keyword list&lt;/li&gt;
+  &lt;li&gt;Locally persisted comment store&lt;/li&gt;
+  &lt;li&gt;Support for Facebooks paging, field limitation&lt;/li&gt;
+  &lt;li&gt;Batch deletes&lt;/li&gt;
+  &lt;li&gt;Realtime updates&lt;/li&gt;
+  &lt;li&gt;Notifications&lt;/li&gt;
+  &lt;li&gt;Language processing/machine learning&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;that," /><category term="n&amp;auml;tk&amp;auml;rlek," /><category term="ug," /><category term="uppdrag" /><category term="granskning," /><category term="zero" /><category term="hate," /><category term="ehate" /><summary>For a post in Swedish directed at a Swedish general audience, read rather Noll Hat. This post is intended mainly for coders.</summary></entry><entry><title>MiniProfiler for Model First EF and Unity</title><link href="localhost:4000/MiniProfiler-Model-First-EF-Unity" rel="alternate" type="text/html" title="MiniProfiler for Model First EF and Unity" /><published>2012-11-29T00:35:00+01:00</published><updated>2012-11-29T00:35:00+01:00</updated><id>localhost:4000/miniprofiler-ef-unity</id><content type="html" xml:base="localhost:4000/MiniProfiler-Model-First-EF-Unity">&lt;p&gt;I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install &lt;a href=&quot;http://www.miniprofiler.com&quot;&gt;MiniProfiler&lt;/a&gt;, in other words. Current version is 2.0.2.&lt;/p&gt;
+
+&lt;p&gt;I don’t know how people can live without it. It’s love and kittens for Asp.NET MVC developers, as &lt;a href=&quot;http://www.hanselman.com/blog/NuGetPackageOfTheWeek9ASPNETMiniProfilerFromStackExchangeRocksYourWorld.aspx&quot;&gt;Scott H&lt;/a&gt; says.&lt;/p&gt;
+
+&lt;p&gt;I’ve been using it for some time on several projects but I haven’t installed the Entity Framework till now. That took a bit of head scratching as most of the stuff out there, including MiniProfiler docs, is about Code First setups. Some of my code is getting a bit antiquated, not least my Model First EF 4.2 usage. I just don’t know what the stuff on miniprofiler.com means.&lt;/p&gt;
+
+&lt;p&gt;##EF MiniProfiler for Model First projects&lt;/p&gt;
+
+&lt;p&gt;Nevertheless, &lt;a href=&quot;http://stackoverflow.com/a/6805478/168390&quot;&gt;help&lt;/a&gt; was available - as countless times before - signed Darin Dimitrov.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var connectionString = ConfigurationManager
+    .ConnectionStrings[&quot;MyConnectionString&quot;]
+    .ConnectionString;
+var ecsb = new EntityConnectionStringBuilder(connectionString);
+var sqlConn = new SqlConnection(ecsb.ProviderConnectionString);
+var pConn = ProfiledDbConnection.Get(sqlConn, MiniProfiler.Current);
+var context = ObjectContextUtils.CreateObjectContext&amp;lt;CYEntities&amp;gt;(pConn);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;##What about Unity Container?&lt;/p&gt;
+
+&lt;p&gt;I’m also using Unity Container to inject my object context so if I’m going to put the above anywhere, it’s in my container. Previously my container was configured like this.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;IUnityContainer container = new UnityContainer()
+	.RegisterType&amp;lt;CYEntities&amp;gt;(new PerHttpRequestLifetime(), new InjectionConstructor(connectionString));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I need to use a customized piece of code to do the creating for me and I recall this is what is known as a factory. Unity supports this through InjectionFactory.&lt;/p&gt;
+
+&lt;p&gt;Hence&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;IUnityContainer container = new UnityContainer()
+    .RegisterType&amp;lt;CYEntities&amp;gt;(GetLiftimeManager(lifeTimeManagerType), 
+         new InjectionFactory(c=&amp;gt; {
+			var ecsb = new EntityConnectionStringBuilder(connectionString);                                                                                                                 var sqlConn = new SqlConnection(ecsb.ProviderConnectionString);                                                                                                                 var pConn = new EFProfiledDbConnection(sqlConn, MiniProfiler.Current);                                                                                                                 return pConn.CreateObjectContext&amp;lt;CoinEntities&amp;gt;(); 
+		 }));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And it works, too.&lt;/p&gt;
+
+&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
+
+/* * * DON&#39;T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
+dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
+(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
+})();
+&lt;/script&gt;
+
+&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="miniprofiler," /><category term="ef," /><category term="entity" /><category term="framework," /><category term="unity" /><category term="container," /><category term="asp.net" /><category term="mvc" /><summary>I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install MiniProfiler, in other words. Current version is 2.0.2.</summary></entry></feed>
