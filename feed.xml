@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.0.5">Jekyll</generator><link href="http://blog.simpletask.se/feed.xml" rel="self" type="application/atom+xml" /><link href="http://blog.simpletask.se/" rel="alternate" type="text/html" /><updated>2016-05-16T19:24:43+01:00</updated><id>http://blog.simpletask.se/</id><title>Cozmiq Debris</title><subtitle>I am the CTO of Cocoin, a Swedish internet payment service,, and SimpleTask. We use the AWSAppender suite extensively (formerly CloudWatchAppender) and this blog mostly deals with that.</subtitle><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><entry><title>EC2 Spot Instance Termination Notification to SNS</title><link href="http://blog.simpletask.se/EC2SpotStop2SNS" rel="alternate" type="text/html" title="EC2 Spot Instance Termination Notification to SNS" /><published>2015-01-05T16:00:00+00:00</published><updated>2015-01-05T16:00:00+00:00</updated><id>http://blog.simpletask.se/EC2SpotStop2SNS</id><content type="html" xml:base="http://blog.simpletask.se/EC2SpotStop2SNS">&lt;p&gt;The AWS team yesterday &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;amp;sc_icountry=global&amp;amp;sc_icampaigntype=launch&amp;amp;sc_icampaign=em_130420040&amp;amp;sc_idetail=em_66267057&amp;amp;ref_=pe_395030_130420040_8&quot;&gt;announced&lt;/a&gt; that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS &lt;a href=&quot;http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&quot;&gt;instance metadata service&lt;/a&gt;, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.0.5">Jekyll</generator><link href="http://blog.simpletask.se/feed.xml" rel="self" type="application/atom+xml" /><link href="http://blog.simpletask.se/" rel="alternate" type="text/html" /><updated>2016-05-16T19:41:43+01:00</updated><id>http://blog.simpletask.se/</id><title>Cozmiq Debris</title><subtitle>I am the CTO of Cocoin, a Swedish internet payment service,, and SimpleTask. We use the AWSAppender suite extensively (formerly CloudWatchAppender) and this blog mostly deals with that.</subtitle><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><entry><title>EC2 Spot Instance Termination Notification to SNS</title><link href="http://blog.simpletask.se/EC2SpotStop2SNS" rel="alternate" type="text/html" title="EC2 Spot Instance Termination Notification to SNS" /><published>2015-01-05T16:00:00+00:00</published><updated>2015-01-05T16:00:00+00:00</updated><id>http://blog.simpletask.se/EC2SpotStop2SNS</id><content type="html" xml:base="http://blog.simpletask.se/EC2SpotStop2SNS">&lt;p&gt;The AWS team yesterday &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;amp;sc_icountry=global&amp;amp;sc_icampaigntype=launch&amp;amp;sc_icampaign=em_130420040&amp;amp;sc_idetail=em_66267057&amp;amp;ref_=pe_395030_130420040_8&quot;&gt;announced&lt;/a&gt; that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS &lt;a href=&quot;http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&quot;&gt;instance metadata service&lt;/a&gt;, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.&lt;/p&gt;
 
 &lt;p&gt;So now the instance can find out that it is being terminated and can take approprate action and that’s really great. But I want to know aswell!&lt;/p&gt;
 
@@ -28,131 +28,7 @@
 
 &lt;h2 id=&quot;whats-next&quot;&gt;What’s next?&lt;/h2&gt;
 
-&lt;p&gt;Obviously I couldn’t be bothered to configure my json with all the data from a particular instance metadata service. Now all I need is an app the does that for me. Shouldn’t be that hard to do. You’re welcome to help me out on that one.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="SNS" /><category term="spot instance" /><category term="termination" /><category term="windows" /><category term="instance meta data" /><summary>The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS instance metadata service, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.</summary></entry><entry><title>Introducing the Buffering and Aggregeting CloudWatch Appender</title><link href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender" rel="alternate" type="text/html" title="Introducing the Buffering and Aggregeting CloudWatch Appender" /><published>2014-04-23T16:00:00+01:00</published><updated>2014-04-23T16:00:00+01:00</updated><id>http://blog.simpletask.se/cloudwatchappender3.md</id><content type="html" xml:base="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.
-
-One of the limitations of the CloudWatch Appender has been that you definitely want to do some configuration and filtering. If you redirect *all* your log messages to Cloudwatch then you would very quickly choke your service waiting for the API. In fact AWS limits your calls, but you&#39;d still be making the requests trying.
-
-An update some time ago made a slight improvement in that the requests were collected and performed asynchronously, but that only meant that the appender was able to handle bursts better. A stream was of continuous events were solved with the introduction of an event rate limiter - by dumping them into the bit bucket.
-
-Why it took me so long to implement the promised buffering appender, I don&#39;t know. It works very well and was not hard to do.
-
-Instead of sending a single API request per log message, the BufferingAggregatingCloudWatchAppender collects event messages in the same way as the BufferingForwardingAppender that comes with the package does. When a condition is met, the level of the message or a maximum buffer size, the collected events are processed and aggregated data according to NameSpace, MetricName and Dimensions, then sent to CloudWatch as a statistic set.
-
-The overhead is minimal.
-
-# Don&#39;t filter
-
-This means that installation has never been simpler.
-
-    &lt;log4net&gt;
-       &lt;appender name=&quot;CloudWatchAppender&quot; type=&quot;CloudWatchAppender.BufferingAggregatingCloudWatchAppender, CloudWatchAppender&quot;&gt;
-            &lt;bufferSize value=&quot;1000&quot;/&gt;
-            &lt;accessKey value=&quot;YourAWSAccessKey&quot; /&gt;
-            &lt;secret value=&quot;YourAWSSecret&quot; /&gt;
-            &lt;endPoint value=&quot;eu-west-1&quot; /&gt;
-        &lt;/appender&gt;
-
-        &lt;root&gt;
-          &lt;appender-ref ref=&quot;CloudWatchAppender&quot; /&gt;
-        &lt;/root&gt;
-    &lt;/log4net&gt;
-
-Say a single request to your web application on average generates 50 log messages and you have 100 requests a minute... well, then using the regular CloudWatchAppender you wouldn&#39;t have a web application anymore, just 500 http requests a minute.
-
-At a price of 1 cent per 1000 API request, Amazon seems pretty generous, more of a don&#39;t get carried away limit. If you&#39;re paying for it, you&#39;re doing it wrong. And there&#39;s a request limit on top of that. But if there was no limit, the above example would amount to 216,000,000 requests per month. 
-
-Uhm... $2159, ok? But, hey, first mill&#39; free!
-
-Strong case for BufferingAggregatingCloudWatchAppender. Using BufferingAggregatingCloudWatchAppender, you&#39;ll be making about one request every two minutes. Async. That&#39;s nothing.
-
-So, no rush. Just put the above in your config, it&#39;ll work, it won&#39;t cost you. It will be somewhat usefull. When you get round to it, you can start configuring NameSpaces, MetricNames, Dimensions and working with units, pushing info that somebody needs to know. You will incur a cost in dollars eventually but probably not in terms of bandwidth and waiting for http requests.
-
-So use it and don&#39;t look back.
-
-# Evaluators
-
-log4net supports 3 evaluators out of the box for flushing the buffer. The following example uses TimeEvaluator.
-
-      &lt;lossy value=&quot;true&quot; /&gt;
-      &lt;evaluator type=&quot;log4net.Core.TimeEvaluator&quot;&gt;
-        &lt;interval value=&quot;60&quot;/&gt;
-      &lt;/evaluator&gt;
-
-Regardless of the saturation level of the buffer, the events will be processed and sent to CloudWatch once a minute. Using lossy mode, the buffer won&#39;t be processed when filled. The oldest events are dropped until the evalutator is triggered.
-
-I can think of several custom evaluators specifically for use with CloudWatch, but that&#39;s for later.
-
-# Lot&#39;s of improvements
-
-I&#39;ve made some other improvements aswell. Some around the asynchronous requests - although it&#39;s probably not perfectly comme-il-faut and it&#39;s still very .NET 4.0 style. Some general refactorings have been made, mostly beneficial for me.
-
-Debug outputs and error messages from CloudWatchAppender were previously passed to the TraceListener system. Now they are routed to log4net&#39;s internal scheme.
-
-One of the things already in place is acutally a bug fix. It was a breaking change and released as such but I decided to do it because I couldn&#39;t fathom anyone using the feature in the wasy provided. It has to do with the augmented logger function and negative precision specifier. Read more [here](https://github.com/camitz/CloudWatchAppender/blob/master/README.md# augmented-logger-functionality).
-
-Do stay tuned for upcoming releases. Here are some more things I have planned for the very near future.
-
-## Unit converter
-
-Microseconds, milliseconds. Same, but different. Kilobytes, megabytes, even Gigabits, same thing there. Amazon supports these units but doesn&#39;t seem to know how to convert them. If you&#39;ve made but a single request for a particular MetricName for a certain NameSpace, then you unit is set in stone for the next two weeks. It doesn&#39;t matter what you send, AWS will interpret thos values as representing the original unit. That means you need to keep track of your units and not log Kilobytes, Bytes and Megabytes for the same metric. 
-
-It&#39;s not published yet, but soon, CloudWatchAppender will help you out. 
-
-Firstly it will convert between different prefix versions of the same unit, for example Kilobytes end Megabytes. The buffering appender, if it&#39;s a freshly created appender, will find the unit with lowest prefix and convert all other values to that it.
-
-Secondly, between requests, it&#39;ll keep track of that unit for as long as it&#39;s alive. So make one call with Kilobytes and later on one with Megebytes, you&#39;re going to get Kilobytes in the plot.
-
-If the web app is recycled, or it&#39;s separate thread, or server then it&#39;ll this feature is not 100 % correct. In most cases it&#39;ll work out fine though since usually calls are made pretty much the same way and order and surprised only happen unless you make changes in your code.
-
-But just to be on the safe side, if it doesn&#39;t know, CloudWatchAppender will make a get request to the API and make sure. It will find our what unit is used for a certain metric and convert everything to that.
-
-This last feature is further down the line but it will come eventually. And of course you can turn it off.
-
-## Metric data per request limit
-
-When using the unbuffered appender, we were burdening our requests with 1-2 metric data, as the data carrying objects are known. With the buffering appender we make one request per NameSpace and add to those as any metric data as we need, usually one per combination of MetricName and Dimensions used. I wasn&#39;t aware there was a limit imposed on how may MetricDatum objects can be added to a request, but there is. It&#39;s 20. Sooner or later someone will hit it, so that needs to be taken care of.
-
-## Auto config
-
-Sample config will be added to the nuget package once I learn how.
-
-## Support for StandardUnit
-
-Say you could do something like this?
-
-      &lt;standardunit type=&quot;Amazon.CloudWatch.StandardUnit&quot;&gt;
-           &lt;value value=&quot;Kilobytes&quot;/&gt;
-      &lt;/standardunit&gt;
-
- Would you prefer it to the current?
-
-     &lt;unit value=&quot;Kilobytes&quot; /&gt;
-
-Maybe. Maybe not. It&#39;s just that I introduced the SDK&#39;s StandardUnit in every other place throughout the code to exploit its built in validation of the string value, instead of maintaining my own list. So why not use StandardUnit in config as well? Seems like alot more typing, but the main issue is another. Log4net requires StandardUnit to have a parameterless constructor, which it doesn&#39;t. 
-
-So to support this feature of questionable value you&#39;d need to modify the source code and put in for a pull request with the people behind log4net.
-
-...
-
-You bet I did!!
-
-
-
-
-&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
-
-/* * * DON&#39;T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
-dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
-(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
-})();
-&lt;/script&gt;
-&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="cloudwatch" /><category term="log4net" /><category term="appender" /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Introducing the Buffering and Aggregeting CloudWatch Appender</title><link href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender" rel="alternate" type="text/html" title="Introducing the Buffering and Aggregeting CloudWatch Appender" /><published>2014-04-23T16:00:00+01:00</published><updated>2014-04-23T16:00:00+01:00</updated><id>http://blog.simpletask.se/cloudwatchappender3</id><content type="html" xml:base="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">&lt;p&gt;The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.&lt;/p&gt;
+&lt;p&gt;Obviously I couldn’t be bothered to configure my json with all the data from a particular instance metadata service. Now all I need is an app the does that for me. Shouldn’t be that hard to do. You’re welcome to help me out on that one.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="SNS" /><category term="spot instance" /><category term="termination" /><category term="windows" /><category term="instance meta data" /><summary>The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS instance metadata service, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.</summary></entry><entry><title>Introducing the Buffering and Aggregeting CloudWatch Appender</title><link href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender" rel="alternate" type="text/html" title="Introducing the Buffering and Aggregeting CloudWatch Appender" /><published>2014-04-23T16:00:00+01:00</published><updated>2014-04-23T16:00:00+01:00</updated><id>http://blog.simpletask.se/cloudwatchappender3</id><content type="html" xml:base="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">&lt;p&gt;The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.&lt;/p&gt;
 
 &lt;p&gt;One of the limitations of the CloudWatch Appender has been that you definitely want to do some configuration and filtering. If you redirect &lt;em&gt;all&lt;/em&gt; your log messages to Cloudwatch then you would very quickly choke your service waiting for the API. In fact AWS limits your calls, but you’d still be making the requests trying.&lt;/p&gt;
 
@@ -266,98 +142,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 
 &lt;p&gt;…&lt;/p&gt;
 
-&lt;p&gt;You bet I did!!&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="cloudwatch" /><category term="log4net" /><category term="appender" /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans.md</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">*by Arkady Babtjenko*
-
-*Translated from Swedish, in turn transated from Russian by Ola Wallin. The Swedish translation was published in DN and can be found [here](http://www.dn.se/kultur-noje/kulturdebatt/valkomna-till-ryssland-kara-krimbor/). Published here with permission from the author.*
-
-Good to see you. And allow us to congratulate you on the last referendum in your lives. Further &quot;declarations of intent&quot; will not be permitted. You simply will not get to choose again - never, and nothing. Never and nothing. Not even the color of the borders of your own backyard. Commit it to memory right away.
-
-Second, you can say goodbye to your television. Good bye live broadcasts, talk shows and debate shows. Hello smearings, dead bodies, freaks and jokes about pee and genitals. Propaganda instead of news, hardcore! Special broadcasts with Putin&#39;s eternal monologues.
-
-Thirdly: conscription army. A separate chapter. During the 23 years since the fall of the USSR, you have obviously forgotten what occupation means when your children are called up for military service. But it doesn&#39;t matter. You will remember. Especially when your children in our - sorry, I mean your - army begin to die from diseases that young people elsewhere in the world have not died from in a hundred years. Pneumonia, for example. Accustomed to Crimea terrain, they may serve on the island of Kunasjir in the Pacific. 
-
-It might be a good idea to take a look at what the &quot;Caucasus force&quot; (translator note: I&#39;ve not been able to find references to this. Swedish: Kaukasusstyrkan.) has tattooed on their shaved heads.
-
-By the way, here is a link that you can write down right away: [http://mright.hro.org](http://mright.hro.org). It links to the Mother&#39;s Right Foundation who for twenty years have supported the families of killed servicemen. Only last year they helped 2,465 families. Speaking of dead servicemen, 20 percent were suicide, 20 were percent &quot;forced suicide&quot;, 25 percent diseases and 5 percent due to physical abuse. 
-
-But as the song goes, &quot;Do not cry, my giiirl!&quot;
-
-And yes, in Russia, the pension for disabled soldier mothers amounts to 40 dollars a month when the breadwinner dies. You heard right. In a few years, it is you who will get it. Welcome to our justice system.
-
-Speaking of justice: it is far too long a story, so I&#39;ll just remind you of this: to incite hatred against religious people, offend believers&#39; feelings, publicly defend terrorism (i.e. comments on Facebook), extremist statements, slander, all of this falls under the Criminal Code. To deny history, prevent citizens from taking a stroll, gather more than five people without a permit, behaving immorally, for all this - and much, much more! - the police administers justice on the spot.
-
-Well, apparently, you have already become acquainted with our Cossacks . Good looking guys, right? And yet it is nothing, nothing. You have not seen our priests yet. By the way, there is an on going federal program to increase spirituality in the population and strengthen the spiritual ties under the motto &quot;A church on every plot.&quot; Where you thought you would get a daycare or a road junction - you&#39;ll get a church. Yes, it&#39;s like that at my house - outside my window they are building one right now, instead of repairing the traffic lights. There are queues every morning, but never mind the junction! We need a church and nothing more. Well, just forget it, you will understand for yourselves in due time.
-
-Ah, I almost forgot: you will of course pay the bill for the construction - as surely as amen in the church. The City Administration in Elektrostal, who came up with this spiritual innovation, will teach you how it works.
-
-Well, now that we&#39;re on the subject of bills. We have a large housing reform in the works. Ten years and counting. And the next lap is just coming up. So soon, the rent of your apartment will be increased to over 800 dollars a month.
-
-And then, all the benefits! You have probably already received financial compensation for the withdrawal of your benefits? Have you not? I see... I&#39;m actually jealous of you. So many interesting discoveries await you!
-
-By the way, exercises on the theme &quot;disperse gatherings of disgruntled pensioners&quot;, our Dzerzjinskij division conducted those five years ago already. Rest assured that they will be happy to share their experiences with your Berkut unit.
-
-But small matters like the confiscation of the best locations for palaces and mansions, the redistribution of business - all of them! - demolitions and arson against apartment buildings in order to build shopping centers and so on, and so on, and so on, well, I will not go into that. Nor tax offices, health centers, fire stations, prosecutors&#39; offices, police stations, security service&#39;s local offices, municipal administrations and so on, and so on, and so on. You get most of you income from tourism down there, right? Oh, forget all about that that, just forget it. This is what we call &quot;bad dreaming business&quot;. Forget that too. You will get used to it.
-
-Oh yes, speaking of tourism - you have hotels, right? Right on the coast? On the whole Crimea? Nevermind, nevermind. Soon there will no longer any hotels right on the coast in Crimea.
-
-But there will be a wonderful dacha for Governor Aleksandr Tkatjov! A dacha for Defence, Sergei Sjojgu! Dachas for all senators! Dachas ate all the deputies! Dachas for all the generals! And after them the whole Central Committee and all the prosecutors! Just think of all the yachts that will anchor at all private piers! Just think of all the enclosures will be built on your sea front!
-
-You will have to be content with the municipal beach in Sevastopol.
-
-By the way, I recommend that you learn the advertising slogans &quot;You have many, I have one!&quot; and &quot;A cash register for all!&quot; of the Russian postal service, Sberbank, the pensioners insurance fund, social services - it&#39;s all yours. Congrats.
-
-Ah, that&#39;s right, yes: Sberbank, the savings bank. Again, you are in incredible luck - they have just launched a new round of pension reforms. Before, no could figure out how to calculate the pensions, and now makes it even less sense - if at all there will be any.
-
-You might as well learn two additional concepts: CTO, which stands for Counter Terror Operation, and hexogen. This is important. For real. And in future, try to avoid places with other people, train stations, airports - well, especially train stations and airports - bus stations, markets, concerts and crowds in general.
-
-If you still have to fly, make sure to be at the airport three hours in advance. At each entrance, there will be check points. Better not joke with the guards. Shave off your beard. Lighten your hair. Turn your pockets inside out and let them frisk you when they tell you. Never - never! - leave home without identification documents.
-
-Yes, don&#39;t forget sanctions from our international friends, that is to say, our new enemies. You guys are in Russia now.
-
-And then a few tiny matters. Well, a bunch of them, really:
-
-It is prohibited to protest in Russia.
-
-It is prohibited to resist the unlawful arrest and unlawful detention.
-
-It is prohibited for regions to be autonomous. It is forbidden to leave the Russian federation. Separatism is prohibited.
-
-It is prohibited for foreigners to adopt Russian children.
-
-It is prohibited to propagate homosexuality.
-
-It is prohibited for Madonna and Lady Gaga to perform.
-
-It is prohibited to put up unauthorized posters.
-
-The television network Dozjd is prohibited.
-
-Any day now, online money will be prohibited.
-
-Prices in Moscow is twice as high as in Kiev. On everything.
-
-And, finally, for us (and now also for you), it is forbidden to sell alcohol from eleven at night till eight in the morning. The Sobriety Act, you see.
-
-In short, welcome home.
-
-Arkady Babtjenko
-
-*Arkady Babtjenko is a journalist and the author of &quot;One Soldier&#39;s War&quot; (Grove Press). He works today as a war reporter for the newspaper Novaya Gazeta.*
-
-&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
-
-/* * * DON&#39;T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
-dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
-(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
-})();
-&lt;/script&gt;
-&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Arkady Babtjenko" /><category term="Arkadij Babtjenko" /><category term="crimea" /><category term="ukraine" /><category term="russia" /><category term="välkommen till ryssland" /><category term="kulturdebatt" /><summary>*by Arkady Babtjenko*</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">&lt;p&gt;&lt;em&gt;by Arkady Babtjenko&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;You bet I did!!&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="cloudwatch" /><category term="log4net" /><category term="appender" /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">&lt;p&gt;&lt;em&gt;by Arkady Babtjenko&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Translated from Swedish, in turn transated from Russian by Ola Wallin. The Swedish translation was published in DN and can be found &lt;a href=&quot;http://www.dn.se/kultur-noje/kulturdebatt/valkomna-till-ryssland-kara-krimbor/&quot;&gt;here&lt;/a&gt;. Published here with permission from the author.&lt;/em&gt;&lt;/p&gt;
 
@@ -449,407 +234,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 
 &lt;p&gt;But in exchange, I will give you my life, Sweden. For &lt;em&gt;you&lt;/em&gt;, I and my children always help you build. I give you my ingenuity. I give you my creativity and my energy. I will love in Sweden, I will live in Sweden, and I will die in Sweden .&lt;/p&gt;
 
-&lt;p&gt;Thank you.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Jason Diakite" /><summary>Translated from Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation.</summary></entry><entry><title>On representing a survey with XML</title><link href="http://blog.simpletask.se/survey-representation.md/" rel="alternate" type="text/html" title="On representing a survey with XML" /><published>2013-04-29T09:34:00+01:00</published><updated>2013-04-29T09:34:00+01:00</updated><id>http://blog.simpletask.se/survey-representation.md</id><content type="html" xml:base="http://blog.simpletask.se/survey-representation.md/">With my new survey software suite, a survey is as easy to enter as
-
-	What did you drink last night?
-	o Gin/Tonic
-	o Marguerita
-	o Cosmopolitan
-	o Other: []
-
-My clients will be able to enter survey with ease and mostly without my involvment. They will be able to share survey by email for review.
-
-Now all I have to do is get it out of my brain and into a compiler. But why not?
-
-I&#39;m picturing something like markdown which outputs an intermediary XML representation in an update-as-you-type-editor, maybe online. With some meta data in the header you&#39;d be able to publish it in a dropbox folder just as I am this blog post. 
-
-It&#39;s the representation at the core of this that I want to talk about today. I propose a new representation of a survey. I&#39;m calling it **Flamingo**.
-
-## Background
-
-I sometimes dabble with surveys in particular [RDS](https://www.researchgate.net/publication/233419485_Implementation_of_Web-Based_Respondent-Driven_Sampling_among_Men_Who_Have_Sex_with_Men_in_Vietnam) surveys. I made my own survey engine many years back. It was replaced by the research team with a modified version of LimeSurvey. 
-
-LimeSurvey is very nice but it&#39;s stuck in an inflexible model. One it shares with many other engines and XML representations I&#39;ve seen ([1](http://quexml.sourceforge.net/node/1),[2](http://www.triple-s.org/sssxml1.htm),[3](http://manual.limesurvey.org/wiki/Importing_a_survey_structure),[4](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2244339/)). Sorry for ranting about LimeSurvey, it just happens to be in the line of fire.
-
-There are the database tables. Questions. Answers. Question attributes. Conditions. 
-
-There are the question types. Radio list. Dropdowns. Yes/no. Text. Numeric. LimeSurvey offers several different types of array questions. 20 or so different types altogether. LimeSurvey survey calls this &quot;vast&quot;. Nonetheless, I&#39;ve had to add three question types and hack five. 
-
-So there&#39;s one motivation for rethinking the whole thing. I do not propose a presentation enginge that we will never need recoding for different needs and purposes but I most certainly want to separate the presentation from survey content and logic.
-
-This last week I&#39;ve been dealing with some pretty complex stuff involving a country selector. We ultimately had to find LimeSurvey-conforming solutions to it. Hacking the model and presentation was too big an operation.
-
-What I propose is not only a brand new representation of a survey but a whole new way of thinking about a survey from the bottom up, including presentation and interpretation of responses.
-
-The key advantages are:
-
-- High flexibility
-- Partial compliance with HTML
-- Minimum dependence between survey, response, presentation and interpretation of responses
-- Redundant referencing of survey elements
-- Cross references of survey elements
-- Repetition, validation and other survey logic included
-- Dynamically generated survey elements
-
-## Start
-
-Let&#39;s give it a go then. Let&#39;s go way back. What&#39;s the atomic building block of a survey? The option. I propose this is a survey.
-
-	&lt;option&gt;Gin/Tonic&lt;/option&gt;
-	&lt;option&gt;Marguerita&lt;/option&gt;
-	&lt;option&gt;Cosmopolitan&lt;/option&gt;
-	&lt;option&gt;Steak&lt;/option&gt;
-	&lt;option&gt;Lobster&lt;/option&gt;
-	&lt;option&gt;All of the above&lt;/option&gt;
-
-That&#39;s completely answerable. The questionnaire is interpretable and so are the responses, given the right context which may be given as a title or verbally for all I know. No assumptions are made, particularly about which or how many choices are possible together nor what question is actually being asked. The response recorded may be just a table with entries identifying the user and the options selected.
-
-
-Just for the sake of it, let&#39;s impose some implicit logic and provide the user with some context.
-
-    &lt;group&gt;
-        &lt;label&gt;What did you drink last night?&lt;/label&gt;
-        &lt;option&gt;Gin/Tonic&lt;/option&gt;
-        &lt;option&gt;Marguerita&lt;/option&gt;
-        &lt;option&gt;Cosmopolitan&lt;/option&gt;
-    &lt;/group&gt;
-    &lt;group&gt;
-        &lt;label&gt;What did you eat last night?&lt;/label&gt;
-        &lt;option&gt;Steak&lt;/option&gt;
-        &lt;option&gt;Lobster&lt;/option&gt;
-        &lt;option&gt;All of the above&lt;/option&gt;
-    &lt;/group&gt;
-
-This is a refreshing change of perspective for me. All these years I&#39;ve been thinking of a survey as a list of questions. What I&#39;ve come to realize it that it&#39;s really a list of options. The question is just meta data and so is the grouping and any explicit or implicit logic.
-
-This is my basic proposition for a new way of representing a survey - with XML, using two basic elements, options and groups. 
-
-Before we move on, though, let&#39;s change the name of those two elements. The thing is, compliance with HTML, turns out to be a good idea. It makes building a presentation engine based on this scheme much easier. One, most of the stuff you can display straight off. Two, for those knowledgeable in HTML, the documentation is mostly implicit. 
-
-I&#39;ve come up with a set of principles that seem to work rather well for me. Partial compliance with HTML is the second. Hence I&#39;m calling groups *div* and options *input*. Ignore the fact that inputs, if they really were in HTML, would have no content. Ignore also the fact input elements without any other attributes produce textboxes.
-
-## Basic principles
-
-The complete set of basic principles for Flamingo is as follows.
-
-- Two atomic elements, input and div, that largely define a questionnaire
-- Comply with HTML when possible
-- Always assume multiple choice options
-- All the elements are unquiquely identifiable by their XPATH
-- All contents of label attributes and elements act as resource keys when
-
-Incidendtally, the second to last principle is implicit in XML.
-
-We&#39;ve covered two of these principles, although their merit may be unclear for the moment. Let&#39;s move on to the third.
-
-## Assume multiple choice
-
-The default input is a checkbox. Heh? Bear with me, I just want to change the default. 
-
-Your presentation engine&#39;s first point of order is hence to replace
-
-	&lt;input&gt;Gin/Tonic&lt;/input&gt;
-
-with
-
-    &lt;input type=&quot;checkbox&quot;&gt;&lt;label&gt;Gin/Tonic&lt;/label&gt;
-
-Not so long ago form elements came in three flavors, text (including text area), single choice (radios and dropdowns), and multiple choice (checkboxes). This shaped our thinking of what a survey was and what it could do. **In effect it is constraining research.** HTML5 specifies a wealth of new form elements and we&#39;ve been introduced to many more in the form or custom widgets. Rather than expand the model significantly (infinitely) the proposition is to narrow it down to the basics.
-
-In my version, the basic questionnaire is one built from one basic element, the option. And you can select anything! That means checkboxes. Constraints and validation come on top of this. It&#39;s context. It could easily be provided by someone looking over your shoulder and correcting you. I&#39;m not saying it should be that way, but that&#39;s the basic starting point
-
-Now let&#39;s break the mold.
-
-	&lt;label&gt;What did you have for dinner last night?&lt;/label&gt;
-	&lt;div&gt;
-	    &lt;label&gt;Drink:&lt;/label&gt;
-		&lt;input&gt;Gin/Tonic&lt;/input&gt;
-		&lt;input&gt;Marguerita&lt;/input&gt;
-		&lt;input&gt;Cosmopolitan&lt;/input&gt;
-		&lt;input&gt;Tequila sunrise&lt;/input&gt;
-	&lt;/div&gt;
-	&lt;div&gt;
-	    &lt;label&gt;Eat:&lt;/label&gt;
-		&lt;input&gt;Steak&lt;/input&gt;
-		&lt;input&gt;Lobster&lt;/input&gt;
-		&lt;input&gt;I don&#39;t know&lt;/input&gt;
-	&lt;/div&gt;
-	
-What are those? Questions? Subquestions? Any survey model that relies on question as the basic atomic element will run into an &quot;oops&quot; here. I could probably hack this specific layout into LimeSurvey without altering the model, but for each variation I&#39;d be doing more hacking. And for LimeSurvey that means php. Isch.
-
-Easy for me to say, I&#39;m specifying the representation. You&#39;re coding the presentation engine and I&#39;m saying you have to be super adaptive. But I&#39;m going to make life as easy as I can for you. Be like your browser. It can present infinite variations of HTML, even faulty HTML. I&#39;ll partially comply with HTML so you can display most of everything minimum of regular expression text manipulation. And since the input is the basic atomic element, what you send back as a response to the server will be just those. If your engine can&#39;t display the survey exactly the way the author intended, resort to unformatted HTML straight off (just remember to replace the inputs appropriately) and post the responses as is.
-
-Apparently time to show you what a response might look like.
-
-## Responses and the XPATH
-
-The response database table might look like this. It&#39;s a recommendation and not really part of the specification I propose.
-
-    respondent timestamp xpath NPATH   value    content
-    1   123456  &quot;div[0]/input[3]&quot;    &quot;div[0]/input[3]&quot;    &quot;&quot;  &quot;Tequila sunrise&quot;
-    1   123556  &quot;div[1]/input[0]&quot;    &quot;div[1]/input[0]&quot;    &quot;&quot;  &quot;Steak&quot;
-    1   123756  &quot;div[1]/input[1]&quot;    &quot;div[1]/input[1]&quot;    &quot;&quot;  &quot;Lobster&quot;
-
-
-The complete XPATH is noted along with the value. The value may be a textbox value or something from a custom widjet. This means the interpretation of response is dependent on the order and layout of the survey. A concern for the results interpretation, in my opinion. However, if you need more control, add a *name* attribute to the input element. The last entry above may now read:
-
-    1   123756  &quot;div[1]/input[1]&quot;    &quot;div[1]/input[@name=&#39;lobster&#39;]&quot;    &quot;&quot;    &quot;Lobster&quot;
-
-That&#39;s NPATH, with the n for name. Using either the XPATH or the NPATH you can reference the element in your survey XML and the rendered questionnaire. Also key. It helps in server side validation and cross referencing at the interpretation stage.
-
-But wasn&#39;t the objective to reduce dependency between response and representation? Yes. Firstly, the right most column is still there, with the content. It may be all you need. The additional columns are there to aid you in the interpretation.
-
-Secondly, while the response and interpretation of the response is dependent on the survey layout, the thing to note, is that the response model is not. This is key.
-
-This is one of the things I address with the XPATH/NPATH/value/content redundancy. When you alter the survey you will be able to compare the XPATH with the NPATH, back trace through the response table and be able to deduce what option is chosen. To aid you have the complete version history of the survey, don&#39;t you?
-
-Reorder, add or delete questions, divide or merge questions, duplicate the question... Have two versions of the survey running in parallell. You can design a response server that will be able to record data in a way you deem sufficient to interpret.
-
-I don&#39;t consider this more than a recommendation. Exactly what you choose to record is entirely up to you. You may even submit an xml representation of the response, if you wish.
-
-Timestamp? Again a recommendation. This is just where we are today regarding what data is. The age when a response was a check in a box is over. Valuable information can be gleaned from the behavior of the respondent, including how long he/she takes to respond and how many times the answer is changed. The least information is a cross section of the data including only the latest answer.
-
-One final thing to note, the engine may reorder everything as you wish. Maybe the author has requested randomized questions. This should not affect the XPATH of the options. The XPATH references the survey XML template, not the rendered display. That includes dynamically generated elements which we&#39;ll get to later.
-
-### Another example
-
-To further the discussion with another example, consider the following. I&#39;ve introduced that label short hand here, but that&#39;s not the point.
-
-	&lt;div&gt;
-	    &lt;label&gt;Rate the following dishes&lt;/label&gt;
-	    &lt;div label=&quot;Steak&quot;&gt;
-	        &lt;input&gt;Hate it&lt;/input&gt;
-	        &lt;input&gt;It&#39;s ok&lt;/input&gt;
-	        &lt;input&gt;Love it&lt;/input&gt;
-	    &lt;/div&gt;
-	    &lt;div label=&quot;Lobster&quot;&gt;
-	        &lt;input&gt;Hate it&lt;/input&gt;
-	        &lt;input&gt;It&#39;s ok&lt;/input&gt;
-	        &lt;input&gt;Love it&lt;/input&gt;
-	    &lt;/div&gt;
-	&lt;/div&gt;
-	
-It should be apparent how this is intended to be displayed. LimeSurvey designates these *array questions* and we&#39;ve all seen them in customer surveys, rating product experience, for example. It&#39;s very similar to the former example except that the content of the input elements repeat. The options&#39; content are to be displayed as column headers. Lobster and Steak are row headers. 
-
-However, if the presentation engine does not have support for this particular layout, that&#39;s fine too. Just display as is (formatting the inputs, obviously). The survey is entirely legible in either case.
-
-## Single choice and multiple choice
-
-As I&#39;ve said, I consider all input elements checkboxes by default, because that&#39;s what I consider a survey, options. If you&#39;re in Europe, both steak and lobster may not be acceptable at the same time. I consider it validation and validation can be specified in my XML schema but the basic assumption is that it is not required. It&#39;s meta data, same as questions and part of a context which may be given in XML or verbally or be implicit.
-
-So you may parse type=&quot;checkbox&quot; (your default as opposed to &quot;text&quot;), type=&quot;text&quot;, type=&quot;radio&quot;. I consider that validation also and so does apparently the HTML5 group since they provide additionally type=&quot;email&quot;, type=&quot;date&quot; etc. 
-
-Consider radio buttons. In order for them to work exclusively, they must have the same name. That implies that the following are alike from the presentation engine stand point.
-
-    &lt;input name=&quot;eat&quot;&gt;Lobster&lt;/input&gt;
-    &lt;input name=&quot;eat&quot;&gt;Steak&lt;/input&gt;
-and 
-
-    &lt;input type=&quot;radio&quot;&gt;Lobster&lt;/input&gt;
-    &lt;input type=&quot;radio&quot;&gt;Steak&lt;/input&gt;
-
-We&#39;ve indicated single choice. There are subtle differences, though. The first may produce a dropdown or any other single choice input method of your devising while the second definitely hints radio buttons. The response recorded may also be different.
-
-    1   123756  &quot;input[0]&quot;    &quot;input[@name=&#39;eat&#39;]&quot;    &quot;&quot;    &quot;Lobster&quot;
-
-vs
-
-    1   123756  &quot;input[0]&quot;    &quot;input[0]&quot;    &quot;&quot;    &quot;Lobster&quot;
-
-See how beautifully that works? By column 3, they are equivalent.
-
-I&#39;ll also allow:
-
-    &lt;div type=&quot;radio&quot;&gt;
-        &lt;input&gt;Lobster&lt;/input&gt;
-        &lt;input&gt;Steak&lt;/input&gt;
-    &lt;/div&gt;
-
-and
-
-    &lt;div max=&quot;1&quot;&gt;
-        &lt;input&gt;Lobster&lt;/input&gt;
-        &lt;input&gt;Steak&lt;/input&gt;
-    &lt;/div&gt;
-
-What about five-to-ten-tuple choice questions? Single choice is just a subset of multiple choice. The constrained mindset we&#39;re used to stems from HTML 1.0, or even further back, an antique radio with preset stations. That&#39;s why they&#39;re called radio buttons, in case you&#39;ve ever wondered.
-
-Imagine a set of attributes for your steak. Bloody through charred. Salted. White pepper. Black pepper. T-bone or rib eye. Some are exclusive, some are not. With LimeSurvey you would be forced to design your survey in a restrictive way, dividing up into several questions. I&#39;ll give you much more flexibility.
-
-That&#39;s why I prefer the last example to be honest, the one with max. But even multiple choice is just a subset of survey logic which I&#39;ll get to in a moment.
-
-In an above example there was a semantically different checkbox: &quot;I don&#39;t know&quot;. It&#39;s not clear whether this should  be a radio button or check box. At the basic level, if the presentation has no other hints, I consider a concern for response interpretation.
-
-Technically though, there are many ways to infer abstention and ignorance. I may wish to have one &quot;I don&#39;t know&quot; and one &quot;I don&#39;t want to answer&quot;. Or I may combine them. They may be placed before or after the &quot;Other&quot; option. I think this should always be up to the author.
-
-### Textboxes 
-
-What about textual data, keyboard entered data in textboxes? Again, I consider keyboard entered data just another option. Consider:
-
-&lt;label&gt;What did you wear?&lt;/label&gt;
-&lt;input/&gt;
-
-All browsers display that as a textbox.
-
-The response may be recorded as:
-
-    1   123456  &quot;option[0]&quot;    &quot;option[0]&quot;    &quot;&quot;  &quot;My dad&#39;s pink tux&quot;
-
-Anyone who sees this out of context will not know whether this was a checkbox or a textbox or anything else. He or she may or may not be keen on knowing, but either way, it&#39;s not a basic premise.
-
-As mentioned, feel free to use type=&quot;email&quot; or anything else supported by HTML5 if you wish. It&#39;s part of this spec too and it hints the engine of what we expect in terms of display and validation.
-
-## Survey logic
-
-Survey logic encapsulates part of what we&#39;ve discussed above. I consider three separate parts.
-
-- Constraints/Validation
-- Control
-- Display
-
-
-### Constraints/Validation
-
-Constraints usually come in to play for specifying how many checkboxes we can select in a group, what type of characters we may enter into a field. This is closely related to validation in my view. I may convey information of what I expect of the user experience. Or I may leave it to you just get me reponses in a way of your design just so long as they fit my validation. That could mean using radio buttons. Or it could mean a flashing red alert explaining to the user that one too many options has been selected. 
-
-The max attribute, and any other that HTML5 specifies, is a shorthand of the constraint attribute. The following is equivalent.
-
-    &lt;div constrain=&quot;.option.count(&#39;checked&#39;)&lt;=1&quot;/&gt;
-
-The following is just slightly more rigid. It implies that the constraint is to be executed at validation time though does not specify when the validation time might be. It may be on click.
-
-    &lt;div validate=&quot;.option.count(&#39;checked&#39;)&lt;=1&quot;/&gt;
-
-I may provide the following information if I&#39;m in the mood, employing another HTML attribute. This is a more hands on constraint.
-
-    &lt;input onchange=&quot;if(this.checked){//div[@name=&#39;cook&#39;].unset(&#39;checked&#39;);this.set(&#39;checked&#39;)}&quot;&gt;Medium rare&lt;/input&gt;
-
-It&#39;s supposed to uncheck all other cooking options. It is not javascript and makes no pretense to be either. You&#39;ll have to parse the XPATH, for starters, loop through the resulting nodes and add appropriate identifiers. For security reasons, no presentation will want to execute javascript from an xml sheet, anyway.
-
-### Display
-
-Similarly, the enabled attribute, used to control where an option is visible/enabled, already implies a condition, for example:
-
-    &lt;input enabled=&quot;!(//option[@name=&#39;steak&#39;].checked)&quot;&gt;Medium rare&lt;/input&gt;
-
-
-### Control
-
-Finally, control logic is about what questions are executed when and possibly in what order, depending on responses and other circumstances. It should be clear by now that I&#39;m not about to introduce a goto statement. I think control concerns should be mapped to display logic as far as possible. Having said that, I haven&#39;t ruled out control logic completely though I can think of no circumstances off hand where it might come in handy.
-
-
-## Other features
-
-### Cross references
-
-To repeat a group or option anywhere (even before the definition), just reference.
-
-    &lt;input ref=&quot;input[3]&quot;/&gt;
-
-will suffice if it&#39;s unique. Otherwise maybe our named lobster.
-
-    &lt;input ref=&quot;@name=&#39;lobster&#39;&quot;/&gt;
-
-We can repeat that as many times as we want. The XPATH makes sure we can interpret the response. This makes it easy to have several questions with long list of countries. In fact, one of the things that prompted these ideas was the use of long lists in LimeSurvey. If multiple options are permissible then LimeSurvey will dynamically create a response table with as many columns for that question as there are options. You can quickly run into the limit of number of columns allowed by MySQL and before that, php stalls.
-
-My take on the issue.
-
-    &lt;div label=&quot;What countries did you visit in 2010?&quot; ref=&quot;@name=&#39;country&#39;&quot;/&gt;
-    &lt;div label=&quot;What countries did you visit in 2011?&quot; ref=&quot;@name=&#39;country&#39;&quot;/&gt;
-    &lt;div label=&quot;What countries did you visit in 2012?&quot; ref=&quot;@name=&#39;country&#39;&quot;/&gt;
-
-The concern for the presentation is to decide on a multiple choice dropdown, a full page of checkboxes with an arbitrary number of columns or perhaps an object store backed combo box widget.
-
-### Dynamically generated survey elements
-
-Cross references together with the severing of the dependency between responses and survey implies the following rather significant bonus. The questionnaire may be dynamically constructed. Arbitrarily repeated questions are a breeze. In fact there is little need for a representation at all for simple ad hoc questionnaires. Just hard code a form and send it off to your response engine. (That&#39;s rather stating the obvious. What I mean is, do try on my recommendation for a response table.)
-
-Take the previous example with multiple choice countries. When the user selects a country, let the presentation generate a new dropdown. This is a real life example which I&#39;ve had to solve with LimeSurvey in a backwards bending way the previous week.
-
-Remember though, implicitly, you&#39;re adding elements to the template, not to the rendered HTML. It may or may not have implications for the XPATH and hence the responses. That&#39;s the rule anyway.
-
-However, dynamically generated survey elements is more than just a bonus, it&#39;s actually implied in many cases by the principle of always assuming multiple choice. Consider the following.
-
-    &lt;div label=&quot;Eat&quot;&gt;
-        &lt;input&gt;Steak&lt;/input&gt;
-        &lt;input&gt;Lobster&lt;/input&gt;
-        &lt;input repeat=&quot;true&quot; label=&quot;Other&quot;/&gt;
-    &lt;/div&gt;
-
-The engine should generate the last input as many times as the user requires. To be honest I think this is an annoying loop hole, one of many to be found. I&#39;d sooner let the author opt in via the repetition feature described later. But I&#39;d like you to give me a chance to find a way that would not break my list of principles or to patch it up.
-
-## Presentation hints
-
-I want to have dependencies between the representation and the presentation as weak as possible. But hints to the presentation has obvious benefits, for example, indicating preference for radio buttons over dropdown, page breaks and instructions. 
-
-The class attribute seems the immediate choice for presentation. That way a tip can be italicized by CSS with minimum fuss.
-
-    &lt;label class=&quot;tip&quot;&gt;
-    
-    &lt;div class=&quot;indent3&quot;&gt;
-
-    &lt;div class=&quot;dropdown&quot;&gt;
-
-    &lt;label class=&quot;faq&quot;&gt;Why are we so interested in what you had for dinner?&lt;/label&gt;
-
-I intend to specify a recommended list of such hints. Presentation engines are free to specify additions to that list as long as they commit to displaying surveys that don&#39;t conform to them.
-
-## Resource keys
-
-That last one deserves an extra look. We never got around to the last principle, the one about resource keys, did we? That&#39;s what this is.
-
-All contents of label attributes and elements act as resource keys. That smacks primarily two flys, images and locale. I&#39;m just mentioning it, I think most can see how this will work out. The basic idea for languages is that you design the survey in your prefered language. Then you simply extract the indexes and write a translation in any other language you require. 
-
-If you write a FAQ, then the above indexes into that. The label may be just a question mark icon. Up to you.
-
-## Repetition
-
-Repeating the country dropdown based on the answer given to a previous question, try:
-
-    &lt;div ref=&quot;@name=&#39;country&#39;&quot; repeat=&quot;//option[@name=&#39;nCountriesVisited&#39;][0].value&quot; /&gt;
-
-Addressing the problem mentioned earlier, when selecting an option generates new option, you would write for instance, given they are single choice dropdowns:
-
-    &lt;div ref=&quot;@name=&#39;country&#39;&quot; repeat=&quot;..//option.count(&#39;checked&#39;)+1&quot; /&gt;
-
-I&#39;ll be the first to agree, that&#39;s a challenge to implement, but I suppose, if the history of HTML compliance is any guide, I suppose I could allow for partial compatibility.
-
-However, the above is bound to happen quite often so the spec will probably accept a special case.
-
-    &lt;div ref=&quot;@name=&#39;country&#39;&quot; repeat=&quot;true&quot;/&gt;
-
-That may clue to a way out of the dilemma mentioned earlier, with the &quot;Other&quot; option. If you really wanted a repeating textbox, then something like this would accomplish it.
-
-    &lt;div&gt;
-        &lt;label&gt;Eat:&lt;/label&gt;
-        &lt;input&gt;Steak&lt;/input&gt;
-        &lt;input&gt;Lobster&lt;/input&gt;
-        &lt;input repeat=&quot;true&quot; label=&quot;Other&quot;/&gt;
-    &lt;/div&gt;
-
-## Closing
-
-Thank you for reading. Tell me what you think. Consider the spec open source, work in progress and feel free to contribute. I&#39;m going to put up a wiki. 
-
-It&#39;s a long way of to 1.0. The markdown type app, a presentation engine to work client side, a response server and a survey backend, should be developed in parallel. A little bit down the road, a UI. 
-
-Currently I don&#39;t have the resources but I think it would be great. Consider funding me if you stand to benefit.
-
-
-&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
-
-/* * * DON&#39;T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
-dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
-(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
-})();
-&lt;/script&gt;
-&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey" /><category term="xml" /><category term="specification" /><category term="standard" /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>On representing a survey with XML</title><link href="http://blog.simpletask.se/survey-representation/" rel="alternate" type="text/html" title="On representing a survey with XML" /><published>2013-04-29T09:34:00+01:00</published><updated>2013-04-29T09:34:00+01:00</updated><id>http://blog.simpletask.se/survey-representation</id><content type="html" xml:base="http://blog.simpletask.se/survey-representation/">&lt;p&gt;With my new survey software suite, a survey is as easy to enter as&lt;/p&gt;
+&lt;p&gt;Thank you.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Jason Diakite" /><summary>Translated from Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation.</summary></entry><entry><title>On representing a survey with XML</title><link href="http://blog.simpletask.se/survey-representation/" rel="alternate" type="text/html" title="On representing a survey with XML" /><published>2013-04-29T09:34:00+01:00</published><updated>2013-04-29T09:34:00+01:00</updated><id>http://blog.simpletask.se/survey-representation</id><content type="html" xml:base="http://blog.simpletask.se/survey-representation/">&lt;p&gt;With my new survey software suite, a survey is as easy to enter as&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;What did you drink last night?
 o Gin/Tonic
@@ -1289,61 +674,7 @@ o Other: []
 
 &lt;p&gt;It’s a long way of to 1.0. The markdown type app, a presentation engine to work client side, a response server and a survey backend, should be developed in parallel. A little bit down the road, a UI.&lt;/p&gt;
 
-&lt;p&gt;Currently I don’t have the resources but I think it would be great. Consider funding me if you stand to benefit.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey" /><category term="xml" /><category term="specification" /><category term="standard" /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>Hjälp oss träna vår robot</title><link href="http://blog.simpletask.se/help" rel="alternate" type="text/html" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot" /><published>2013-02-11T15:57:00+00:00</published><updated>2013-02-11T15:57:00+00:00</updated><id>http://blog.simpletask.se/help.md</id><content type="html" xml:base="http://blog.simpletask.se/help">###### For a post in English about the Zero Hate initiative, read rather [Zero Hate](http://blog.simpletask.se/zerohate). This post is intended mainly for a Swedish general audience.
-
-###### Jag har tidigare skrivit om Zero Hate [h&amp;auml;r](http://blog.simpletask.se/nollhat).
-
-###### Programmet Zero Hate &amp;auml;r fritt att anv&amp;auml;nda h&amp;auml;r [h&amp;auml;r](http://zerohate.simpletask.se).
-
-Zero Hate initiativet har f&amp;aring;tt ordentlig spridning tack vare [screencasten](http://www.youtube.com/watch?v=eRk0Wtcd-xU&amp;feature=youtu.be), Computer Swedens [artikel](http://computersweden.idg.se/2.2683/1.491370/smidigt-verktyg-for-hantering-av-nathat) och alla v&amp;auml;nner p&amp;aring; Twitter och Facebook.
-
-Jag har f&amp;aring;tt mycket positiva kommentarer, f&amp;ouml;r att inte s&amp;auml;ga &amp;ouml;versvallande, och det g&amp;ouml;r mig mycket glad och jag blir mer och mer &amp;ouml;vertygad vi kan f&amp;aring; det h&amp;auml;r att g&amp;ouml;ra stor skillnad.
-
-Jag har ocks&amp;aring; f&amp;aring;tt m&amp;aring;nga erbjudanden om hj&amp;auml;lp. Projektet &amp;auml;r [open source](https://github.com/camitz/zerohate) och vem som helst kan dela och bidra med kod.
-
-Framf&amp;ouml;rallt har M&amp;aring;ns Magnusson, @MansMeg, joinat mig f&amp;ouml;r att bygga en statisktisk algoritm f&amp;ouml;r att avg&amp;ouml;ra vilka kommentarer som ska flaggas f&amp;ouml;r moderering. Det &amp;auml;r allts&amp;aring; en robot med hj&amp;auml;lp av en statistisk modell svarar p&amp;aring; fr&amp;aring;gan, hur hotfull eller kr&amp;auml;nkande &amp;auml;r denna kommentaren, och svara med en siffra mellan 0 och 1000.
-
-Roboten beh&amp;ouml;ver tr&amp;auml;nas. Det beh&amp;ouml;vs ett tusental verkliga kommentarer som du f&amp;aring;tt eller skrivit, p&amp;aring; v&amp;auml;ggposter p&amp;aring; Facebook, tidningsforum eller liknande. Detta behandlas sedan av robothj&amp;auml;rnan f&amp;ouml;r att den ska l&amp;auml;ra sig avg&amp;ouml;ra vad som &amp;auml;r ok och vad som &amp;auml;r hot eller kr&amp;auml;nkande.
-
-
-## Hj&amp;auml;lp oss samla in kommentarer till robothj&amp;auml;rnan!
-
-P&amp;aring; [zerohate.simpletask.se/help.html](http://zerohate.simpletask.se/help.html) finns ett enkelt formul&amp;auml;r d&amp;auml;r du kan bidra med kommentarer.
-
-Sprid ordet!
-
-&amp;Auml;ven vanliga, neutrala och sn&amp;auml;lla kommentarer beh&amp;ouml;vs f&amp;ouml;r att roboten ska kunna k&amp;auml;nna igen skilladen. D&amp;auml;rf&amp;ouml;r kan &amp;auml;ven du delta som inte inte utsatts f&amp;ouml;r n&amp;auml;that.
-
-Ju fler kommentarer vi f&amp;aring;r in desto b&amp;auml;ttre fungerar algoritmen.
-
-## Integritet
-
-Dina data behandlas anonymt och vi lovar att endast anv&amp;auml;nda kommentarerna inom projektets ramar. Vi har bakgrund inom medicinsk forskning och vi vet vad personuppgiftslagen och forskningsetik inneb&amp;auml;r.
-
-Men! Som de forskare vi &amp;auml;r ser vi potentialen med en s&amp;aring;n h&amp;auml;r datainsamling. M&amp;aring;nga forskare kommer vara intresserad av att f&amp;aring; tillg&amp;aring;ng till denna data i en eller annan form till all m&amp;ouml;jlig slags forskning, till gagn mot n&amp;auml;thatet.
-
-Vill du s&amp;aring; kan du ange din epost adress. D&amp;aring; kommer vi fr&amp;aring;ga dig om samtycke om det blir aktuellt att anv&amp;auml;nda data i ett nytt projekt. 
-
-Eller s&amp;aring; kan du ge samtycke redan nu f&amp;ouml;r att data ska h&amp;aring;llas tillg&amp;auml;ngliga f&amp;ouml;r all forskningsverksamhet. Det &amp;auml;r n&amp;auml;tk&amp;auml;rlek, det!
-
-## Hj&amp;auml;lp oss g&amp;ouml;ra n&amp;auml;tet mer demokratiskt och fritt! Sprid ordet!
-
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;
-
-&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
-
-/* * * DON&#39;T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
-dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
-(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
-})();
-&lt;/script&gt;
-&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="ehate" /><summary>###### For a post in English about the Zero Hate initiative, read rather [Zero Hate](http://blog.simpletask.se/zerohate). This post is intended mainly for a Swedish general audience.</summary></entry><entry><title>Hjälp oss träna vår robot</title><link href="http://blog.simpletask.se/help" rel="alternate" type="text/html" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot" /><published>2013-02-11T15:57:00+00:00</published><updated>2013-02-11T15:57:00+00:00</updated><id>http://blog.simpletask.se/help</id><content type="html" xml:base="http://blog.simpletask.se/help">&lt;h6 id=&quot;for-a-post-in-english-about-the-zero-hate-initiative-read-rather-zero-hatehttpblogsimpletasksezerohate-this-post-is-intended-mainly-for-a-swedish-general-audience&quot;&gt;For a post in English about the Zero Hate initiative, read rather &lt;a href=&quot;http://blog.simpletask.se/zerohate&quot;&gt;Zero Hate&lt;/a&gt;. This post is intended mainly for a Swedish general audience.&lt;/h6&gt;
+&lt;p&gt;Currently I don’t have the resources but I think it would be great. Consider funding me if you stand to benefit.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey" /><category term="xml" /><category term="specification" /><category term="standard" /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>Hjälp oss träna vår robot</title><link href="http://blog.simpletask.se/help" rel="alternate" type="text/html" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot" /><published>2013-02-11T15:57:00+00:00</published><updated>2013-02-11T15:57:00+00:00</updated><id>http://blog.simpletask.se/help</id><content type="html" xml:base="http://blog.simpletask.se/help">&lt;h6 id=&quot;for-a-post-in-english-about-the-zero-hate-initiative-read-rather-zero-hatehttpblogsimpletasksezerohate-this-post-is-intended-mainly-for-a-swedish-general-audience&quot;&gt;For a post in English about the Zero Hate initiative, read rather &lt;a href=&quot;http://blog.simpletask.se/zerohate&quot;&gt;Zero Hate&lt;/a&gt;. This post is intended mainly for a Swedish general audience.&lt;/h6&gt;
 
 &lt;h6 id=&quot;jag-har-tidigare-skrivit-om-zero-hate-haumlrhttpblogsimpletasksenollhat&quot;&gt;Jag har tidigare skrivit om Zero Hate &lt;a href=&quot;http://blog.simpletask.se/nollhat&quot;&gt;här&lt;/a&gt;.&lt;/h6&gt;
 
@@ -1381,4 +712,169 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 
 &lt;h2 id=&quot;hjaumllp-oss-goumlra-naumltet-mer-demokratiskt-och-fritt-sprid-ordet&quot;&gt;Hjälp oss göra nätet mer demokratiskt och fritt! Sprid ordet!&lt;/h2&gt;
 
-&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="ehate" /><summary>For a post in English about the Zero Hate initiative, read rather Zero Hate. This post is intended mainly for a Swedish general audience.</summary></entry></feed>
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="ehate" /><summary>For a post in English about the Zero Hate initiative, read rather Zero Hate. This post is intended mainly for a Swedish general audience.</summary></entry><entry><title>Noll Hat</title><link href="http://blog.simpletask.se/nollhat" rel="alternate" type="text/html" title="Noll Hat" /><published>2013-02-08T01:31:00+00:00</published><updated>2013-02-08T01:31:00+00:00</updated><id>http://blog.simpletask.se/noll-hat</id><content type="html" xml:base="http://blog.simpletask.se/nollhat">&lt;h6 id=&quot;for-a-post-in-english-directed-at-a-coder-audience-read-rather-zero-hatehttpblogsimpletasksezerohate-this-post-is-intended-mainly-for-a-swedish-general-audience&quot;&gt;For a post in English directed at a coder audience, read rather &lt;a href=&quot;http://blog.simpletask.se/zerohate&quot;&gt;Zero Hate&lt;/a&gt;. This post is intended mainly for a Swedish general audience.&lt;/h6&gt;
+
+&lt;h6 id=&quot;hjaumllp-oss-samla-in-data-foumlr-att-traumlnahttpzerohatesimpletasksehelp-zero-hate&quot;&gt;Hjälp oss samla in data för att &lt;a href=&quot;http://zerohate.simpletask.se/help&quot;&gt;träna&lt;/a&gt; Zero Hate.&lt;/h6&gt;
+
+&lt;p&gt;Jag har inte så mycket mer att tillägga om # näthat. Jag spyr med er. Jag kan bara säga att jag inom samma vecka är ganska nöjd med att vara svensk och skamsen. Jag tänker på The Economists behandling av Norden i senaste numret.&lt;/p&gt;
+
+&lt;p&gt;Jag har utvecklat ett verktyg för att snabbt ta bort kommentarer en masse. Jag kallar det &lt;a href=&quot;http://zerohate.simpetask.se&quot;&gt;Zero Hate&lt;/a&gt;. Vem som helst med en sida på Facebook (page) kan använda det för moderering av kommentarer.&lt;/p&gt;
+
+&lt;p&gt;Jag gjorde en screencast för att nå ut. Nu kan se den här.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Om ni har förslag eller kommentarer, tweeta. Vill ni hjälpa mig koda? Tack, gärna, tweeta!&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/intent/tweet?screen_name=MartinCamitz&quot; class=&quot;twitter-mention-button&quot; data-size=&quot;large&quot; data-related=&quot;MartinCamitz&quot;&gt;Tweet to @MartinCamitz&lt;/a&gt;
+&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=&quot;//platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Vad är motiveringen här?&lt;/p&gt;
+
+&lt;p&gt;H&amp;amp;M säger att dom tagit bort 3000 kommentarer. 2000 återstod. De får de de förtjänar pga policy och beredskap, men det är lätt att se att uppgiften inte är trivial. De hann inte begränsa skadan för sig själva eller de utsatta. Nästa gång klarar de det bättre, men de kommer inte vara nästa target heller.&lt;/p&gt;
+
+&lt;p&gt;Det är lätt att se hur kommentarstormar blir till. Sällan blir kommentarer fler än 10 i antal. Tar de sig över hamner de lätt på 100. Därefter tusentals. Mekanismen är att Facebook rankar populära poster högt på användarnas feeds, varpå de blir ännu populärare. Det kallas kritiskt fenomen och förekommer inte bara på Facebook och inte bara på nätet. H&amp;amp;M marknadsavdelning hoppas hitta nästa “tipping point”, fast en positiv sådan.&lt;/p&gt;
+
+&lt;p&gt;Vissa ämnen attraherar en viss sorts kommentarer och då blir det läskigt väldigt fort.&lt;/p&gt;
+
+&lt;p&gt;Det är utomordentligt viktigt att ligga steget för när det väl brakar loss. Det handlar inte bara om beredskap. Man måste ha verktyg för att hålla inflödet i schack. Om det kommer 100 kommentarer i minuten måste du kunna ta bort 100 kommentarer i minuten. Då kväver du de mörka krafterna i sin linda. Hat-Sven får aldrig upp ögonen för posten eftersom hat-Niklas och hat-Olles kommentarer försvann inom två minuter från att de postades. Då behöver du inte ta bort 5000 kommentarer, kanske bara 100.&lt;/p&gt;
+
+&lt;p&gt;Givet att du inte har den beredskapen - H&amp;amp;Ms katastrof inträffade på helgen - kan du begränsa tillväxten genom att ta bort 5000 kommentarer på måndagen. Men då vill du läsa dom i äcklighetsordning. Värst, fulast och hotfullast överst. Du kan ta bort det 2000 översta utan att läsa dem.&lt;/p&gt;
+
+&lt;p&gt;Det är vad mitt program är till för. För tillfället är sorteringen i datumordning. Inga sökord. Men jag jobbar på det.&lt;/p&gt;
+
+&lt;p&gt;Så här ser jag framtiden.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Valbara sidor&lt;/li&gt;
+  &lt;li&gt;Sökord, ranka, sortera och filtrera&lt;/li&gt;
+  &lt;li&gt;Egna sökord&lt;/li&gt;
+  &lt;li&gt;Realtidsuppdatering&lt;/li&gt;
+  &lt;li&gt;Notifikationer&lt;/li&gt;
+  &lt;li&gt;Språkbehandling/datorinlärning&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="eHate" /><summary>For a post in English directed at a coder audience, read rather Zero Hate. This post is intended mainly for a Swedish general audience.</summary></entry><entry><title>Zero Hate</title><link href="http://blog.simpletask.se/zerohate" rel="alternate" type="text/html" title="Zero Hate" /><published>2013-02-08T01:30:00+00:00</published><updated>2013-02-08T01:30:00+00:00</updated><id>http://blog.simpletask.se/zero-hate</id><content type="html" xml:base="http://blog.simpletask.se/zerohate">&lt;p&gt;For a post in Swedish directed at a Swedish general audience, read rather &lt;a href=&quot;http://blog.simpletask.se/nollhat&quot;&gt;Noll Hat&lt;/a&gt;. This post is intended mainly for coders.&lt;/p&gt;
+
+&lt;p&gt;Dear people and in particular the parts of the audience stumbleing upon this site who happen to be from Sweden. None of you will have missed the awful display of hatred, bigotry and plain idiocy depicted in this weeks &lt;a href=&quot;http://www.svt.se/ug/&quot;&gt;Uppdrag Granskning&lt;/a&gt;. This comes the same week that our region in the Nordic is haled by The Economist as role models. The grass, perhaps plenty green over here, is twiny, sharp and nasty.&lt;/p&gt;
+
+&lt;p&gt;In short, women are subjected to insults and death threats and everything in between, when they express their views on Facebook.&lt;/p&gt;
+
+&lt;p&gt;Amid outcries and shame, the pragmatist within me caught foothold on something. H&amp;amp;M say they deleted 3000 comments. 2000 remained but that’s beside the point. It takes too long to read through, monitor and delete posts on your Facebook pages. I’m guessing max 10 per minute per person. Comments stream at many times that speed, at least when it counts the most i.e. most people are reading. It’s clear to me that on trendy topics the rate of commenting, fair or otherwise, is a critical phenomenon and the growth is exponential. Certain subject attract women haters and they spur each other to write ever more twisted comments.&lt;/p&gt;
+
+&lt;p&gt;We need better tools to curb the rate, early and effectively. I tweeted about it and at the same time realized it was within my capacaity to do it and fairly quickly.&lt;/p&gt;
+
+&lt;p&gt;The result is &lt;a href=&quot;http://zerohate.simpletask.se&quot;&gt;Zero Hate&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This rather ruddy proof of concept lets you select multiple tweets and deletes them in batch. It’s really fast and sure beats doing it one by one.&lt;/p&gt;
+
+&lt;p&gt;It’s of limited use unless you can sort the comments according to contents of certain words and that’s the primary target of the upcoming version.&lt;/p&gt;
+
+&lt;p&gt;The following this is the first screencast I’ve made and I know it shows. But it got the word out. It’s in Swedish.&lt;/p&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;So this is a call for participation. Tweet me.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/intent/tweet?screen_name=MartinCamitz&quot; class=&quot;twitter-mention-button&quot; data-size=&quot;large&quot; data-related=&quot;MartinCamitz&quot;&gt;Tweet to @MartinCamitz&lt;/a&gt;
+&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=&quot;//platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Github: &lt;a href=&quot;https://github.com/camitz/zerohate&quot;&gt;camitz/zerohate&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Anyone who can take over the server coding would be most welcome. Any platform will do.&lt;/p&gt;
+
+&lt;p&gt;Anyone who has experience in natural language processing, let thyself be known. We need to process comments server side and score them while training the AI, only temporarily persisting them.&lt;/p&gt;
+
+&lt;p&gt;Feature request list:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Selectable pages&lt;/li&gt;
+  &lt;li&gt;Search for keywords, rank and order comments&lt;/li&gt;
+  &lt;li&gt;Add to and persist, keyword list&lt;/li&gt;
+  &lt;li&gt;Locally persisted comment store&lt;/li&gt;
+  &lt;li&gt;Support for Facebooks paging, field limitation&lt;/li&gt;
+  &lt;li&gt;Batch deletes&lt;/li&gt;
+  &lt;li&gt;Realtime updates&lt;/li&gt;
+  &lt;li&gt;Notifications&lt;/li&gt;
+  &lt;li&gt;Language processing/machine learning&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;that" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="ehate" /><summary>For a post in Swedish directed at a Swedish general audience, read rather Noll Hat. This post is intended mainly for coders.</summary></entry><entry><title>MiniProfiler for Model First EF and Unity</title><link href="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity" rel="alternate" type="text/html" title="MiniProfiler for Model First EF and Unity" /><published>2012-11-29T00:35:00+00:00</published><updated>2012-11-29T00:35:00+00:00</updated><id>http://blog.simpletask.se/miniprofiler-ef-unity</id><content type="html" xml:base="http://blog.simpletask.se/MiniProfiler-Model-First-EF-Unity">&lt;p&gt;I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install &lt;a href=&quot;http://www.miniprofiler.com&quot;&gt;MiniProfiler&lt;/a&gt;, in other words. Current version is 2.0.2.&lt;/p&gt;
+
+&lt;p&gt;I don’t know how people can live without it. It’s love and kittens for Asp.NET MVC developers, as &lt;a href=&quot;http://www.hanselman.com/blog/NuGetPackageOfTheWeek9ASPNETMiniProfilerFromStackExchangeRocksYourWorld.aspx&quot;&gt;Scott H&lt;/a&gt; says.&lt;/p&gt;
+
+&lt;p&gt;I’ve been using it for some time on several projects but I haven’t installed the Entity Framework till now. That took a bit of head scratching as most of the stuff out there, including MiniProfiler docs, is about Code First setups. Some of my code is getting a bit antiquated, not least my Model First EF 4.2 usage. I just don’t know what the stuff on miniprofiler.com means.&lt;/p&gt;
+
+&lt;h2 id=&quot;ef-miniprofiler-for-model-first-projects&quot;&gt;EF MiniProfiler for Model First projects&lt;/h2&gt;
+
+&lt;p&gt;Nevertheless, &lt;a href=&quot;http://stackoverflow.com/a/6805478/168390&quot;&gt;help&lt;/a&gt; was available - as countless times before - signed Darin Dimitrov.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var connectionString = ConfigurationManager
+    .ConnectionStrings[&quot;MyConnectionString&quot;]
+    .ConnectionString;
+var ecsb = new EntityConnectionStringBuilder(connectionString);
+var sqlConn = new SqlConnection(ecsb.ProviderConnectionString);
+var pConn = ProfiledDbConnection.Get(sqlConn, MiniProfiler.Current);
+var context = ObjectContextUtils.CreateObjectContext&amp;lt;CYEntities&amp;gt;(pConn);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;what-about-unity-container&quot;&gt;What about Unity Container?&lt;/h2&gt;
+
+&lt;p&gt;I’m also using Unity Container to inject my object context so if I’m going to put the above anywhere, it’s in my container. Previously my container was configured like this.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;IUnityContainer container = new UnityContainer()
+	.RegisterType&amp;lt;CYEntities&amp;gt;(new PerHttpRequestLifetime(), new InjectionConstructor(connectionString));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I need to use a customized piece of code to do the creating for me and I recall this is what is known as a factory. Unity supports this through InjectionFactory.&lt;/p&gt;
+
+&lt;p&gt;Hence&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;IUnityContainer container = new UnityContainer()
+    .RegisterType&amp;lt;CYEntities&amp;gt;(GetLiftimeManager(lifeTimeManagerType), 
+         new InjectionFactory(c=&amp;gt; {
+			var ecsb = new EntityConnectionStringBuilder(connectionString);                                                                                                                 var sqlConn = new SqlConnection(ecsb.ProviderConnectionString);                                                                                                                 var pConn = new EFProfiledDbConnection(sqlConn, MiniProfiler.Current);                                                                                                                 return pConn.CreateObjectContext&amp;lt;CoinEntities&amp;gt;(); 
+		 }));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And it works, too.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="miniprofiler" /><category term="ef" /><category term="entity framework" /><category term="unity container" /><category term="asp.net mvc" /><summary>I know there is good rational behind putting off code optimizations, but I think we’ve been going overboard with that theme. So it was with relief that my boss told me now is the time to start profiling. Time to install MiniProfiler, in other words. Current version is 2.0.2.</summary></entry><entry><title>Updated Cloudwatch backend for StatsD</title><link href="http://blog.simpletask.se/updated-cloudwatch-backend/" rel="alternate" type="text/html" title="Updated Cloudwatch backend for StatsD" /><published>2012-10-30T11:02:00+01:00</published><updated>2012-10-30T11:02:00+01:00</updated><id>http://blog.simpletask.se/updated-cloudwatch-backend</id><content type="html" xml:base="http://blog.simpletask.se/updated-cloudwatch-backend/">&lt;p&gt;A month ago I successfully chained together &lt;a href=&quot;http://logging.apache.org/log4net/&quot;&gt;log4net&lt;/a&gt;, &lt;a href=&quot;https://github.com/etsy/statsd&quot;&gt;StatsD&lt;/a&gt; and &lt;a href=&quot;http://aws.amazon.com/cloudwatch/&quot;&gt;CloudWatch&lt;/a&gt;. I put together a backend for StatsD in node.js called &lt;a href=&quot;https://github.com/camitz/aws-cloudwatch-statsd-backend&quot;&gt;aws-cloudwatch-statsd-backend&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Yesterday I finally updated it into something I can actually use. I’m using it in production on &lt;a href=&quot;https://www.cocoin.com&quot;&gt;Cocoin&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;StatsD’s capability of pushing metadata along with the request is limited. But you can parse the bucket name for information. I wanted to extract namespace and metric name.&lt;/p&gt;
+
+&lt;p&gt;Currently I’m sending UDP packages of this style to count the requests on the site.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;App/Controller/Action/Request:1|c
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This get’s translated to a cloudwatch request with &lt;em&gt;App/Controller/Action&lt;/em&gt; as a namespace and Request as the metric name.&lt;/p&gt;
+
+&lt;p&gt;Using the bucket name for metadata tampers with generality but doesn’t blow it completely. You can still add on arbitrary backends.&lt;/p&gt;
+
+&lt;p&gt;To install it, use npm.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;npm install aws-cloudwatch-statsd-backend
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here is an example configuration.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;backends:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;aws-cloudwatch-statsd-backend&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;cloudwatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;accessKeyId:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;YOUR_ACCESS_KEY_ID&#39;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+        &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;secretAccessKey:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;YOUR_SECRET_ACCESS_KEY&#39;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+        &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;region:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&#39;YOUR_REGION&#39;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;processKeyForNames:true&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You can also override both the &lt;em&gt;namespace&lt;/em&gt; and metric name (&lt;em&gt;metricName&lt;/em&gt;) in the config.&lt;/p&gt;
+
+&lt;p&gt;Full documentation on the &lt;a href=&quot;https://npmjs.org/package/aws-cloudwatch-statsd-backend&quot;&gt;npm&lt;/a&gt; and &lt;a href=&quot;https://github.com/camitz/aws-cloudwatch-statsd-backend&quot;&gt;GitHub&lt;/a&gt; pages.&lt;/p&gt;
+
+&lt;p&gt;My other monitoring project, &lt;a href=&quot;https://github.com/camitz/CloudWatchAppender&quot;&gt;CloudWatchAppender&lt;/a&gt;, and appender for log4net wihout aggregation, has now been downloaded 236 times. Very pleased with that.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="aws" /><category term="cloudwatch" /><category term="amazon" /><category term="node.js" /><category term="log4net" /><category term="cloudwatchappender" /><category term="monitoring" /><category term="awssum" /><summary>A month ago I successfully chained together log4net, StatsD and CloudWatch. I put together a backend for StatsD in node.js called aws-cloudwatch-statsd-backend.</summary></entry></feed>
