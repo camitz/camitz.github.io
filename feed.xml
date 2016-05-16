@@ -1,34 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.0.5">Jekyll</generator><link href="http://blog.simpletask.se/feed.xml" rel="self" type="application/atom+xml" /><link href="http://blog.simpletask.se/" rel="alternate" type="text/html" /><updated>2016-05-16T19:17:42+01:00</updated><id>http://blog.simpletask.se/</id><title>Cozmiq Debris</title><subtitle>I am the CTO of Cocoin, a Swedish internet payment service,, and SimpleTask. We use the AWSAppender suite extensively (formerly CloudWatchAppender) and this blog mostly deals with that.</subtitle><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><entry><title>EC2 Spot Instance Termination Notification to SNS</title><link href="http://blog.simpletask.se/EC2SpotStop2SNS" rel="alternate" type="text/html" title="EC2 Spot Instance Termination Notification to SNS" /><published>2015-01-05T16:00:00+00:00</published><updated>2015-01-05T16:00:00+00:00</updated><id>http://blog.simpletask.se/EC2SpotStop2SNS.md</id><content type="html" xml:base="http://blog.simpletask.se/EC2SpotStop2SNS">The AWS team yesterday [announced](https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;sc_icountry=global&amp;sc_icampaigntype=launch&amp;sc_icampaign=em_130420040&amp;sc_idetail=em_66267057&amp;ref_=pe_395030_130420040_8) that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS [instance metadata service](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html), the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.
-
-So now the instance can find out that it is being terminated and can take approprate action and that&#39;s really great. But I want to know aswell!
-
-And Amazon has really great infrastructure for notifications called [SNS](http://aws.amazon.com/sns/). Service can subsribe to topics and it can send emails and more. Connect the two and I can find out when my spots are terminated.
-
-That&#39;s just me, for my personal satisfaction of knowing. But what other people will find even more useful is of course other applications subscribing to these notices, other spot instances for example. Maybe they need to adjust their games in the event of fellow instances being dropped. That reduces the need for a central controller and instances can become more autonomical.
-
-##Introducing [EC2SpotStop2SNS](https://github.com/camitz/EC2SpotStop2SNS)
-
-Nothing fancy. You can run it from the command line or install it as a service. It even has an installer. 
-
-As per the recommendations of Jeff Barr, it will poll the metadata service every 5 seconds. If the termination notice appears it immediately publishes a message to SNS.
-
-If there isn&#39;t a topic on SNS it will create one when you run it the first time. Goto AWS management console and configure the topic to throw you an email or text once something is published.
-
-That would have been the end if there wasn&#39;t a second need that I&#39;ve come across before.
-
-##Introducing [MockEC2InstanceMetaData](https://github.com/camitz/MockEC2InstanceMetaData)
-
-How can I debug this locally? Already when I was working an the early versions of log4net [CloudWatchAppender](https://www.google.se/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=2&amp;cad=rja&amp;uact=8&amp;ved=0CCwQFjAB&amp;url=http%3A%2F%2Fblog.simpletask.se%2Fpost%2Fbuffering-aggregating-cloudwatch-appender&amp;ei=gmqtVI_AMeSZygPXn4LwBA&amp;usg=AFQjCNHtqHMn2vWFqauv_xnzxoRC8pyJDw&amp;sig2=r_NhyK-8uIvHGe_yLVNX3w&amp;bvm=bv.83134100,d.bGQ) I realized this need. I just winged it back then.
-
-So this is a bit of ad hoc programming. It uses the an Owin stack to listen in on 127.0.0.1:9000 (the port is configurable). Not useful unless you redirect traffic from 169.254.169.254. I think I could figure out how to listen to 169.254.169.254 but decided to save the hassle on something [Fiddler](http://www.telerik.com/download/fiddler) does so well. It works like your windows hosts file except allows for ports as well.
-
-Then the app will answer all your calls to it producing something hopefully similar to what you get from the real metadata service. It worked splendidly for debugging EC2SpotStop2SNS, at the very least.
-
-The data is completely configurable via a json file and what&#39;s more, it reads the file everytime you want a response, so you don&#39;t have to restart the application when you make a change.
-
-##What&#39;s next?
-
-Obviously I couldn&#39;t be bothered to configure my json with all the data from a particular instance metadata service. Now all I need is an app the does that for me. Shouldn&#39;t be that hard to do. You&#39;re welcome to help me out on that one.</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon," /><category term="AWS," /><category term="SNS," /><category term="spot" /><category term="instance," /><category term="termination," /><category term="windows," /><category term="instance" /><category term="meta" /><category term="data" /><summary>The AWS team yesterday [announced](https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;sc_icountry=global&amp;sc_icampaigntype=launch&amp;sc_icampaign=em_130420040&amp;sc_idetail=em_66267057&amp;ref_=pe_395030_130420040_8) that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS [instance metadata service](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html), the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.</summary></entry><entry><title>EC2 Spot Instance Termination Notification to SNS</title><link href="http://blog.simpletask.se/EC2SpotStop2SNS" rel="alternate" type="text/html" title="EC2 Spot Instance Termination Notification to SNS" /><published>2015-01-05T16:00:00+00:00</published><updated>2015-01-05T16:00:00+00:00</updated><id>http://blog.simpletask.se/EC2SpotStop2SNS</id><content type="html" xml:base="http://blog.simpletask.se/EC2SpotStop2SNS">&lt;p&gt;The AWS team yesterday &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;amp;sc_icountry=global&amp;amp;sc_icampaigntype=launch&amp;amp;sc_icampaign=em_130420040&amp;amp;sc_idetail=em_66267057&amp;amp;ref_=pe_395030_130420040_8&quot;&gt;announced&lt;/a&gt; that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS &lt;a href=&quot;http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&quot;&gt;instance metadata service&lt;/a&gt;, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.0.5">Jekyll</generator><link href="http://blog.simpletask.se/feed.xml" rel="self" type="application/atom+xml" /><link href="http://blog.simpletask.se/" rel="alternate" type="text/html" /><updated>2016-05-16T19:24:43+01:00</updated><id>http://blog.simpletask.se/</id><title>Cozmiq Debris</title><subtitle>I am the CTO of Cocoin, a Swedish internet payment service,, and SimpleTask. We use the AWSAppender suite extensively (formerly CloudWatchAppender) and this blog mostly deals with that.</subtitle><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><entry><title>EC2 Spot Instance Termination Notification to SNS</title><link href="http://blog.simpletask.se/EC2SpotStop2SNS" rel="alternate" type="text/html" title="EC2 Spot Instance Termination Notification to SNS" /><published>2015-01-05T16:00:00+00:00</published><updated>2015-01-05T16:00:00+00:00</updated><id>http://blog.simpletask.se/EC2SpotStop2SNS</id><content type="html" xml:base="http://blog.simpletask.se/EC2SpotStop2SNS">&lt;p&gt;The AWS team yesterday &lt;a href=&quot;https://aws.amazon.com/blogs/aws/new-ec2-spot-instance-termination-notices/?sc_ichannel=em&amp;amp;sc_icountry=global&amp;amp;sc_icampaigntype=launch&amp;amp;sc_icampaign=em_130420040&amp;amp;sc_idetail=em_66267057&amp;amp;ref_=pe_395030_130420040_8&quot;&gt;announced&lt;/a&gt; that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the AWS &lt;a href=&quot;http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html&quot;&gt;instance metadata service&lt;/a&gt;, the date being the time of expected termination. Termination of spot is usually due to the spot price exceeding the configured maximum price.&lt;/p&gt;
 
 &lt;p&gt;So now the instance can find out that it is being terminated and can take approprate action and that’s really great. But I want to know aswell!&lt;/p&gt;
 
@@ -118,7 +88,7 @@ I&#39;ve made some other improvements aswell. Some around the asynchronous reque
 
 Debug outputs and error messages from CloudWatchAppender were previously passed to the TraceListener system. Now they are routed to log4net&#39;s internal scheme.
 
-One of the things already in place is acutally a bug fix. It was a breaking change and released as such but I decided to do it because I couldn&#39;t fathom anyone using the feature in the wasy provided. It has to do with the augmented logger function and negative precision specifier. Read more [here](https://github.com/camitz/CloudWatchAppender/blob/master/README.md#augmented-logger-functionality).
+One of the things already in place is acutally a bug fix. It was a breaking change and released as such but I decided to do it because I couldn&#39;t fathom anyone using the feature in the wasy provided. It has to do with the augmented logger function and negative precision specifier. Read more [here](https://github.com/camitz/CloudWatchAppender/blob/master/README.md# augmented-logger-functionality).
 
 Do stay tuned for upcoming releases. Here are some more things I have planned for the very near future.
 
@@ -182,7 +152,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 })();
 &lt;/script&gt;
 &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon," /><category term="AWS," /><category term="cloudwatch," /><category term="log4net," /><category term="appender," /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Introducing the Buffering and Aggregeting CloudWatch Appender</title><link href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender" rel="alternate" type="text/html" title="Introducing the Buffering and Aggregeting CloudWatch Appender" /><published>2014-04-23T16:00:00+01:00</published><updated>2014-04-23T16:00:00+01:00</updated><id>http://blog.simpletask.se/cloudwatchappender3</id><content type="html" xml:base="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">&lt;p&gt;The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.&lt;/p&gt;
+&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="cloudwatch" /><category term="log4net" /><category term="appender" /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Introducing the Buffering and Aggregeting CloudWatch Appender</title><link href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender" rel="alternate" type="text/html" title="Introducing the Buffering and Aggregeting CloudWatch Appender" /><published>2014-04-23T16:00:00+01:00</published><updated>2014-04-23T16:00:00+01:00</updated><id>http://blog.simpletask.se/cloudwatchappender3</id><content type="html" xml:base="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">&lt;p&gt;The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.&lt;/p&gt;
 
 &lt;p&gt;One of the limitations of the CloudWatch Appender has been that you definitely want to do some configuration and filtering. If you redirect &lt;em&gt;all&lt;/em&gt; your log messages to Cloudwatch then you would very quickly choke your service waiting for the API. In fact AWS limits your calls, but you’d still be making the requests trying.&lt;/p&gt;
 
@@ -296,23 +266,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 
 &lt;p&gt;…&lt;/p&gt;
 
-&lt;p&gt;You bet I did!!&lt;/p&gt;
-
-&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
-
-/* * * DON&#39;T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
-dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
-(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
-})();
-&lt;/script&gt;
-
-&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="cloudwatch" /><category term="log4net" /><category term="appender" /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans.md</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">*by Arkady Babtjenko*
+&lt;p&gt;You bet I did!!&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="amazon" /><category term="AWS" /><category term="cloudwatch" /><category term="log4net" /><category term="appender" /><category term="bufferingappender" /><summary>The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans.md</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">*by Arkady Babtjenko*
 
 *Translated from Swedish, in turn transated from Russian by Ola Wallin. The Swedish translation was published in DN and can be found [here](http://www.dn.se/kultur-noje/kulturdebatt/valkomna-till-ryssland-kara-krimbor/). Published here with permission from the author.*
 
@@ -403,7 +357,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 })();
 &lt;/script&gt;
 &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Arkady" /><category term="Babtjenko," /><category term="Arkadij" /><category term="Babtjenko," /><category term="crimea," /><category term="ukraine," /><category term="russia," /><category term="välkommen" /><category term="till" /><category term="ryssland," /><category term="kulturdebatt" /><summary>*by Arkady Babtjenko*</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">&lt;p&gt;&lt;em&gt;by Arkady Babtjenko&lt;/em&gt;&lt;/p&gt;
+&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Arkady Babtjenko" /><category term="Arkadij Babtjenko" /><category term="crimea" /><category term="ukraine" /><category term="russia" /><category term="välkommen till ryssland" /><category term="kulturdebatt" /><summary>*by Arkady Babtjenko*</summary></entry><entry><title>Welcome to Russia, dear Crimeans!</title><link href="http://blog.simpletask.se/welcome to russia dear crimeans" rel="alternate" type="text/html" title="Welcome to Russia, dear Crimeans!" /><published>2014-03-20T10:22:00+01:00</published><updated>2014-03-20T10:22:00+01:00</updated><id>http://blog.simpletask.se/dear-crimeans</id><content type="html" xml:base="http://blog.simpletask.se/welcome to russia dear crimeans">&lt;p&gt;&lt;em&gt;by Arkady Babtjenko&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Translated from Swedish, in turn transated from Russian by Ola Wallin. The Swedish translation was published in DN and can be found &lt;a href=&quot;http://www.dn.se/kultur-noje/kulturdebatt/valkomna-till-ryssland-kara-krimbor/&quot;&gt;here&lt;/a&gt;. Published here with permission from the author.&lt;/em&gt;&lt;/p&gt;
 
@@ -479,39 +433,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 
 &lt;p&gt;Arkady Babtjenko&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Arkady Babtjenko is a journalist and the author of “One Soldier’s War” (Grove Press). He works today as a war reporter for the newspaper Novaya Gazeta.&lt;/em&gt;&lt;/p&gt;
-
-&lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
-&lt;script type=&quot;text/javascript&quot;&gt;
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = &#39;martincamitz&#39;; // required: replace example with your forum shortname
-
-/* * * DON&#39;T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement(&#39;script&#39;); dsq.type = &#39;text/javascript&#39;; dsq.async = true;
-dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
-(document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
-})();
-&lt;/script&gt;
-
-&lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Arkady Babtjenko" /><category term="Arkadij Babtjenko" /><category term="crimea" /><category term="ukraine" /><category term="russia" /><category term="välkommen till ryssland" /><category term="kulturdebatt" /><summary>by Arkady Babtjenko</summary></entry><entry><title>Jason Diakité’s speach to the Swedish parliament</title><link href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament" rel="alternate" type="text/html" title="Jason Diakit&amp;eacute;&#39;s speach to the Swedish parliament" /><published>2013-12-03T15:57:00+00:00</published><updated>2013-12-03T15:57:00+00:00</updated><id>http://blog.simpletask.se/timbuktu.md</id><content type="html" xml:base="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament">*Translated from [Jason Diakit&amp;eacute; (Timbuktu): Tal i riksdagen under Fem i tolv-r&amp;ouml;relsens manifestation](http://www.svenskatal.se/20131204-jason-diakite-timbuktu-tal-i-riksdagen-under-fem-i-tolv-rorelsens-manifestation).*
-
-*Disclaimer: I haven&#39;t yet had the chance to see the recorded speach. I&#39;ve just translated this transcribed version. Also, I have asked but have not yet been granted permission from the author.*
-
-*In turn transcribed from [T&amp;aring;rfyllda talet p&amp;aring; prisutdelningen](http://tv.aftonbladet.se/webbtv/nyheter/samhalle-och-politik/article27180.ab).*
-
-I brought with me something today that I normally only carry with me when I leave Sweden. And I haven&#39;t [left Sweden] now - in fact, I came here in a very short taxi ride. I brought this [shows a passport], which I usually only carry with me, like I said, when I leave Sweden, to remind all the places I get to, where I come from.
-
-This [item] means alot to me, this collection of papers. Not everyone who lives in Sweden has one.
-
-I took it with me today anyway, to say that this is my proof that I am no stranger. So the animosity towards me because of my skin color can never really be xenophobia. It is and remains racism. And you do not need to be tolerant of me. I&#39;m not asking to be tolerated, and your mercy is not something I require. However, I require, with all the strength I can muster, to be judged by my actions and by my personality.
-
-And I demand that the doctrine which holds a person higher than another because of their skin color, religion, sex or sexual orientation, is immediately and forever, discredited, erased and abandoned. I demand to be able to feel safe in Sweden. I demand to have access to the work that my qualifications entitle me to, to have access to any residence as enabled by my income. I demand to be able to worship the god I want and to love any person I want. I demand the freedom to speak my mind, even by those who disagree with my opinions. And I demand to be seen as a part of this community.
-
-But in exchange, I will give you my life, Sweden. For *you*, I and my children always help you build. I give you my ingenuity. I give you my creativity and my energy. I will love in Sweden, I will live in Sweden, and I will die in Sweden .
-
-Thank you.</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Jason" /><category term="Diakite" /><summary>*Translated from [Jason Diakit&amp;eacute; (Timbuktu): Tal i riksdagen under Fem i tolv-r&amp;ouml;relsens manifestation](http://www.svenskatal.se/20131204-jason-diakite-timbuktu-tal-i-riksdagen-under-fem-i-tolv-rorelsens-manifestation).*</summary></entry><entry><title>Jason Diakité’s speach to the Swedish parliament</title><link href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament" rel="alternate" type="text/html" title="Jason Diakit&amp;eacute;&#39;s speach to the Swedish parliament" /><published>2013-12-03T15:57:00+00:00</published><updated>2013-12-03T15:57:00+00:00</updated><id>http://blog.simpletask.se/timbuktu</id><content type="html" xml:base="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament">&lt;p&gt;&lt;em&gt;Translated from &lt;a href=&quot;http://www.svenskatal.se/20131204-jason-diakite-timbuktu-tal-i-riksdagen-under-fem-i-tolv-rorelsens-manifestation&quot;&gt;Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Arkady Babtjenko is a journalist and the author of “One Soldier’s War” (Grove Press). He works today as a war reporter for the newspaper Novaya Gazeta.&lt;/em&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="Arkady Babtjenko" /><category term="Arkadij Babtjenko" /><category term="crimea" /><category term="ukraine" /><category term="russia" /><category term="välkommen till ryssland" /><category term="kulturdebatt" /><summary>by Arkady Babtjenko</summary></entry><entry><title>Jason Diakité’s speach to the Swedish parliament</title><link href="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament" rel="alternate" type="text/html" title="Jason Diakit&amp;eacute;&#39;s speach to the Swedish parliament" /><published>2013-12-03T15:57:00+00:00</published><updated>2013-12-03T15:57:00+00:00</updated><id>http://blog.simpletask.se/timbuktu</id><content type="html" xml:base="http://blog.simpletask.se/Jason Diakites speach to the Swedish parliament">&lt;p&gt;&lt;em&gt;Translated from &lt;a href=&quot;http://www.svenskatal.se/20131204-jason-diakite-timbuktu-tal-i-riksdagen-under-fem-i-tolv-rorelsens-manifestation&quot;&gt;Jason Diakité (Timbuktu): Tal i riksdagen under Fem i tolv-rörelsens manifestation&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Disclaimer: I haven’t yet had the chance to see the recorded speach. I’ve just translated this transcribed version. Also, I have asked but have not yet been granted permission from the author.&lt;/em&gt;&lt;/p&gt;
 
@@ -543,7 +465,7 @@ I&#39;m picturing something like markdown which outputs an intermediary XML repr
 
 It&#39;s the representation at the core of this that I want to talk about today. I propose a new representation of a survey. I&#39;m calling it **Flamingo**.
 
-##Background
+## Background
 
 I sometimes dabble with surveys in particular [RDS](https://www.researchgate.net/publication/233419485_Implementation_of_Web-Based_Respondent-Driven_Sampling_among_Men_Who_Have_Sex_with_Men_in_Vietnam) surveys. I made my own survey engine many years back. It was replaced by the research team with a modified version of LimeSurvey. 
 
@@ -569,7 +491,7 @@ The key advantages are:
 - Repetition, validation and other survey logic included
 - Dynamically generated survey elements
 
-##Start
+## Start
 
 Let&#39;s give it a go then. Let&#39;s go way back. What&#39;s the atomic building block of a survey? The option. I propose this is a survey.
 
@@ -606,7 +528,7 @@ Before we move on, though, let&#39;s change the name of those two elements. The 
 
 I&#39;ve come up with a set of principles that seem to work rather well for me. Partial compliance with HTML is the second. Hence I&#39;m calling groups *div* and options *input*. Ignore the fact that inputs, if they really were in HTML, would have no content. Ignore also the fact input elements without any other attributes produce textboxes.
 
-##Basic principles
+## Basic principles
 
 The complete set of basic principles for Flamingo is as follows.
 
@@ -620,7 +542,7 @@ Incidendtally, the second to last principle is implicit in XML.
 
 We&#39;ve covered two of these principles, although their merit may be unclear for the moment. Let&#39;s move on to the third.
 
-##Assume multiple choice
+## Assume multiple choice
 
 The default input is a checkbox. Heh? Bear with me, I just want to change the default. 
 
@@ -659,7 +581,7 @@ Easy for me to say, I&#39;m specifying the representation. You&#39;re coding the
 
 Apparently time to show you what a response might look like.
 
-##Responses and the XPATH
+## Responses and the XPATH
 
 The response database table might look like this. It&#39;s a recommendation and not really part of the specification I propose.
 
@@ -689,7 +611,7 @@ Timestamp? Again a recommendation. This is just where we are today regarding wha
 
 One final thing to note, the engine may reorder everything as you wish. Maybe the author has requested randomized questions. This should not affect the XPATH of the options. The XPATH references the survey XML template, not the rendered display. That includes dynamically generated elements which we&#39;ll get to later.
 
-###Another example
+### Another example
 
 To further the discussion with another example, consider the following. I&#39;ve introduced that label short hand here, but that&#39;s not the point.
 
@@ -711,7 +633,7 @@ It should be apparent how this is intended to be displayed. LimeSurvey designate
 
 However, if the presentation engine does not have support for this particular layout, that&#39;s fine too. Just display as is (formatting the inputs, obviously). The survey is entirely legible in either case.
 
-##Single choice and multiple choice
+## Single choice and multiple choice
 
 As I&#39;ve said, I consider all input elements checkboxes by default, because that&#39;s what I consider a survey, options. If you&#39;re in Europe, both steak and lobster may not be acceptable at the same time. I consider it validation and validation can be specified in my XML schema but the basic assumption is that it is not required. It&#39;s meta data, same as questions and part of a context which may be given in XML or verbally or be implicit.
 
@@ -760,7 +682,7 @@ In an above example there was a semantically different checkbox: &quot;I don&#39
 
 Technically though, there are many ways to infer abstention and ignorance. I may wish to have one &quot;I don&#39;t know&quot; and one &quot;I don&#39;t want to answer&quot;. Or I may combine them. They may be placed before or after the &quot;Other&quot; option. I think this should always be up to the author.
 
-###Textboxes 
+### Textboxes 
 
 What about textual data, keyboard entered data in textboxes? Again, I consider keyboard entered data just another option. Consider:
 
@@ -816,9 +738,9 @@ Similarly, the enabled attribute, used to control where an option is visible/ena
 Finally, control logic is about what questions are executed when and possibly in what order, depending on responses and other circumstances. It should be clear by now that I&#39;m not about to introduce a goto statement. I think control concerns should be mapped to display logic as far as possible. Having said that, I haven&#39;t ruled out control logic completely though I can think of no circumstances off hand where it might come in handy.
 
 
-##Other features
+## Other features
 
-###Cross references
+### Cross references
 
 To repeat a group or option anywhere (even before the definition), just reference.
 
@@ -838,7 +760,7 @@ My take on the issue.
 
 The concern for the presentation is to decide on a multiple choice dropdown, a full page of checkboxes with an arbitrary number of columns or perhaps an object store backed combo box widget.
 
-###Dynamically generated survey elements
+### Dynamically generated survey elements
 
 Cross references together with the severing of the dependency between responses and survey implies the following rather significant bonus. The questionnaire may be dynamically constructed. Arbitrarily repeated questions are a breeze. In fact there is little need for a representation at all for simple ad hoc questionnaires. Just hard code a form and send it off to your response engine. (That&#39;s rather stating the obvious. What I mean is, do try on my recommendation for a response table.)
 
@@ -856,7 +778,7 @@ However, dynamically generated survey elements is more than just a bonus, it&#39
 
 The engine should generate the last input as many times as the user requires. To be honest I think this is an annoying loop hole, one of many to be found. I&#39;d sooner let the author opt in via the repetition feature described later. But I&#39;d like you to give me a chance to find a way that would not break my list of principles or to patch it up.
 
-##Presentation hints
+## Presentation hints
 
 I want to have dependencies between the representation and the presentation as weak as possible. But hints to the presentation has obvious benefits, for example, indicating preference for radio buttons over dropdown, page breaks and instructions. 
 
@@ -872,7 +794,7 @@ The class attribute seems the immediate choice for presentation. That way a tip 
 
 I intend to specify a recommended list of such hints. Presentation engines are free to specify additions to that list as long as they commit to displaying surveys that don&#39;t conform to them.
 
-##Resource keys
+## Resource keys
 
 That last one deserves an extra look. We never got around to the last principle, the one about resource keys, did we? That&#39;s what this is.
 
@@ -880,7 +802,7 @@ All contents of label attributes and elements act as resource keys. That smacks 
 
 If you write a FAQ, then the above indexes into that. The label may be just a question mark icon. Up to you.
 
-##Repetition
+## Repetition
 
 Repeating the country dropdown based on the answer given to a previous question, try:
 
@@ -905,7 +827,7 @@ That may clue to a way out of the dilemma mentioned earlier, with the &quot;Othe
         &lt;input repeat=&quot;true&quot; label=&quot;Other&quot;/&gt;
     &lt;/div&gt;
 
-##Closing
+## Closing
 
 Thank you for reading. Tell me what you think. Consider the spec open source, work in progress and feel free to contribute. I&#39;m going to put up a wiki. 
 
@@ -927,7 +849,7 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 })();
 &lt;/script&gt;
 &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey," /><category term="xml," /><category term="specification," /><category term="standard," /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>On representing a survey with XML</title><link href="http://blog.simpletask.se/survey-representation/" rel="alternate" type="text/html" title="On representing a survey with XML" /><published>2013-04-29T09:34:00+01:00</published><updated>2013-04-29T09:34:00+01:00</updated><id>http://blog.simpletask.se/survey-representation</id><content type="html" xml:base="http://blog.simpletask.se/survey-representation/">&lt;p&gt;With my new survey software suite, a survey is as easy to enter as&lt;/p&gt;
+&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey" /><category term="xml" /><category term="specification" /><category term="standard" /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>On representing a survey with XML</title><link href="http://blog.simpletask.se/survey-representation/" rel="alternate" type="text/html" title="On representing a survey with XML" /><published>2013-04-29T09:34:00+01:00</published><updated>2013-04-29T09:34:00+01:00</updated><id>http://blog.simpletask.se/survey-representation</id><content type="html" xml:base="http://blog.simpletask.se/survey-representation/">&lt;p&gt;With my new survey software suite, a survey is as easy to enter as&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;What did you drink last night?
 o Gin/Tonic
@@ -1367,7 +1289,46 @@ o Other: []
 
 &lt;p&gt;It’s a long way of to 1.0. The markdown type app, a presentation engine to work client side, a response server and a survey backend, should be developed in parallel. A little bit down the road, a UI.&lt;/p&gt;
 
-&lt;p&gt;Currently I don’t have the resources but I think it would be great. Consider funding me if you stand to benefit.&lt;/p&gt;
+&lt;p&gt;Currently I don’t have the resources but I think it would be great. Consider funding me if you stand to benefit.&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey" /><category term="xml" /><category term="specification" /><category term="standard" /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry><entry><title>Hjälp oss träna vår robot</title><link href="http://blog.simpletask.se/help" rel="alternate" type="text/html" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot" /><published>2013-02-11T15:57:00+00:00</published><updated>2013-02-11T15:57:00+00:00</updated><id>http://blog.simpletask.se/help.md</id><content type="html" xml:base="http://blog.simpletask.se/help">###### For a post in English about the Zero Hate initiative, read rather [Zero Hate](http://blog.simpletask.se/zerohate). This post is intended mainly for a Swedish general audience.
+
+###### Jag har tidigare skrivit om Zero Hate [h&amp;auml;r](http://blog.simpletask.se/nollhat).
+
+###### Programmet Zero Hate &amp;auml;r fritt att anv&amp;auml;nda h&amp;auml;r [h&amp;auml;r](http://zerohate.simpletask.se).
+
+Zero Hate initiativet har f&amp;aring;tt ordentlig spridning tack vare [screencasten](http://www.youtube.com/watch?v=eRk0Wtcd-xU&amp;feature=youtu.be), Computer Swedens [artikel](http://computersweden.idg.se/2.2683/1.491370/smidigt-verktyg-for-hantering-av-nathat) och alla v&amp;auml;nner p&amp;aring; Twitter och Facebook.
+
+Jag har f&amp;aring;tt mycket positiva kommentarer, f&amp;ouml;r att inte s&amp;auml;ga &amp;ouml;versvallande, och det g&amp;ouml;r mig mycket glad och jag blir mer och mer &amp;ouml;vertygad vi kan f&amp;aring; det h&amp;auml;r att g&amp;ouml;ra stor skillnad.
+
+Jag har ocks&amp;aring; f&amp;aring;tt m&amp;aring;nga erbjudanden om hj&amp;auml;lp. Projektet &amp;auml;r [open source](https://github.com/camitz/zerohate) och vem som helst kan dela och bidra med kod.
+
+Framf&amp;ouml;rallt har M&amp;aring;ns Magnusson, @MansMeg, joinat mig f&amp;ouml;r att bygga en statisktisk algoritm f&amp;ouml;r att avg&amp;ouml;ra vilka kommentarer som ska flaggas f&amp;ouml;r moderering. Det &amp;auml;r allts&amp;aring; en robot med hj&amp;auml;lp av en statistisk modell svarar p&amp;aring; fr&amp;aring;gan, hur hotfull eller kr&amp;auml;nkande &amp;auml;r denna kommentaren, och svara med en siffra mellan 0 och 1000.
+
+Roboten beh&amp;ouml;ver tr&amp;auml;nas. Det beh&amp;ouml;vs ett tusental verkliga kommentarer som du f&amp;aring;tt eller skrivit, p&amp;aring; v&amp;auml;ggposter p&amp;aring; Facebook, tidningsforum eller liknande. Detta behandlas sedan av robothj&amp;auml;rnan f&amp;ouml;r att den ska l&amp;auml;ra sig avg&amp;ouml;ra vad som &amp;auml;r ok och vad som &amp;auml;r hot eller kr&amp;auml;nkande.
+
+
+## Hj&amp;auml;lp oss samla in kommentarer till robothj&amp;auml;rnan!
+
+P&amp;aring; [zerohate.simpletask.se/help.html](http://zerohate.simpletask.se/help.html) finns ett enkelt formul&amp;auml;r d&amp;auml;r du kan bidra med kommentarer.
+
+Sprid ordet!
+
+&amp;Auml;ven vanliga, neutrala och sn&amp;auml;lla kommentarer beh&amp;ouml;vs f&amp;ouml;r att roboten ska kunna k&amp;auml;nna igen skilladen. D&amp;auml;rf&amp;ouml;r kan &amp;auml;ven du delta som inte inte utsatts f&amp;ouml;r n&amp;auml;that.
+
+Ju fler kommentarer vi f&amp;aring;r in desto b&amp;auml;ttre fungerar algoritmen.
+
+## Integritet
+
+Dina data behandlas anonymt och vi lovar att endast anv&amp;auml;nda kommentarerna inom projektets ramar. Vi har bakgrund inom medicinsk forskning och vi vet vad personuppgiftslagen och forskningsetik inneb&amp;auml;r.
+
+Men! Som de forskare vi &amp;auml;r ser vi potentialen med en s&amp;aring;n h&amp;auml;r datainsamling. M&amp;aring;nga forskare kommer vara intresserad av att f&amp;aring; tillg&amp;aring;ng till denna data i en eller annan form till all m&amp;ouml;jlig slags forskning, till gagn mot n&amp;auml;thatet.
+
+Vill du s&amp;aring; kan du ange din epost adress. D&amp;aring; kommer vi fr&amp;aring;ga dig om samtycke om det blir aktuellt att anv&amp;auml;nda data i ett nytt projekt. 
+
+Eller s&amp;aring; kan du ge samtycke redan nu f&amp;ouml;r att data ska h&amp;aring;llas tillg&amp;auml;ngliga f&amp;ouml;r all forskningsverksamhet. Det &amp;auml;r n&amp;auml;tk&amp;auml;rlek, det!
+
+## Hj&amp;auml;lp oss g&amp;ouml;ra n&amp;auml;tet mer demokratiskt och fritt! Sprid ordet!
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;
 
 &lt;div id=&quot;disqus_thread&quot;&gt;&lt;/div&gt;
 &lt;script type=&quot;text/javascript&quot;&gt;
@@ -1381,6 +1342,43 @@ dsq.src = &#39;http://&#39; + disqus_shortname + &#39;.disqus.com/embed.js&#39;;
 (document.getElementsByTagName(&#39;head&#39;)[0] || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(dsq);
 })();
 &lt;/script&gt;
-
 &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;http://disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
-&lt;p&gt;&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="survey" /><category term="xml" /><category term="specification" /><category term="standard" /><category term="flamingo" /><summary>With my new survey software suite, a survey is as easy to enter as</summary></entry></feed>
+&lt;a href=&quot;http://disqus.com&quot; class=&quot;dsq-brlink&quot;&gt;comments powered by &lt;span class=&quot;logo-disqus&quot;&gt;Disqus&lt;/span&gt;&lt;/a&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="ehate" /><summary>###### For a post in English about the Zero Hate initiative, read rather [Zero Hate](http://blog.simpletask.se/zerohate). This post is intended mainly for a Swedish general audience.</summary></entry><entry><title>Hjälp oss träna vår robot</title><link href="http://blog.simpletask.se/help" rel="alternate" type="text/html" title="Hj&amp;auml;lp oss tr&amp;auml;na v&amp;aring;r robot" /><published>2013-02-11T15:57:00+00:00</published><updated>2013-02-11T15:57:00+00:00</updated><id>http://blog.simpletask.se/help</id><content type="html" xml:base="http://blog.simpletask.se/help">&lt;h6 id=&quot;for-a-post-in-english-about-the-zero-hate-initiative-read-rather-zero-hatehttpblogsimpletasksezerohate-this-post-is-intended-mainly-for-a-swedish-general-audience&quot;&gt;For a post in English about the Zero Hate initiative, read rather &lt;a href=&quot;http://blog.simpletask.se/zerohate&quot;&gt;Zero Hate&lt;/a&gt;. This post is intended mainly for a Swedish general audience.&lt;/h6&gt;
+
+&lt;h6 id=&quot;jag-har-tidigare-skrivit-om-zero-hate-haumlrhttpblogsimpletasksenollhat&quot;&gt;Jag har tidigare skrivit om Zero Hate &lt;a href=&quot;http://blog.simpletask.se/nollhat&quot;&gt;här&lt;/a&gt;.&lt;/h6&gt;
+
+&lt;h6 id=&quot;programmet-zero-hate-aumlr-fritt-att-anvaumlnda-haumlr-haumlrhttpzerohatesimpletaskse&quot;&gt;Programmet Zero Hate är fritt att använda här &lt;a href=&quot;http://zerohate.simpletask.se&quot;&gt;här&lt;/a&gt;.&lt;/h6&gt;
+
+&lt;p&gt;Zero Hate initiativet har fått ordentlig spridning tack vare &lt;a href=&quot;http://www.youtube.com/watch?v=eRk0Wtcd-xU&amp;amp;feature=youtu.be&quot;&gt;screencasten&lt;/a&gt;, Computer Swedens &lt;a href=&quot;http://computersweden.idg.se/2.2683/1.491370/smidigt-verktyg-for-hantering-av-nathat&quot;&gt;artikel&lt;/a&gt; och alla vänner på Twitter och Facebook.&lt;/p&gt;
+
+&lt;p&gt;Jag har fått mycket positiva kommentarer, för att inte säga översvallande, och det gör mig mycket glad och jag blir mer och mer övertygad vi kan få det här att göra stor skillnad.&lt;/p&gt;
+
+&lt;p&gt;Jag har också fått många erbjudanden om hjälp. Projektet är &lt;a href=&quot;https://github.com/camitz/zerohate&quot;&gt;open source&lt;/a&gt; och vem som helst kan dela och bidra med kod.&lt;/p&gt;
+
+&lt;p&gt;Framförallt har Måns Magnusson, @MansMeg, joinat mig för att bygga en statisktisk algoritm för att avgöra vilka kommentarer som ska flaggas för moderering. Det är alltså en robot med hjälp av en statistisk modell svarar på frågan, hur hotfull eller kränkande är denna kommentaren, och svara med en siffra mellan 0 och 1000.&lt;/p&gt;
+
+&lt;p&gt;Roboten behöver tränas. Det behövs ett tusental verkliga kommentarer som du fått eller skrivit, på väggposter på Facebook, tidningsforum eller liknande. Detta behandlas sedan av robothjärnan för att den ska lära sig avgöra vad som är ok och vad som är hot eller kränkande.&lt;/p&gt;
+
+&lt;h2 id=&quot;hjaumllp-oss-samla-in-kommentarer-till-robothjaumlrnan&quot;&gt;Hjälp oss samla in kommentarer till robothjärnan!&lt;/h2&gt;
+
+&lt;p&gt;På &lt;a href=&quot;http://zerohate.simpletask.se/help.html&quot;&gt;zerohate.simpletask.se/help.html&lt;/a&gt; finns ett enkelt formulär där du kan bidra med kommentarer.&lt;/p&gt;
+
+&lt;p&gt;Sprid ordet!&lt;/p&gt;
+
+&lt;p&gt;Även vanliga, neutrala och snälla kommentarer behövs för att roboten ska kunna känna igen skilladen. Därför kan även du delta som inte inte utsatts för näthat.&lt;/p&gt;
+
+&lt;p&gt;Ju fler kommentarer vi får in desto bättre fungerar algoritmen.&lt;/p&gt;
+
+&lt;h2 id=&quot;integritet&quot;&gt;Integritet&lt;/h2&gt;
+
+&lt;p&gt;Dina data behandlas anonymt och vi lovar att endast använda kommentarerna inom projektets ramar. Vi har bakgrund inom medicinsk forskning och vi vet vad personuppgiftslagen och forskningsetik innebär.&lt;/p&gt;
+
+&lt;p&gt;Men! Som de forskare vi är ser vi potentialen med en sån här datainsamling. Många forskare kommer vara intresserad av att få tillgång till denna data i en eller annan form till all möjlig slags forskning, till gagn mot näthatet.&lt;/p&gt;
+
+&lt;p&gt;Vill du så kan du ange din epost adress. Då kommer vi fråga dig om samtycke om det blir aktuellt att använda data i ett nytt projekt.&lt;/p&gt;
+
+&lt;p&gt;Eller så kan du ge samtycke redan nu för att data ska hållas tillgängliga för all forskningsverksamhet. Det är nätkärlek, det!&lt;/p&gt;
+
+&lt;h2 id=&quot;hjaumllp-oss-goumlra-naumltet-mer-demokratiskt-och-fritt-sprid-ordet&quot;&gt;Hjälp oss göra nätet mer demokratiskt och fritt! Sprid ordet!&lt;/h2&gt;
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;http://www.youtube.com/embed/eRk0Wtcd-xU&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;</content><author><name>Martin Camitz</name><email>martin.camitz@simpletask.se</email></author><category term="n&amp;auml;th&amp;auml;t" /><category term="n&amp;auml;tk&amp;auml;rlek" /><category term="ug" /><category term="uppdrag granskning" /><category term="zero hate" /><category term="ehate" /><summary>For a post in English about the Zero Hate initiative, read rather Zero Hate. This post is intended mainly for a Swedish general audience.</summary></entry></feed>

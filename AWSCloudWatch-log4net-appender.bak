@@ -1,0 +1,716 @@
+
+
+<!doctype html>
+<html lang="sv" class="no-js">
+  <head>
+    
+
+<meta charset="utf-8">
+
+
+
+<!-- begin SEO -->
+
+
+
+
+
+
+
+
+
+<title>A CloudWatch Appender for log4net - Cozmiq Debris</title>
+
+
+
+
+
+
+
+<meta property="og:locale" content="sv-SE">
+<meta property="og:site_name" content="Cozmiq Debris">
+<meta property="og:title" content="A CloudWatch Appender for log4net">
+
+
+  <link rel="canonical" href="http://blog.simpletask.se/AWSCloudWatch-log4net-appender">
+  <meta property="og:url" content="http://blog.simpletask.se/AWSCloudWatch-log4net-appender">
+
+
+
+  <meta property="og:description" content="This post seeded a project based on Github. Go ahead and contribute. It’s also on NuGet.">
+
+
+
+  <meta name="twitter:site" content="@martincamitz">
+  <meta name="twitter:title" content="A CloudWatch Appender for log4net">
+  <meta name="twitter:description" content="This post seeded a project based on Github. Go ahead and contribute. It’s also on NuGet.">
+  <meta name="twitter:url" content="http://blog.simpletask.se/AWSCloudWatch-log4net-appender">
+
+  
+    <meta name="twitter:card" content="summary">
+    
+  
+
+  
+
+
+
+  
+
+  
+
+
+
+
+
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2012-08-09T11:03:00+01:00">
+  
+    <link rel="next" href="http://blog.simpletask.se/improving-cloudwatch-appender" title="Improving the CloudWatch Appender">
+  
+  
+    <link rel="prev" href="http://blog.simpletask.se/AWSCloudWatch-log4net-appender" title="A CloudWatch Appender for log4net">
+  
+
+
+
+
+
+  <script type="application/ld+json">
+    {
+      "@context" : "http://schema.org",
+      "@type" : "person",
+      "name" : "Martin Camitz",
+      "url" : "http://blog.simpletask.se",
+      "sameAs" : null
+    }
+  </script>
+
+
+
+
+
+
+<!-- end SEO -->
+
+<link href="http://blog.simpletask.se/feed.xml" type="application/atom+xml" rel="alternate" title="Cozmiq Debris Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://blog.simpletask.se/assets/css/main.css">
+
+<meta http-equiv="cleartype" content="on">
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use http://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+  </head>
+
+  <body>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        <button><div class="navicon"></div></button>
+        <ul class="visible-links">
+          <li class="masthead__menu-item masthead__menu-item--lg"><a href="http://blog.simpletask.se/">Cozmiq Debris</a></li>
+          
+        </ul>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+    
+
+
+
+
+
+<div id="main" role="main">
+  
+
+
+  <div class="sidebar sticky">
+  
+
+
+
+<div itemscope itemtype="http://schema.org/Person">
+
+  <div class="author__avatar">
+    
+    	<img src="http://blog.simpletask.se/images/bio-photo.jpg" class="author__avatar" alt="Martin Camitz">
+    
+  </div>
+
+  <div class="author__content">
+    <h3 class="author__name">Martin Camitz</h3>
+    
+  </div>
+
+  <div class="author__urls-wrapper">
+    <button class="btn btn--inverse">Follow</button>
+    <ul class="author__urls social-icons">
+      
+        <li><i class="fa fa-fw fa-map-marker" aria-hidden="true"></i> Stockholm</li>
+      
+      
+      
+        <li><a href="mailto:martin.camitz@simpletask.se"><i class="fa fa-fw fa-envelope-square" aria-hidden="true"></i> </a></li>
+      
+      
+      
+        <li><a href="https://twitter.com/martin.camitz"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        <li><a href="https://www.stackoverflow.com/users/http://stackoverflow.com/users/168390/martin"><i class="fa fa-fw fa-stack-overflow" aria-hidden="true"></i> Stackoverflow</a></li>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </ul>
+  </div>
+</div>
+
+  
+  </div>
+
+
+  <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+    <meta itemprop="headline" content="A CloudWatch Appender for log4net">
+    <meta itemprop="description" content="This post seeded a project based on Github. Go ahead and contribute. It’s also on NuGet.">
+    <meta itemprop="datePublished" content="August 09, 2012">
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 class="page__title" itemprop="headline">A CloudWatch Appender for log4net
+</h1>
+          
+            <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  7 
+</p>
+          
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        *This post seeded a project based on [Github](https://github.com/camitz/CloudWatchAppender). Go ahead and contribute. It's also on [NuGet]("https://nuget.org/packages/CloudWatchAppender).*
+
+A log4net appender for Amazon AWS CloudWatch, why?
+
+Well, you're logging, right? If you own a site, you should be logging pretty much everything. You'll use it for debugging, for optimizing and not least for security - detecting and finding the source of unusual behavior.
+
+And I assume you're also using some kind of monitoring, a dashboard with cpu load, network i/o and new user applications. Right? How else would you detect the unusual behavior mentioned above in a manner timely enough to mitigate the damage?
+
+I use [log4net](http://logging.apache.org/log4net/ "log4net") for logging, a system which aggregates log messages from anywhere in the code, in a hierarchical manner, and outputs data to text files, databases, event logs... There are lots of appenders for all kinds of sinks. And you can write your own! Really simple too. So me, I just code away, and when something seems important enough to let someone know about it, I put a log message in there. It's a low threshold. The message will end up in the root log file and if later on I decide I don't want it there, I can just edit the web.config and divert it to somewhere else, or turn it off.
+
+I use [CloudWatch](http://aws.amazon.com/CloudWatch/ "CloudWatch") for monitoring. Makes sense, since my site is on Amazon EC2. I don't have to. There are other services, like [Geckoboard](http://geckoboard.com/ "Geckoboard"). I get a dashboard with graphs, giving me realtime info about what's going on. I can set up alarms for unusual behavior. I also use alarms to make sure my services are up. That means I send CloudWatch a tick once every minute and CloudWatch will text me if it doesn't get them. Contrary to what you might think, it makes you sleep better.
+
+I think I've answered my question. I've riddled my code with log outputs and some of them make sense for me to publish to my dashboard, not as messages, of course, but as statistical observations. Hi, we passed this line of code once, it's 11.45 am, beep. You can pass numerical data, too, but I'll save that summary for another post.
+
+# Getting started
+
+Let's just start by setting up a framework for proof of concept, make sure what works and what doesn't.
+
+Create a new console project in Visual Studio. I called mine RandomTicks. 
+
+Add a new item to your project, an application configuration file.
+
+
+You should be using NuGet Package Manager. In it, search for log4net and add it to your project. The following may or may not get added automatically to your app.config. If it's not there, add it.
+
+    <configSections>
+        <section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" />
+    </configSections>
+
+This is not a post about setting up and using log4net, other blogs do that well. 
+
+This is what my console app looks like. 
+
+	using System;
+	using System.Threading;
+	using log4net;
+	using log4net.Config;
+
+	namespace RandomTicks
+	{
+	    internal class RandomTicks
+	    {
+            private static readonly ILog log = LogManager.GetLogger(typeof(RandomTicks));
+            
+            private static void Main(string[] args)
+            {
+                XmlConfigurator.Configure();
+
+                var random = new Random();
+
+                while (true)
+                {
+                    if (random.NextDouble() < .3)
+                        log.Info("A tick!");
+
+                    Thread.Sleep(100);
+                }
+            }
+	    }
+	}
+
+
+So, every 10th of a second, we're deciding with a 30 % probability whether or not to log something, and then do it. I then configured, so I know we're sending of the log messages.
+
+	<log4net>
+	    <appender name="ConsoleAppender" type="log4net.Appender.ConsoleAppender" >
+	      <layout type="log4net.Layout.PatternLayout">
+		        <conversionPattern value="%date [%thread] %-5level %logger [%ndc] - %message%newline" />
+	      </layout>
+	    </appender>
+
+	    <root>
+	      <level value="INFO" />
+	    </root>
+	</log4net>
+
+Hit F5 and you should be getting messages to your console, like this, with a frequency of about 200 times a minute, on average.
+
+![](https://dl.dropbox.com/u/1551997/cloudwatchappender_screenshot2.jpg)
+
+
+# The appender
+
+Writing your own appender is real easy, as stated by [Robert Prouse](http://www.alteridem.net/2008/01/10/writing-an-appender-for-log4net/ "Robert Prouse's blog"). I mostly followed his example. I still got it wrong at first but that's because I get ahead of myself and don't follow instructions. Follow instructions.
+
+Add a new class library to your solution. Reference it from your test app, just to make sure it gets copied to your bin directory when you compile.
+
+With Package Manager, add references to log4net and also the AWSSDK library. You may also want a reference to System.Configuration, just so you can put your AWS credentials in the config-file.
+
+AppenderSkeleton, provided by the log4net library, makes it a sinch. Simply subclass it and override the Append method. Something like this.
+
+	namespace Log4NetCloudWatchAppender
+	{
+	    public class Log4NetCloudWatchAppender : AppenderSkeleton
+	    {
+            protected override void Append(LoggingEvent loggingEvent)
+            {
+              
+            }
+	    }
+	}
+
+Let's put a break point in there and see if we can get it to hit. First we need to add the appender to the configuration. 
+
+    <appender name="CloudWatchAppender" type="Log4NetCloudwatchAppender.Log4NetCloudwatchAppender, Log4NetCloudwatchAppender">
+    </appender>
+
+Add it to the root logger with 
+
+    <root>
+      <level value="INFO" />
+      <appender-ref ref="ConsoleAppender" />
+      <appender-ref ref="CloudWatchAppender" />
+    </root>
+
+Hit F5 and check that your breakpoint is being hit.
+
+# The AWS client
+
+CloudWatch works by way of a restful web API, same as everything on AWS. For .NET you have the AWSSDK that makes everything, well not easy, but it removes some layers of complications while adding its own. Getting the AWS client to work could be simple, but I think for most the first time, it's a headache. You need your credentials, you need a service endpoint, etc. 
+
+My story is that I added a timestamp to the request. I spent the next hour trying to figuring our why I wasn't seeing any data, then the hour after that, trying to figure out why I was seeing data, even though my app was disabled. One of those times when debugging didn't help. Taking a break, stepping outside, did. CloudWatch is set to UTC and refuses to display anything that it thinks hasn't happened yet. Use UCT or just don't bother sending a timestamp at all. The client will put one in there all on its own. The lessons learnt is for another post, maybe.
+
+Anyway, get your endpoint from [here](http://docs.amazonwebservices.com/general/latest/gr/rande.html# cw_region). Log in to AWS and get your credentials from [here](https://portal.aws.amazon.com/gp/aws/securityCredentials). That's your access key id and your secret access key. Preferably you won't use your main credentials but rather set up user with the [IAM](http://aws.amazon.com/iam/) feature and give it access just to post CloudWatch requests.
+
+Put this in your Append-method and add the appropriate includes.
+
+    var CWClient = AWSClientFactory.CreateAmazonCloudWatchClient(
+          ConfigurationManager.AppSettings["AWSAccessKey"],
+          ConfigurationManager.AppSettings["AWSSecretKey"],
+          new AmazonCloudWatchConfig { ServiceURL = "https://monitoring.eu-west-1.amazonaws.com" }
+        );
+
+    var data = new List<MetricDatum>
+                   {
+                       new MetricDatum()
+                           .WithMetricName("RandomTicks")
+                           .WithUnit("Count")
+                           .WithValue(13)
+                   };
+
+    try
+    {
+
+        var response = CWClient.PutMetricData(new PutMetricDataRequest()
+           .WithNamespace("RandomTicks")
+           .WithMetricData(data));
+
+    }
+    catch (Exception e)
+    {
+        //Don't log this exception :)
+    }
+
+Hit F5. Log in to AWS and go to CloudWatch. After a moment or two data will be available under a new "metric" called RandomTicks. You should be seeing something like this.
+
+![asd](https://dl.dropbox.com/u/1551997/cloudwatchappender_screenshot.jpg)
+
+# AWS stats 
+
+To note from the code above is that we've chosen, from a fixed set of units, the dimensionless "Count". In another post I will explore different units, but for now, we're just posting single observations. I'm using the value 13 just to prove a point about the average. If you set CloudWatch to display the average with period 1 minute, that's a straight line. 13. Period 5 minutes? 13. Minimum? 13. Maximum? Yes. 
+
+So that's the average over *observations*, not time, in case you expected the sum of all values divided by the time interval. Because that's what "Sum" does. Oh, I'm being confusing now. It's not confusing, really. "Sum" will add up all the values. Choose a time interval that gives you the information you need. Switch to "Samples" for comparison. "Samples" gives you just the observations, no heed to the value 13.
+
+# Muting SDK developers
+
+One more thing. Wouldn't you know it, Amazon uses log4net, so if you use log4net and AWSSDK then you're going to see unintentional log messages from the SDK developers unless you filter them out. Just add the following to your config.
+
+    <logger name="Amazon">
+        <level value="OFF" />
+    </logger>
+
+# How much?
+
+Custom metrics may put you back. As long as you stay below 10 custom metrics, 10 alarms and 1 million API requests per month, it's free though.
+
+# Why 135?
+
+Keen observers will note that the plot seems to be centered at around 135, not 200 as excepted. What's going on here? Well these requests are going of in sync and they actually take a while, half a second or so. Removing the sleep we'd actually see that we're maxing out.
+
+I admit I didn't realize when I started out. It means that if you're monitoring page loads, for instance, you can't send AWS an observation each time. At moderate loads you're going to max out. A limitation to the usefulness of this project, sure. Not that you'd really want to send of hundreds of http requests a second from your web server, for that matter even text file writes, asynchronous or not.
+
+So if this is your usecase you'll need to aggregate this yourself, as is also recommended by CloudWatch. It's a pain, I know, it's breaking the request cycle, and what's more, beyond the scope of this post. log4net obviously isn't implicitly asynchrounous. Maybe its appenders are and we'd certainly like ours to be. But aggregating is better. How would you accomplish that? Since I'm bent on using this project, I'll probably get around to it soon.
+
+That was it. Download the complete [project](https://dl.dropbox.com/u/1551997/CloudWatchAppender.zip) and play with it. Or fork it from [Github](https://github.com/camitz/CloudWatchAppender).
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function() {
+var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+  
+
+
+
+
+  
+  
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fa fa-fw fa-tags" aria-hidden="true"></i>  </strong>
+    <span itemprop="keywords">
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#amazon" class="page__taxonomy-item" rel="tag">amazon</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#appender" class="page__taxonomy-item" rel="tag">appender</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#aws" class="page__taxonomy-item" rel="tag">AWS</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#cloudwatch" class="page__taxonomy-item" rel="tag">cloudwatch</a><span class="sep">, </span>
+    
+      
+      
+      <a href="http://blog.simpletask.se/tags/#log4net" class="page__taxonomy-item" rel="tag">log4net</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> </strong> <time datetime="2012-08-09T11:03:00+01:00">August 09, 2012</time></p>
+        
+      </footer>
+
+      
+
+<section class="page__share">
+  
+
+  <a href="https://twitter.com/intent/tweet?text=http://blog.simpletask.se/AWSCloudWatch-log4net-appender" class="btn btn--twitter" title=" Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://blog.simpletask.se/AWSCloudWatch-log4net-appender" class="btn btn--facebook" title=" Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://plus.google.com/share?url=http://blog.simpletask.se/AWSCloudWatch-log4net-appender" class="btn btn--google-plus" title=" Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://blog.simpletask.se/AWSCloudWatch-log4net-appender" class="btn btn--linkedin" title=" LinkedIn"><i class="fa fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+      
+
+
+  <nav class="pagination">
+    
+      <a href="http://blog.simpletask.se/AWSCloudWatch-log4net-appender" class="pagination--pager" title="A CloudWatch Appender for log4net
+"></a>
+    
+    
+      <a href="http://blog.simpletask.se/improving-cloudwatch-appender" class="pagination--pager" title="Improving the CloudWatch Appender
+"></a>
+    
+  </nav>
+
+    </div>
+
+    
+      
+
+<div class="page__comments">
+  <h4 class="page__comments-title"></h4>
+  
+    <section id="disqus_thread"></section>
+  
+</div>
+    
+  </article>
+
+  
+  
+    <div class="page__related">
+      
+      <div class="grid__wrapper">
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/EC2SpotStop2SNS">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">EC2 Spot Instance Termination Notification to SNS
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  2 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The AWS team yesterday announced that it would publish notifications of imminent termination of spot instances in the form of a date string accesible via the...</p>
+    </article>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">Introducing the Buffering and Aggregeting CloudWatch Appender
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  6 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward...</p>
+    </article>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">Introducing the Buffering and Aggregeting CloudWatch Appender
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  6 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward...</p>
+    </article>
+  </a>
+</div>
+        
+          
+
+
+
+<div class="grid__item">
+  
+    <a href="http://blog.simpletask.se/welcome to russia dear crimeans">
+  
+    <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
+      
+      <h2 class="archive__item-title" itemprop="headline">Welcome to Russia, dear Crimeans!
+</h2>
+      
+        <p class="page__meta"><i class="fa fa-clock-o" aria-hidden="true"></i> 
+
+
+  6 
+</p>
+      
+      <p class="archive__item-excerpt" itemprop="description">by Arkady Babtjenko
+
+</p>
+    </article>
+  </a>
+</div>
+        
+      </div>
+    </div>
+  
+</div>
+
+    <div class="page__footer">
+      <footer>
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+    
+      <li><a href="https://twitter.com/martincamitz"><i class="fa fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+    
+    
+    
+    
+    <li><a href="http://blog.simpletask.se/feed.xml"><i class="fa fa-fw fa-rss-square" aria-hidden="true"></i> </a></li>
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2016 Martin Camitz.  <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+      </footer>
+    </div>
+
+    <script src="http://blog.simpletask.se/assets/js/main.min.js"></script>
+
+
+
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34001047-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+  	/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+  	var disqus_shortname = 'camitz';
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function() {
+  		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  	})();
+
+  	/* * * DON'T EDIT BELOW THIS LINE * * */
+  	(function () {
+  		var s = document.createElement('script'); s.async = true;
+  		s.type = 'text/javascript';
+  		s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  		(document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+  	}());
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+
+    <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+
+  </body>
+</html>
+

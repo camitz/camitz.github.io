@@ -5,10 +5,6 @@
 <lastmod>2015-01-05T16:00:00+00:00</lastmod>
 </url>
 <url>
-<loc>http://blog.simpletask.se/EC2SpotStop2SNS</loc>
-<lastmod>2015-01-05T16:00:00+00:00</lastmod>
-</url>
-<url>
 <loc>http://blog.simpletask.se/buffering-aggregating-cloudwatch-appender</loc>
 <lastmod>2014-04-23T16:00:00+01:00</lastmod>
 </url>
@@ -23,10 +19,6 @@
 <url>
 <loc>http://blog.simpletask.se/welcome%20to%20russia%20dear%20crimeans</loc>
 <lastmod>2014-03-20T10:22:00+01:00</lastmod>
-</url>
-<url>
-<loc>http://blog.simpletask.se/Jason%20Diakites%20speach%20to%20the%20Swedish%20parliament</loc>
-<lastmod>2013-12-03T15:57:00+00:00</lastmod>
 </url>
 <url>
 <loc>http://blog.simpletask.se/Jason%20Diakites%20speach%20to%20the%20Swedish%20parliament</loc>
@@ -97,14 +89,6 @@
 <lastmod>2012-09-16T20:26:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://blog.simpletask.se/statsd-graphite.md/</loc>
-<lastmod>2012-09-16T00:00:00+01:00</lastmod>
-</url>
-<url>
-<loc>http://blog.simpletask.se/statsd-graphite/</loc>
-<lastmod>2012-09-16T00:00:00+01:00</lastmod>
-</url>
-<url>
 <loc>http://blog.simpletask.se/aws-benchmark.md/</loc>
 <lastmod>2012-09-14T15:50:00+01:00</lastmod>
 </url>
@@ -136,8 +120,5 @@
 </url>
 <url>
 <loc>http://blog.simpletask.se/page3/</loc>
-</url>
-<url>
-<loc>http://blog.simpletask.se/page4/</loc>
 </url>
 </urlset>
