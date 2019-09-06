@@ -62,7 +62,7 @@ google_ad_slot           :
 # Site Author
 author:
   name             : "Martin Camitz"
-  avatar           : "bio-photo.jpg"
+  avatar           : "/assets/images/bio-photo.jpg"
   bio              : # "I am an amazing person."
   location         : "Stockholm"
   email            : martin.camitz@simpletask.se
