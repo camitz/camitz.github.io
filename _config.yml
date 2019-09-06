@@ -170,6 +170,7 @@ whitelist:
   - jekyll-feed
   - jemoji
 
+remote_theme:	mmistakes/minimal-mistakes@4.16.6
 
 # Archives
 #  Type
