@@ -2,7 +2,8 @@
 date: 2012-09-14 15:50
 title: EC2 region benchmark
 Type: post
-tags: amazon, aws, ec2, benchmark, webpagetest
+tags: [amazon, aws, ec2, benchmark, webpagetest]
+categories: [Tech, AWS Appender]
 ---
 
 Ever thought about what region to use for what audience? Lot's of people must have but they keep their findings to themselves from what I can tell. 
@@ -30,18 +31,3 @@ Here are my results.
 Disclaimer: Singapore is the original site and has some overhead, like SSL-encryption. I only did this once so that hardly qualifies as statistics. But it gives you an idea about what to expect when you launch a site intended for certain locality.
 
 Someone should do an extensive benchmark. Maybe I should. Btw, take at [Google Page Speed](https://developers.google.com/speed/pagespeed/) if you haven't already.
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

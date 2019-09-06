@@ -11,7 +11,7 @@ title                    : "Cozmiq Debris"
 title_separator          : "-"
 name                     : "Martin Camitz"
 description              : I am the CTO of Cocoin, a Swedish internet payment service,, and SimpleTask. We use the AWSAppender suite extensively (formerly CloudWatchAppender) and this blog mostly deals with that. 
-url                      : blog.simpletask.se
+url                      : http://blog.simpletask.se
 baseurl                  : # the subpath of your site, e.g. "/blog"
 gh_repo                  : camitz.github.io
 teaser                   : # filename of teaser fallback teaser image placed in /images/, .e.g. "500x300.png"
@@ -118,6 +118,7 @@ exclude:
   - Rakefile
   - README
   - tmp
+  - "*.bak"
 keep_files:
   - .git
   - .svn
@@ -126,7 +127,7 @@ markdown_ext: "markdown,mkdown,mkdn,mkd,md"
 
 
 # Conversion
-markdown: markdown
+markdown: kramdown
 highlighter: rouge
 lsi: false
 excerpt_separator: "\n\n"
@@ -146,10 +147,10 @@ kramdown:
 
 
 # Outputting
-permalink: /:categories/:title/
+permalink: /:title/
 paginate: 5 # amount of posts to show
 paginate_path: /page:num/
-timezone: # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: 	Europe/Stockholm
 
 
 # Plugins
@@ -204,3 +205,16 @@ compress_html:
   clippings: all
   ignore:
     envs: development
+
+defaults:
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      share: true
+      related: true

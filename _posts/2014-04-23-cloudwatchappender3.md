@@ -3,7 +3,8 @@ date: 2014-04-23 16:00
 title: Introducing the Buffering and Aggregeting CloudWatch Appender
 Type: post
 permalink: buffering-aggregating-cloudwatch-appender
-tags: amazon, AWS, cloudwatch, log4net, appender, bufferingappender
+tags: [amazon, AWS, cloudwatch, log4net, appender, bufferingappender]
+categories: [Tech, AWS Appender]
 ---
 
 The CloudWatch Appender for log4net is an appender that targets AWS CloudWatch. So if you have any kind of service on the Amazon cloud you can easily forward your log messages via the AWS Api to show on pretty graphs in your AWS consoles. By default the points in the graphs represent a hit count but with purposefull configuration in config files and in patterns of the messages themselves, we can show values and statistics in any unit supported by AWS.
@@ -66,7 +67,7 @@ I've made some other improvements aswell. Some around the asynchronous requests 
 
 Debug outputs and error messages from CloudWatchAppender were previously passed to the TraceListener system. Now they are routed to log4net's internal scheme.
 
-One of the things already in place is acutally a bug fix. It was a breaking change and released as such but I decided to do it because I couldn't fathom anyone using the feature in the wasy provided. It has to do with the augmented logger function and negative precision specifier. Read more [here](https://github.com/camitz/CloudWatchAppender/blob/master/README.md#augmented-logger-functionality).
+One of the things already in place is acutally a bug fix. It was a breaking change and released as such but I decided to do it because I couldn't fathom anyone using the feature in the wasy provided. It has to do with the augmented logger function and negative precision specifier. Read more [here](https://github.com/camitz/CloudWatchAppender/blob/master/README.md# augmented-logger-functionality).
 
 Do stay tuned for upcoming releases. Here are some more things I have planned for the very near future.
 
@@ -116,18 +117,3 @@ You bet I did!!
 
 
 
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

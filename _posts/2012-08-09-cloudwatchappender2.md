@@ -3,7 +3,8 @@ date: 2012-08-09 11:03
 title: Improving the CloudWatch Appender
 Type: post
 permalink: improving-cloudwatch-appender
-tags: amazon, AWS, cloudwatch, log4net, appender
+tags: [amazon, AWS, cloudwatch, log4net, appender]
+categories: [Tech, AWS Appender]
 ---
 
 *This is a follow-up to [this](http://blog.simpletask.se/post/awscloudwatch-log4net-appender) post, describing the original idea. This post seeded a project based on [Github](https://github.com/camitz/CloudWatchAppender). Go ahead and contribute.*
@@ -114,18 +115,3 @@ Will create two data points, the second with the default value 1.0. CloudWatch w
 I'm continually developing the project as open source on [Github](https://github.com/camitz/CloudWatchAppender). Hence, there is no just for this blog post. It's all in the project. Feel free to contribute to the project.
 
 
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

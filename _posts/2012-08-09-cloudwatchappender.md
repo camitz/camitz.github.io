@@ -3,7 +3,8 @@ date: 2012-08-09 11:03
 title: A CloudWatch Appender for log4net
 Type: post
 permalink: AWSCloudWatch-log4net-appender
-tags: amazon, AWS, cloudwatch, log4net, appender
+tags: [amazon, AWS, cloudwatch, log4net, appender]
+categories: [Tech, AWS Appender]
 ---
 
 *This post seeded a project based on [Github](https://github.com/camitz/CloudWatchAppender). Go ahead and contribute. It's also on [NuGet]("https://nuget.org/packages/CloudWatchAppender).*
@@ -87,7 +88,7 @@ Hit F5 and you should be getting messages to your console, like this, with a fre
 ![](https://dl.dropbox.com/u/1551997/cloudwatchappender_screenshot2.jpg)
 
 
-#The appender
+# The appender
 
 Writing your own appender is real easy, as stated by [Robert Prouse](http://www.alteridem.net/2008/01/10/writing-an-appender-for-log4net/ "Robert Prouse's blog"). I mostly followed his example. I still got it wrong at first but that's because I get ahead of myself and don't follow instructions. Follow instructions.
 
@@ -129,7 +130,7 @@ CloudWatch works by way of a restful web API, same as everything on AWS. For .NE
 
 My story is that I added a timestamp to the request. I spent the next hour trying to figuring our why I wasn't seeing any data, then the hour after that, trying to figure out why I was seeing data, even though my app was disabled. One of those times when debugging didn't help. Taking a break, stepping outside, did. CloudWatch is set to UTC and refuses to display anything that it thinks hasn't happened yet. Use UCT or just don't bother sending a timestamp at all. The client will put one in there all on its own. The lessons learnt is for another post, maybe.
 
-Anyway, get your endpoint from [here](http://docs.amazonwebservices.com/general/latest/gr/rande.html#cw_region). Log in to AWS and get your credentials from [here](https://portal.aws.amazon.com/gp/aws/securityCredentials). That's your access key id and your secret access key. Preferably you won't use your main credentials but rather set up user with the [IAM](http://aws.amazon.com/iam/) feature and give it access just to post CloudWatch requests.
+Anyway, get your endpoint from [here](http://docs.amazonwebservices.com/general/latest/gr/rande.html# cw_region). Log in to AWS and get your credentials from [here](https://portal.aws.amazon.com/gp/aws/securityCredentials). That's your access key id and your secret access key. Preferably you won't use your main credentials but rather set up user with the [IAM](http://aws.amazon.com/iam/) feature and give it access just to post CloudWatch requests.
 
 Put this in your Append-method and add the appropriate includes.
 
@@ -194,17 +195,3 @@ That was it. Download the complete [project](https://dl.dropbox.com/u/1551997/Cl
 
 
 
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

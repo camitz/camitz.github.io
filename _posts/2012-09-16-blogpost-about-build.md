@@ -2,7 +2,8 @@
 date: 2012-09-16 20:26
 title: Build your dojo/ASP.NET MVC application
 Type: post
-tags: dojo, build, asp.net-mvc
+tags: [dojo, build, asp.net-mvc]
+categories: [Tech, .NET]
 ---
 
 Building your dojo application is a poorly documented pain, in my view. It took me two weeks to get from A to B, not full time, but there was that delay. The only relief comes from Colin Snover at Site Pen who has provided a [boilerplate](https://github.com/csnover/dojo-boilerplate) for us to start from. Its design is for a stand alone dojo application but it's the unavoidable starting point for any project.
@@ -212,19 +213,3 @@ If you don't use AMD then I don't know if this blog post will work for you.
 
 That's all there is to it!
 
-ZQCGE4H2JF35 
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

@@ -2,7 +2,8 @@
 date: 2012-09-18 14:02
 title: Aggregating monitoring statistics for AWS Cloudwatch
 Type: post
-tags: aws, cloudwatch, amazon, node.js, log4net, cloudwatchappender, monitoring, awssum
+tags: [aws, cloudwatch, amazon, node.js, log4net, cloudwatchappender, monitoring, awssum]
+categories: [Tech, AWS Appender]
 ---
 
 I started out this blog connecting [log4net](http://logging.apache.org/log4net/) to [CloudWatch](http://aws.amazon.com/cloudwatch/), a monitoring service in Amazon's AWS cloud. The idea was to turn all those log4net log events that you might have in your code into graphs on CloudWatch, while modifying only the config.
@@ -277,18 +278,3 @@ Take a look at CloudWatch now, maybe something like this will show up.
 I'll continue working this into something useful. I have already included it in production on cocoin.com. You can find it already on [GitHub](https://github.com/camitz/aws-cloudwatch-statsd-backend). By all means fork it and contribute or just suggest additions. The GitHub version has a different layout copied from another backend project for [MongoDB](https://github.com/dynmeth/mongo-statsd-backend.git). In the future it's meant to an npm module that you can install just as we did Awssum and Fmt.
 
 A couple of branches I've been thinking is how we could integrate the system with CloudWatchAppender or even if this is desirable; and getting Graphite working on windows. I'd like to see a tutorial on that.
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

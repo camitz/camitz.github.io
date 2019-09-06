@@ -2,8 +2,8 @@
 date: 2013-04-29 09:34
 title: On representing a survey with XML
 Type: post
-tags: survey, xml, specification, standard, flamingo
-Status: draft
+tags: [survey, xml, specification, standard, flamingo]
+categories: [Tech]
 ---
 
 With my new survey software suite, a survey is as easy to enter as
@@ -22,7 +22,7 @@ I'm picturing something like markdown which outputs an intermediary XML represen
 
 It's the representation at the core of this that I want to talk about today. I propose a new representation of a survey. I'm calling it **Flamingo**.
 
-##Background
+## Background
 
 I sometimes dabble with surveys in particular [RDS](https://www.researchgate.net/publication/233419485_Implementation_of_Web-Based_Respondent-Driven_Sampling_among_Men_Who_Have_Sex_with_Men_in_Vietnam) surveys. I made my own survey engine many years back. It was replaced by the research team with a modified version of LimeSurvey. 
 
@@ -48,7 +48,7 @@ The key advantages are:
 - Repetition, validation and other survey logic included
 - Dynamically generated survey elements
 
-##Start
+## Start
 
 Let's give it a go then. Let's go way back. What's the atomic building block of a survey? The option. I propose this is a survey.
 
@@ -85,7 +85,7 @@ Before we move on, though, let's change the name of those two elements. The thin
 
 I've come up with a set of principles that seem to work rather well for me. Partial compliance with HTML is the second. Hence I'm calling groups *div* and options *input*. Ignore the fact that inputs, if they really were in HTML, would have no content. Ignore also the fact input elements without any other attributes produce textboxes.
 
-##Basic principles
+## Basic principles
 
 The complete set of basic principles for Flamingo is as follows.
 
@@ -99,7 +99,7 @@ Incidendtally, the second to last principle is implicit in XML.
 
 We've covered two of these principles, although their merit may be unclear for the moment. Let's move on to the third.
 
-##Assume multiple choice
+## Assume multiple choice
 
 The default input is a checkbox. Heh? Bear with me, I just want to change the default. 
 
@@ -138,7 +138,7 @@ Easy for me to say, I'm specifying the representation. You're coding the present
 
 Apparently time to show you what a response might look like.
 
-##Responses and the XPATH
+## Responses and the XPATH
 
 The response database table might look like this. It's a recommendation and not really part of the specification I propose.
 
@@ -168,7 +168,7 @@ Timestamp? Again a recommendation. This is just where we are today regarding wha
 
 One final thing to note, the engine may reorder everything as you wish. Maybe the author has requested randomized questions. This should not affect the XPATH of the options. The XPATH references the survey XML template, not the rendered display. That includes dynamically generated elements which we'll get to later.
 
-###Another example
+### Another example
 
 To further the discussion with another example, consider the following. I've introduced that label short hand here, but that's not the point.
 
@@ -190,7 +190,7 @@ It should be apparent how this is intended to be displayed. LimeSurvey designate
 
 However, if the presentation engine does not have support for this particular layout, that's fine too. Just display as is (formatting the inputs, obviously). The survey is entirely legible in either case.
 
-##Single choice and multiple choice
+## Single choice and multiple choice
 
 As I've said, I consider all input elements checkboxes by default, because that's what I consider a survey, options. If you're in Europe, both steak and lobster may not be acceptable at the same time. I consider it validation and validation can be specified in my XML schema but the basic assumption is that it is not required. It's meta data, same as questions and part of a context which may be given in XML or verbally or be implicit.
 
@@ -239,7 +239,7 @@ In an above example there was a semantically different checkbox: "I don't know".
 
 Technically though, there are many ways to infer abstention and ignorance. I may wish to have one "I don't know" and one "I don't want to answer". Or I may combine them. They may be placed before or after the "Other" option. I think this should always be up to the author.
 
-###Textboxes 
+### Textboxes 
 
 What about textual data, keyboard entered data in textboxes? Again, I consider keyboard entered data just another option. Consider:
 
@@ -295,9 +295,9 @@ Similarly, the enabled attribute, used to control where an option is visible/ena
 Finally, control logic is about what questions are executed when and possibly in what order, depending on responses and other circumstances. It should be clear by now that I'm not about to introduce a goto statement. I think control concerns should be mapped to display logic as far as possible. Having said that, I haven't ruled out control logic completely though I can think of no circumstances off hand where it might come in handy.
 
 
-##Other features
+## Other features
 
-###Cross references
+### Cross references
 
 To repeat a group or option anywhere (even before the definition), just reference.
 
@@ -317,7 +317,7 @@ My take on the issue.
 
 The concern for the presentation is to decide on a multiple choice dropdown, a full page of checkboxes with an arbitrary number of columns or perhaps an object store backed combo box widget.
 
-###Dynamically generated survey elements
+### Dynamically generated survey elements
 
 Cross references together with the severing of the dependency between responses and survey implies the following rather significant bonus. The questionnaire may be dynamically constructed. Arbitrarily repeated questions are a breeze. In fact there is little need for a representation at all for simple ad hoc questionnaires. Just hard code a form and send it off to your response engine. (That's rather stating the obvious. What I mean is, do try on my recommendation for a response table.)
 
@@ -335,7 +335,7 @@ However, dynamically generated survey elements is more than just a bonus, it's a
 
 The engine should generate the last input as many times as the user requires. To be honest I think this is an annoying loop hole, one of many to be found. I'd sooner let the author opt in via the repetition feature described later. But I'd like you to give me a chance to find a way that would not break my list of principles or to patch it up.
 
-##Presentation hints
+## Presentation hints
 
 I want to have dependencies between the representation and the presentation as weak as possible. But hints to the presentation has obvious benefits, for example, indicating preference for radio buttons over dropdown, page breaks and instructions. 
 
@@ -351,7 +351,7 @@ The class attribute seems the immediate choice for presentation. That way a tip 
 
 I intend to specify a recommended list of such hints. Presentation engines are free to specify additions to that list as long as they commit to displaying surveys that don't conform to them.
 
-##Resource keys
+## Resource keys
 
 That last one deserves an extra look. We never got around to the last principle, the one about resource keys, did we? That's what this is.
 
@@ -359,7 +359,7 @@ All contents of label attributes and elements act as resource keys. That smacks 
 
 If you write a FAQ, then the above indexes into that. The label may be just a question mark icon. Up to you.
 
-##Repetition
+## Repetition
 
 Repeating the country dropdown based on the answer given to a previous question, try:
 
@@ -384,7 +384,7 @@ That may clue to a way out of the dilemma mentioned earlier, with the "Other" op
         <input repeat="true" label="Other"/>
     </div>
 
-##Closing
+## Closing
 
 Thank you for reading. Tell me what you think. Consider the spec open source, work in progress and feel free to contribute. I'm going to put up a wiki. 
 
@@ -393,17 +393,3 @@ It's a long way of to 1.0. The markdown type app, a presentation engine to work 
 Currently I don't have the resources but I think it would be great. Consider funding me if you stand to benefit.
 
 
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>

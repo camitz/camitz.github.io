@@ -2,7 +2,8 @@
 date: 2012-10-30 11:02
 title: Updated Cloudwatch backend for StatsD
 Type: post
-tags: aws, cloudwatch, amazon, node.js, log4net, cloudwatchappender, monitoring, awssum
+tags: [aws, cloudwatch, amazon, node.js, log4net, cloudwatchappender, monitoring, awssum]
+categories: [Tech, AWS Appender]
 ---
 
 A month ago I successfully chained together [log4net](http://logging.apache.org/log4net/), [StatsD](https://github.com/etsy/statsd) and [CloudWatch](http://aws.amazon.com/cloudwatch/). I put together a backend for StatsD in node.js called [aws-cloudwatch-statsd-backend](https://github.com/camitz/aws-cloudwatch-statsd-backend).
@@ -41,18 +42,3 @@ You can also override both the *namespace* and metric name (*metricName*) in the
 Full documentation on the [npm](https://npmjs.org/package/aws-cloudwatch-statsd-backend) and [GitHub](https://github.com/camitz/aws-cloudwatch-statsd-backend) pages.
 
 My other monitoring project, [CloudWatchAppender](https://github.com/camitz/CloudWatchAppender), and appender for log4net wihout aggregation, has now been downloaded 236 times. Very pleased with that. 
-
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-var disqus_shortname = 'martincamitz'; // required: replace example with your forum shortname
-
-/* * * DON'T EDIT BELOW THIS LINE * * */
-(function() {
-var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
