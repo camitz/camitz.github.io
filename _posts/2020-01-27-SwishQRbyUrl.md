@@ -1,5 +1,5 @@
 ---
-date: 2015-01-05 16:00
+date: 2020-01-28 12:19
 title: Swish QR-code without the API
 Type: post
 permalink: SwishQRbyUrl
@@ -9,11 +9,13 @@ categories: [Tech]
 
 Can you generate a Swish QR code by placing a url in an image tag, like so:
 
-Yes you can, in fact and I just did. The above image is generated on request, with with the message and amount encoded in the url.
+Yes you can, in fact. Here, I'm doing it. 
 
-<img src="https://dmutq7l4tk6oq.cloudfront.net/?amount=50&message=Great%20post%21" height=150 width=150><br/>
+<img src="https://dmutq7l4tk6oq.cloudfront.net/?amount=50&message=Great%20post%21" height="150" width="150">
 
 <input id="qrinput" type="text" value="50" onchange="javascript:document.getElementById('rqimg').src='https://dmutq7l4tk6oq.cloudfront.net/?amount='+document.getElementById('rqinput').value+'&message=Thx for the swish qr post'">
+
+The above image is generated on request, with with the message and amount encoded in the url.
 
 By all means, try it! It will send me a tip of 50 kr (you can change it). I do thank you.
 
@@ -35,7 +37,7 @@ If you need help setting this up with you particular requirements, your amount t
 
 ![](/assets/images/ss_qr_quicklaunch.png "Enter your swish number as an input to the stacks. Change the name if you want.")
 
-![](/assets/images/ss_qr_quicklaunch.png "The output parameter SwishQRDistributionURL is what you will paste in your html code.")
+![](/assets/images/ss_qr_outputs.png "The output parameter SwishQRDistributionURL is what you will paste in your html code.")
 
 ## About the implementation
 
