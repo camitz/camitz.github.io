@@ -11,9 +11,9 @@ Can you generate a Swish QR code by placing a url in an image tag, like so:
 
 Yes you can, in fact. Here, I'm doing it. 
 
-<img src="https://dmutq7l4tk6oq.cloudfront.net/?amount=50&message=Great%20post%21" height="150" width="150">
+<img id="qrimg" src="https://dmutq7l4tk6oq.cloudfront.net/?amount=50&message=Great%20post%21" height="150" width="150">
 
-<input id="qrinput" type="text" value="50" onchange="javascript:document.getElementById('rqimg').src='https://dmutq7l4tk6oq.cloudfront.net/?amount='+document.getElementById('rqinput').value+'&message=Thx for the swish qr post'">
+<input id="qrinput" type="text" value="50" onchange="javascript:document.getElementById('qrimg').src='https://dmutq7l4tk6oq.cloudfront.net/?amount='+document.getElementById('qrinput').value+'&message=Thx for the swish qr post'">
 
 The above image is generated on request, with with the message and amount encoded in the url.
 
