@@ -52,7 +52,7 @@ social:
 analytics:
   provider               : "google"
   google:
-    tracking_id          : UA-34001047-1
+    tracking_id          : UA-157429503-1
 
 # Google AdSense
 google_ad_client         :
@@ -63,7 +63,7 @@ google_ad_slot           :
 author:
   name             : "Martin Camitz"
   avatar           : "/assets/images/bio-photo.jpg"
-  bio              : # "I am an amazing person."
+  bio              : "Software engineer, physicist and PhD in infectious disease modeling. Co-founder/CTO of Cocoin AB, founder/owner of Simpletask."
   location         : "Stockholm"
   email            : martin.camitz@simpletask.se
   uri              :
