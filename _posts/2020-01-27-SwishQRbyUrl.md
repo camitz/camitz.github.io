@@ -4,10 +4,12 @@ title: Swish QR-code without the API
 Type: post
 permalink: SwishQRbyUrl
 tags: [swish, QR, image, src, img, aws, cloudformation, aws api gateway, aws cloundfront]
-categories: [Tech]
+categories: [Tech,aws]
 ---
 
 Can you generate a Swish QR code by placing a url in an image tag, like so:
+
+    <img id="qrimg" src="https://dmutq7l4tk6oq.cloudfront.net/?amount=50&message=Great%20post%21" height="150" width="150">
 
 Yes you can, in fact. Here, I'm doing it. 
 
@@ -23,8 +25,7 @@ All I did was string together two [AWS](https://aws.amazon.com/) services, [API 
 
 If you want to make your own, you can just launch your own stack using the my Cloudformation template. You don't even have to read the rest of the post. Click the icon, enter your Swish number (or your cell phone number), after a few minutes you will have be provided with the domain to paste in your markup in place of the above. 
 
-<a href=https://eu-north-1.console.aws.amazon.com/cloudformation/home?region=eu-north-1#/stacks/quickcreate?templateURL=https://cf-templates-15y7bciwoyxk8-eu-west-1.s3-eu-west-1.amazonaws.com/SwishQRbyUrl_Distr_0.12&stackName=SwishQRbyUrl
-"><img src="/assets/images/cloudformation-launch-stack.png" id="qrimg"></a>
+<a href="https://eu-north-1.console.aws.amazon.com/cloudformation/home?region=eu-north-1#/stacks/quickcreate?templateURL=https://cf-templates-15y7bciwoyxk8-eu-west-1.s3-eu-west-1.amazonaws.com/SwishQRbyUrl_Distr_0.12&stackName=SwishQRbyUrl"><img src="/assets/images/cloudformation-launch-stack.png" id="qrimg"></a>
 
 
 You don't even need Cloudfront. That provides caching for the image and I can't really think of any situations where this is not overkill.
