@@ -52,7 +52,7 @@ social:
 analytics:
   provider               : "google"
   google:
-    tracking_id          : UA-34001047-1
+    tracking_id          : UA-157429503-1
 
 # Google AdSense
 google_ad_client         :
@@ -62,7 +62,7 @@ google_ad_slot           :
 # Site Author
 author:
   name             : "Martin Camitz"
-  avatar           : "bio-photo.jpg"
+  avatar           : "/assets/images/bio-photo.jpg"
   bio              : # "I am an amazing person."
   location         : "Stockholm"
   email            : martin.camitz@simpletask.se

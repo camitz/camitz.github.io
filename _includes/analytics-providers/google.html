@@ -5,6 +5,8 @@
     _gaq.push(['_gat._anonymizeIp']);
   {% endif %}
   _gaq.push(['_trackPageview']);
+  _gaq.push(['_setSiteSpeedSampleRate', 100]);
+
 
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
